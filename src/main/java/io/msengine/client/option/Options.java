@@ -109,7 +109,7 @@ public class Options {
 		return this.getTypeAdapter( option.getClass() );
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "resource" })
 	public void save(boolean log) throws IOException {
 		
 		if ( log ) LOGGER.info("Saving options ...");
@@ -167,7 +167,7 @@ public class Options {
 		this.save( true );
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "resource" })
 	public void load() throws IOException {
 		
 		LOGGER.info("Loading options ...");

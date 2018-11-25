@@ -30,6 +30,7 @@ public class ResourceManager extends ResourceAccessorWrapper {
 		
 	}
 	
+	@SuppressWarnings("resource")
 	public DetailledResource getDetailledResource(String path) {
 		
 		Resource resource = this.getResource( path );

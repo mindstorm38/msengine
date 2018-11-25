@@ -16,19 +16,12 @@ import io.sutil.resource.Resource;
 
 public class DetailledResource extends Resource {
 	
-	// private final String path;
-	// private final String listPath;
-	// private final InputStream resourceInputStream;
 	private final LazyLoadValue<InputStream> resourceMetaInputStream;
 	private final Metadata metadata;
 	
-	DetailledResource(Resource resource/*, String listPath, InputStream resourceInputStream, InputStream resourceMetaInputStream*/) {
+	DetailledResource(Resource resource) {
 		
 		super( resource.getAccessor(), resource.getPath() );
-		
-		// this.path = path;
-		// this.listPath = listPath;
-		// this.resourceInputStream = resourceInputStream;
 		
 		this.resourceMetaInputStream = new LazyLoadValue<InputStream>() {
 			
@@ -41,12 +34,6 @@ public class DetailledResource extends Resource {
 		this.metadata = new Metadata( this );
 		
 	}
-	
-	/*
-	DetailledResource(String path, InputStream resourceInputStream, InputStream resourceMetaInputStream) {
-		this( path, path, resourceInputStream, resourceMetaInputStream );
-	}
-	*/
 	
 	/**
 	 * Read {@link ByteBuffer} from this resource stream<br>
@@ -108,16 +95,6 @@ public class DetailledResource extends Resource {
 	public Metadata getMetadata() {
 		return this.metadata;
 	}
-	
-	/*
-	public String getListPath() {
-		return this.listPath;
-	}
-	
-	public String getPath() {
-		return this.path;
-	}
-	*/
 	
 	public InputStream getMetadataInputStream() {
 		return this.resourceMetaInputStream.get();

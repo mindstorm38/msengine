@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import io.msengine.common.resource.DetailledResource;
 import io.msengine.common.resource.ResourceManager;
-import io.sutil.StreamUtils;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -58,18 +57,17 @@ public class ShaderLoader {
 		
 	}
 	
-	public static ShaderLoader load(ShaderType type, String filename) throws IOException {
+	public static ShaderLoader load(ShaderType type, String filename) throws Exception {
 		
 		ShaderLoader loader = type.shaders.get( filename );
 		
 		if ( loader == null ) {
 			
 			String path = "shaders/" + filename + type.extension;
-			DetailledResource resource = ResourceManager.getInstance().getDetailledResource( path );
 			
-			if ( resource == null ) throw new IOException( "Can't file shader resource at '" + path + "'" );
-			
-			try {
+			try ( DetailledResource resource = ResourceManager.getInstance().getDetailledResource( path ) ) {
+				
+				if ( resource == null ) throw new IOException( "Can't file shader resource at '" + path + "'" );
 				
 				String content = resource.getText();
 				
@@ -82,11 +80,7 @@ public class ShaderLoader {
 				
 				loader = new ShaderLoader( type, filename, shader );
 				type.shaders.put( filename, loader );
-				
-			} finally {
-				
-				StreamUtils.safeclose( resource );
-				
+					
 			}
 			
 		}

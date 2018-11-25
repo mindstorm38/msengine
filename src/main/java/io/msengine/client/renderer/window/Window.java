@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
@@ -220,31 +221,35 @@ public class Window {
 			
 			for ( int i = 0; i < ICON_SIZES.length; i++ ) {
 				
-				DetailledResource resource = resourceManager.getDetailledResource( String.format( ICON_BASE_PATH, ICON_SIZES[ i ] ) );
-				
-				if ( resource == null ) {
+				try ( DetailledResource resource = resourceManager.getDetailledResource( String.format( ICON_BASE_PATH, ICON_SIZES[ i ] ) ) ) {
 					
-					LOGGER.warning( "Failed to load icon resource for size '" + ICON_SIZES[ i ] + "'" );
-					continue;
+					if ( resource == null ) {
+						
+						LOGGER.warning( "Failed to load icon resource for size '" + ICON_SIZES[ i ] + "'" );
+						continue;
+						
+					}
 					
+					image = resource.getImage();
+					
+					if ( image == null ) {
+						
+						LOGGER.warning( "Failed to load icon image for size '" + ICON_SIZES[ i ] + "'" );
+						continue;
+						
+					}
+					
+					pixelBuffer = Utils.getImageBuffer( image );
+					
+					icons
+						.position( i )
+						.width( image.getWidth() )
+						.height( image.getHeight() )
+						.pixels( pixelBuffer );
+					
+				} catch (Exception e) {
+					LOGGER.log( Level.WARNING, "Failed to close icon resource", e );
 				}
-				
-				image = resource.getImage();
-				
-				if ( image == null ) {
-					
-					LOGGER.warning( "Failed to load icon image for size '" + ICON_SIZES[ i ] + "'" );
-					continue;
-					
-				}
-				
-				pixelBuffer = Utils.getImageBuffer( image );
-				
-				icons
-					.position( i )
-					.width( image.getWidth() )
-					.height( image.getHeight() )
-					.pixels( pixelBuffer );
 				
 			}
 			

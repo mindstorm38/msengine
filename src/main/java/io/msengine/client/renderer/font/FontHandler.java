@@ -18,7 +18,6 @@ import io.msengine.common.resource.ResourceManager;
 import io.msengine.common.resource.metadata.FontMetadataGlyph;
 import io.msengine.common.resource.metadata.FontMetadataSection;
 import io.msengine.common.resource.metadata.Metadata;
-import io.sutil.StreamUtils;
 
 public class FontHandler implements ShaderSamplerObject {
 	
@@ -41,52 +40,54 @@ public class FontHandler implements ShaderSamplerObject {
 	
 	public void load() throws Exception {
 		
-		DetailledResource resource = ResourceManager.getInstance().getDetailledResource( this.path );
-		
-		if ( !resource.hasMetadata() ) {
-			throw new IllegalStateException("Invalid path given, no metadata");
-		} else {
+		try ( DetailledResource resource = ResourceManager.getInstance().getDetailledResource( this.path ) ) {
 			
-			Metadata resourceMetadata = resource.getMetadata();
-			
-			this.resourceMetadataSection = resourceMetadata.getMetadataSection("font");
-			
-			if ( this.resourceMetadataSection == null ) throw new IllegalStateException("Invalid or not found FontMetadataSection");
-			
-		}
-		
-		this.glyphs.clear();
-		
-		BufferedImage image = resource.getImage();
-		
-		StreamUtils.safeclose( resource );
-		
-		int imageWidth = image.getWidth();
-		int imageHeight = image.getHeight();
-		
-		this.height = this.resourceMetadataSection.getHeight();
-		this.textureHeight = (float) this.height / imageHeight;
-		
-		for ( Entry<Character, FontMetadataGlyph> glyphEntry : this.resourceMetadataSection.getGlyphs().entrySet() ) {
-			
-			FontMetadataGlyph glyph = glyphEntry.getValue();
-			
-			float x = (float) glyph.x / imageWidth;
-			float y = (float) glyph.y / imageHeight;
-			float width = (float) glyph.width / imageWidth;
-			
-			FontHandlerGlyph handlerGlyph = new FontHandlerGlyph( this, glyph.x, glyph.y, glyph.width, x, y, width );
-			
-			if ( glyphEntry.getKey() == null ) {
-				this.unknownGlyph = handlerGlyph;
+			if ( !resource.hasMetadata() ) {
+				throw new IllegalStateException("Invalid path given, no metadata");
 			} else {
-				this.glyphs.put( glyphEntry.getKey(), handlerGlyph );
+				
+				Metadata resourceMetadata = resource.getMetadata();
+				
+				this.resourceMetadataSection = resourceMetadata.getMetadataSection("font");
+				
+				if ( this.resourceMetadataSection == null ) throw new IllegalStateException("Invalid or not found FontMetadataSection");
+				
 			}
 			
+			this.glyphs.clear();
+			
+			BufferedImage image = resource.getImage();
+			
+			resource.close();
+			
+			int imageWidth = image.getWidth();
+			int imageHeight = image.getHeight();
+			
+			this.height = this.resourceMetadataSection.getHeight();
+			this.textureHeight = (float) this.height / imageHeight;
+			
+			for ( Entry<Character, FontMetadataGlyph> glyphEntry : this.resourceMetadataSection.getGlyphs().entrySet() ) {
+				
+				FontMetadataGlyph glyph = glyphEntry.getValue();
+				
+				float x = (float) glyph.x / imageWidth;
+				float y = (float) glyph.y / imageHeight;
+				float width = (float) glyph.width / imageWidth;
+				
+				FontHandlerGlyph handlerGlyph = new FontHandlerGlyph( this, glyph.x, glyph.y, glyph.width, x, y, width );
+				
+				if ( glyphEntry.getKey() == null ) {
+					this.unknownGlyph = handlerGlyph;
+				} else {
+					this.glyphs.put( glyphEntry.getKey(), handlerGlyph );
+				}
+				
+			}
+			
+			this.texture = new DynamicTexture( image );
+			TextureManager.getInstance().loadTexture( this.texture );
+			
 		}
-		
-		this.texture = new DynamicTexture( image );
-		TextureManager.getInstance().loadTexture( this.texture );
 		
 	}
 	
