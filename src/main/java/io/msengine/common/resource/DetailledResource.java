@@ -1,6 +1,7 @@
 package io.msengine.common.resource;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -101,7 +102,7 @@ public class DetailledResource extends Resource {
 	}
 	
 	@Override
-	public void close() throws Exception {
+	public void close() throws IOException {
 		
 		super.close();
 		
