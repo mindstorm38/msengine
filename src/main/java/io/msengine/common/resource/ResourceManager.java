@@ -21,9 +21,9 @@ public class ResourceManager extends ResourceAccessorWrapper {
 	
 	// Class \\
 	
-	public ResourceManager(String baseFolderPath) {
+	public ResourceManager(Class<?> runningClass, String baseFolderPath) {
 		
-		super( ResourceManager.class, baseFolderPath );
+		super( runningClass, baseFolderPath );
 		
 		if ( INSTANCE != null ) throw new SingletonAlreadyInstantiatedException( ResourceManager.class );
 		INSTANCE = this;

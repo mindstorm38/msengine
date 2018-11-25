@@ -10,7 +10,7 @@ import io.msengine.common.resource.ResourceManager;
 import io.msengine.common.util.GameLogger;
 import io.sutil.lang.LanguageManager;
 
-public abstract class BaseGame<O extends ServerGameOptions> {
+public abstract class BaseGame<O extends BaseGameOptions> {
 
 	// Static \\
 	
@@ -39,7 +39,7 @@ public abstract class BaseGame<O extends ServerGameOptions> {
 		
 		this.bootoptions = bootoptions;
 		
-		this.resourceManager = new ResourceManager( bootoptions.getResourceBaseFolderPath() );
+		this.resourceManager = new ResourceManager( bootoptions.getRunningClass(), bootoptions.getResourceBaseFolderPath() );
 		this.languageManager = new I18n( bootoptions.getBaseLangsFolderPath() );
 		this.options = new Options( bootoptions.getOptionsFile() );
 		this.logger = GameLogger.create( bootoptions.getLoggerName() );

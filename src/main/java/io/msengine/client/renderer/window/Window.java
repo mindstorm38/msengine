@@ -1,6 +1,7 @@
 package io.msengine.client.renderer.window;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -247,7 +248,7 @@ public class Window {
 						.height( image.getHeight() )
 						.pixels( pixelBuffer );
 					
-				} catch (Exception e) {
+				} catch (IOException e) {
 					LOGGER.log( Level.WARNING, "Failed to close icon resource", e );
 				}
 				
