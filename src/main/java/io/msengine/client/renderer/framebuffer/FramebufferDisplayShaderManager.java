@@ -2,17 +2,29 @@ package io.msengine.client.renderer.framebuffer;
 
 import static io.msengine.client.renderer.vertex.VertexElement.*;
 
-public class FramebufferDisplayShaderManager extends FramebufferDrawingShaderManager {
+import io.msengine.client.renderer.shader.ShaderManager;
+import io.msengine.client.renderer.shader.ShaderUniform;
+import io.msengine.client.renderer.shader.ShaderValueType;
+import io.msengine.client.renderer.util.BlendMode;
+import io.msengine.common.game.GameTimed;
 
+public class FramebufferDisplayShaderManager extends ShaderManager implements GameTimed {
+
+	public static final String FRAMEBUFFER_DISPLAY_RESOLUTION		= "resolution";
+	public static final String FRAMEBUFFER_DISPLAY_TIME				= "time";
 	public static final String FRAMEBUFFER_DISPLAY_TEXTURE_SAMPLER	= "texture_sampler";
-	public static final String FRAMEBUFFER_DISPLAY_RESOLUTION		= FRAMEBUFFER_DRAWING_RESOLUTION;
-	public static final String FRAMEBUFFER_DISPLAY_TIME				= FRAMEBUFFER_DRAWING_TIME;
+	
+	protected FramebufferDisplayDrawBuffer buffer;
 	
 	public FramebufferDisplayShaderManager(String identifier, String vertexShaderIdentifier, String fragmentShaderIdentifier) {
 		
 		super( identifier, vertexShaderIdentifier, fragmentShaderIdentifier );
-		
+
+		this.registerAttribute( POSITION_2F );
 		this.registerAttribute( TEX_COORD_2F );
+		
+		this.registerUniform( FRAMEBUFFER_DISPLAY_RESOLUTION, ShaderValueType.VEC2 );
+		this.registerUniform( FRAMEBUFFER_DISPLAY_TIME, ShaderValueType.FLOAT );
 		
 		this.registerSampler( FRAMEBUFFER_DISPLAY_TEXTURE_SAMPLER );
 		
@@ -30,9 +42,70 @@ public class FramebufferDisplayShaderManager extends FramebufferDrawingShaderMan
 		this.setSamplerObject( FRAMEBUFFER_DISPLAY_TEXTURE_SAMPLER, framebuffer );
 	}
 	
+	public ShaderUniform getResolutionUniform() {
+		return this.getShaderUniformOrDefault( FRAMEBUFFER_DISPLAY_RESOLUTION );
+	}
+	
+	public ShaderUniform getTimeUniform() {
+		return this.getShaderUniformOrDefault( FRAMEBUFFER_DISPLAY_TIME );
+	}
+	
 	@Override
-	protected FramebufferDrawingDrawBuffer createDrawBuffer() {
+	public void build() {
+		
+		super.build();
+		
+		this.deleteBuffer();
+		
+		this.buffer = this.createDrawBuffer();
+		
+	}
+	
+	@Override
+	public void delete() {
+		
+		super.delete();
+		
+		this.deleteBuffer();
+		
+	}
+	
+	private final void deleteBuffer() {
+		
+		if ( this.buffer != null ) {
+			
+			this.buffer.delete();
+			this.buffer = null;
+			
+		}
+		
+	}
+	
+	public void drawFramebuffer(BlendMode blendMode) {
+		
+		blendMode.use();
+		
+		this.use();
+		this.buffer.drawElements();
+		this.end();
+		
+	}
+	
+	public void drawFramebuffer() {
+		this.drawFramebuffer( BlendMode.TRANSPARENCY );
+	}
+	
+	public FramebufferDisplayDrawBuffer getBuffer() {
+		return this.buffer;
+	}
+
+	protected FramebufferDisplayDrawBuffer createDrawBuffer() {
 		return new FramebufferDisplayDrawBuffer( this );
+	}
+
+	@Override
+	public void setTime(double time) {
+		this.getTimeUniform().set( (float) time );
 	}
 	
 }

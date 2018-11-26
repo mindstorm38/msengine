@@ -5,10 +5,11 @@ import java.nio.FloatBuffer;
 import org.lwjgl.system.MemoryUtil;
 
 import io.msengine.client.renderer.util.BufferUsage;
+import io.msengine.client.renderer.vertex.FrameDrawBuffer;
 
 import static io.msengine.client.renderer.vertex.type.FramebufferDisplayFormat.*;
 
-public class FramebufferDisplayDrawBuffer extends FramebufferDrawingDrawBuffer {
+public class FramebufferDisplayDrawBuffer extends FrameDrawBuffer {
 
 	public FramebufferDisplayDrawBuffer(FramebufferDisplayShaderManager shaderManager) {
 		
