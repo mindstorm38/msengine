@@ -6,6 +6,7 @@ import io.msengine.client.renderer.shader.ShaderManager;
 import io.msengine.client.renderer.shader.ShaderUniform;
 import io.msengine.client.renderer.shader.ShaderValueType;
 import io.msengine.client.renderer.util.BlendMode;
+import io.msengine.client.renderer.window.Window;
 import io.msengine.common.game.GameTimed;
 
 public class FramebufferDisplayShaderManager extends ShaderManager implements GameTimed {
@@ -48,6 +49,18 @@ public class FramebufferDisplayShaderManager extends ShaderManager implements Ga
 	
 	public ShaderUniform getTimeUniform() {
 		return this.getShaderUniformOrDefault( FRAMEBUFFER_DISPLAY_TIME );
+	}
+	
+	public void setResolution(float width, float height) {
+		this.getResolutionUniform().set( width, height );
+	}
+	
+	public void setResolution(int width, int height) {
+		this.getResolutionUniform().set( (float) width, (float) height );
+	}
+	
+	public void setResolution(Window window) {
+		this.setResolution( window.getWidth(), window.getHeight() );
 	}
 	
 	@Override
