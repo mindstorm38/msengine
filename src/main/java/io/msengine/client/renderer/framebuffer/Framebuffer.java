@@ -82,32 +82,24 @@ public class Framebuffer implements	ShaderSamplerObject {
 	
 	protected boolean deleted;
 	
-	public Framebuffer(int width, int height, int colorAttachmentsCount) {
+	public Framebuffer(int colorAttachmentsCount) {
 		
 		if ( colorAttachmentsCount < 1 || colorAttachmentsCount > COLOR_ATTACHMENT.length ) throw new IllegalArgumentException("Invalid Framebuffer color attachments size"); 
 		
 		this.id = -1;
-		this.colorbuffers = new TextureObject[ colorAttachmentsCount ];
+		this.setColorAttachmentCount( colorAttachmentsCount );
 		this.renderbufferId = -1;
 		
 		this.color = new float[] { 0.0f, 0.0f, 0.0f, 1.0f };
 		
 		this.deleted = false;
 		
-		this.create( width, height );
+		// this.create( width, height );
 		
 	}
 	
-	public Framebuffer(int width, int height) {
-		this( width, height, 1 );
-	}
-	
-	public Framebuffer(Window window, int colorAttachmentsCount) {
-		this( window.getWidth(), window.getHeight(), colorAttachmentsCount );
-	}
-	
-	public Framebuffer(Window window) {
-		this( window, 1 );
+	public Framebuffer() {
+		this( 1 );
 	}
 	
 	public boolean usable() {
@@ -141,18 +133,28 @@ public class Framebuffer implements	ShaderSamplerObject {
 		return this.colorbuffers.length;
 	}
 	
+	public void setColorAttachmentCount(int colorAttachmentsCount) {
+		this.checkConfigurable();
+		this.colorbuffers = new TextureObject[ colorAttachmentsCount ];
+	}
+	
+	public Framebuffer create(Window window) {
+		return this.create( window.getWidth(), window.getHeight() );
+	}
+	
 	/**
 	 * Create (or re-create) the framebuffer object
 	 * @param width New framebuffer width
 	 * @param height New framebuffer height
 	 */
-	public void create(int width, int height) {
+	public Framebuffer create(int width, int height) {
 		
-		this.checkDeleted();
-		
-		// Force deleted to false after delete() function
-		this.delete();
-		this.deleted = false;
+		if ( !this.deleted ) {
+			
+			this.delete();
+			this.deleted = false;
+			
+		}
 		
 		this.width = width;
 		this.height = height;
@@ -191,6 +193,8 @@ public class Framebuffer implements	ShaderSamplerObject {
 		
 		// Resetting all
 		this.clear();
+		
+		return this;
 		
 	}
 	
@@ -281,6 +285,8 @@ public class Framebuffer implements	ShaderSamplerObject {
 			
 		}
 		
+		this.colorbuffers = null;
+		
 		if ( this.id > -1 ) {
 			
 			glDeleteFramebuffers( this.id );
@@ -298,6 +304,10 @@ public class Framebuffer implements	ShaderSamplerObject {
 	
 	private void checkDeleted() {
 		if ( this.deleted ) throw new IllegalStateException("Unusable Framebuffer because it has been deleted.");
+	}
+	
+	private void checkConfigurable() {
+		if ( !this.deleted ) throw new IllegalStateException("Can't configure this Framebuffer, it's not deleted.");
 	}
 	
 	public TextureObject getColorbuffer(int idx) {
