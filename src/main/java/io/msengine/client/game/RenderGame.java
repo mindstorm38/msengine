@@ -121,6 +121,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		this.window.pollEvents();
 		
+		this.render( alpha );
+		
 		this.window.swapBuffers();
 		
 	}
