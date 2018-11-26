@@ -76,23 +76,23 @@ public class Framebuffer implements	ShaderSamplerObject {
 	
 	protected final float[] color;
 	
+	protected boolean deleted;
+	
 	protected int id;
 	protected TextureObject[] colorbuffers;
 	protected int renderbufferId;
-	
-	protected boolean deleted;
 	
 	public Framebuffer(int colorAttachmentsCount) {
 		
 		if ( colorAttachmentsCount < 1 || colorAttachmentsCount > COLOR_ATTACHMENT.length ) throw new IllegalArgumentException("Invalid Framebuffer color attachments size"); 
 		
+		this.color = new float[] { 0.0f, 0.0f, 0.0f, 1.0f };
+		
+		this.deleted = true;
+		
 		this.id = -1;
 		this.setColorAttachmentCount( colorAttachmentsCount );
 		this.renderbufferId = -1;
-		
-		this.color = new float[] { 0.0f, 0.0f, 0.0f, 1.0f };
-		
-		this.deleted = false;
 		
 		// this.create( width, height );
 		
@@ -149,12 +149,8 @@ public class Framebuffer implements	ShaderSamplerObject {
 	 */
 	public Framebuffer create(int width, int height) {
 		
-		if ( !this.deleted ) {
-			
-			this.delete();
-			this.deleted = false;
-			
-		}
+		if ( !this.deleted ) this.delete();
+		this.deleted = false;
 		
 		this.width = width;
 		this.height = height;
@@ -284,8 +280,6 @@ public class Framebuffer implements	ShaderSamplerObject {
 			}
 			
 		}
-		
-		this.colorbuffers = null;
 		
 		if ( this.id > -1 ) {
 			

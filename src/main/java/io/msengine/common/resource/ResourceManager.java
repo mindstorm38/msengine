@@ -39,8 +39,10 @@ public class ResourceManager extends ResourceAccessorWrapper {
 	}
 	
 	public List<DetailledResource> listDetailledResources(String path) {
-		List<DetailledResource> resources = new ArrayList<>();
-		for ( Resource resource : this.listResources( path ) ) resources.add( new DetailledResource( resource ) );
+		final List<Resource> rawResources = this.listResources( path );
+		if ( rawResources == null ) return null;
+		final List<DetailledResource> resources = new ArrayList<>();
+		for ( Resource resource : rawResources ) resources.add( new DetailledResource( resource ) );
 		return resources;
 	}
 	

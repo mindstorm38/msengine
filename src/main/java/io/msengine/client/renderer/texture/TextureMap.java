@@ -48,6 +48,13 @@ public class TextureMap extends TextureMapBase {
 		// Retrieving all texture images
 		List<DetailledResource> resources = resourceManager.listDetailledResources( this.path );
 		
+		if ( resources == null ) {
+			
+			LOGGER.warning( "Can't get resources for texture map '" + this.path + "'" );
+			return;
+			
+		}
+		
 		Map<String, BufferedImage> images = new HashMap<>();
 		
 		int maxTileWidth = 0;
