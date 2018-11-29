@@ -3,6 +3,7 @@ package io.msengine.client.util;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -70,6 +71,10 @@ public class Utils {
 		
 		return op.filter( image, null );
 		
+	}
+	
+	public static void incrementBufferPosition(Buffer buf, int count) {
+		buf.position( buf.position() + count );
 	}
 	
 }
