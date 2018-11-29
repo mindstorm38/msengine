@@ -162,8 +162,12 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	protected void stop() {
 		
 		super.stop();
+
+		this.renderConstantFields.stop();
 		
 		this.audioContext.stop();
+		
+		this.window.stop();
 		
 	}
 	
