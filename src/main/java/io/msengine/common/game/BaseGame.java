@@ -75,7 +75,7 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 		try {
 			I18n.getInstance().init();
 		} catch (Exception e) {
-			LOGGER.log( Level.WARNING, e.getMessage(), e );
+			LOGGER.log( Level.WARNING, null, e );
 		}
 		
 	}
