@@ -1,9 +1,10 @@
-package io.msengine.client.util;
+package io.msengine.client.util.camera;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 
 /**
+ * 
+ * A 2D camera used to store camera position, rotation and scale.
  * 
  * @author Mindstorm38
  *
@@ -14,15 +15,13 @@ public class Camera2D {
 	
 	// Class \\
 	
-	private final Vector2f position;
-	private float rotation;
-	private float scale;
+	protected float x, y;
+	protected float rotation;
+	protected float scale;
 	
-	private final Matrix4f viewMatrix;
+	protected final Matrix4f viewMatrix;
 	
 	public Camera2D() {
-		
-		this.position = new Vector2f();
 		
 		this.reset();
 		
@@ -33,7 +32,8 @@ public class Camera2D {
 	
 	public void reset() {
 		
-		this.position.zero();
+		this.x = 0;
+		this.y = 0;
 		this.rotation = 0f;
 		this.scale = 1f;
 		
@@ -41,34 +41,30 @@ public class Camera2D {
 	
 	// - Position
 	
-	public Vector2f getPosition() {
-		return this.position;
-	}
-	
 	public float getPosX() {
-		return this.position.x;
+		return this.x;
 	}
 	
 	public float getPosY() {
-		return this.position.y;
+		return this.y;
 	}
 	
 	public void setPosition(float x, float y) {
-		this.position.x = x;
-		this.position.y = y;
+		this.x = x;
+		this.y = y;
 	}
 	
 	public void addPosition(float x, float y) {
-		this.position.x += x;
-		this.position.y += y;
+		this.x += x;
+		this.y += y;
 	}
 	
 	public void addPositionX(float x) {
-		this.position.x += x;
+		this.x += x;
 	}
 	
 	public void addPositionY(float y) {
-		this.position.y = y;
+		this.y = y;
 	}
 	
 	// - Rotation
@@ -109,7 +105,7 @@ public class Camera2D {
 		
 		this.viewMatrix.identity();
 		this.viewMatrix.rotateY( this.rotation );
-		this.viewMatrix.translate( -this.position.x, -this.position.y, 0 );
+		this.viewMatrix.translate( -this.x, -this.y, 0 );
 		this.viewMatrix.scale( this.scale );
 		
 		return this.viewMatrix;
