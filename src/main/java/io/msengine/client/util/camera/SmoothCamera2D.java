@@ -23,6 +23,19 @@ public class SmoothCamera2D extends Camera2D {
 		
 	}
 	
+	@Override
+	public void reset() {
+		
+		super.reset();
+		
+		this.lastX = 0;
+		this.lastY = 0;
+		
+		this.targetX = 0;
+		this.targetY = 0;
+		
+	}
+	
 	public float getSpeed() {
 		return this.speed;
 	}
