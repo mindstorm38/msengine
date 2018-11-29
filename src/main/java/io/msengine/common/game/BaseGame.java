@@ -80,9 +80,11 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 		
 	}
 	
-	protected abstract void setuploop();
+	protected void setuploop() {}
+	
 	protected abstract void loop();
-	protected abstract void stop();
+	
+	protected void stop() {}
 
 	public void start() {
 	

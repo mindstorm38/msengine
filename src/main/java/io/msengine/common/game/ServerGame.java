@@ -36,7 +36,7 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 	@Override
 	protected void setuploop() {
 		
-		
+		super.setuploop();
 		
 	}
 	
@@ -54,6 +54,8 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 
 	@Override
 	protected void stop() {
+		
+		super.stop();
 		
 	}
 	

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
+import io.msengine.client.audio.AudioContext;
 import io.msengine.client.renderer.texture.TextureManager;
 import io.msengine.client.renderer.util.RenderConstantFields;
 import io.msengine.client.renderer.window.Window;
@@ -37,6 +38,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 
 	protected final LanguageManager languageManager;
 	
+	protected final AudioContext audioContext;
+	
 	protected final Window window;
 	protected final TextureManager textureManager;
 	protected final RenderConstantFields renderConstantFields;
@@ -50,6 +53,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		this.setFPS( DEFAULT_FPS );
 		
 		this.languageManager = new I18n( bootoptions.getBaseLangsFolderPath() );
+		
+		this.audioContext = new AudioContext();
 		
 		this.window = new Window();
 		this.textureManager = new TextureManager();
@@ -89,6 +94,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		} catch (IOException e) {
 			LOGGER.log( Level.WARNING, "Enable to load options, using default !", e );
 		}
+		
+		this.audioContext.start();
 		
 		this.window.start( this.bootoptions.getInitialWindowTitle() );
 		
@@ -155,6 +162,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	protected void stop() {
 		
 		super.stop();
+		
+		this.audioContext.stop();
 		
 	}
 	
