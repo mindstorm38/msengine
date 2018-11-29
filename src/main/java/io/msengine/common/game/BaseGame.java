@@ -5,10 +5,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.msengine.client.option.Options;
-import io.msengine.common.resource.I18n;
 import io.msengine.common.resource.ResourceManager;
 import io.msengine.common.util.GameLogger;
-import io.sutil.lang.LanguageManager;
 
 public abstract class BaseGame<O extends BaseGameOptions> {
 
