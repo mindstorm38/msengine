@@ -5,8 +5,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.msengine.client.option.Options;
+import io.msengine.common.resource.I18n;
 import io.msengine.common.resource.ResourceManager;
 import io.msengine.common.util.GameLogger;
+
+import static io.msengine.common.util.GameLogger.LOGGER;
 
 public abstract class BaseGame<O extends BaseGameOptions> {
 
@@ -67,7 +70,16 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 		return this.running;
 	}
 	
-	protected abstract void init();
+	protected void init() {
+		
+		try {
+			I18n.getInstance().init();
+		} catch (Exception e) {
+			LOGGER.log( Level.WARNING, e.getMessage(), e );
+		}
+		
+	}
+	
 	protected abstract void setuploop();
 	protected abstract void loop();
 	protected abstract void stop();

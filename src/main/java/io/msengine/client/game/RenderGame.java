@@ -1,6 +1,8 @@
 package io.msengine.client.game;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 
 import io.msengine.client.renderer.texture.TextureManager;
 import io.msengine.client.renderer.util.RenderConstantFields;
@@ -10,6 +12,17 @@ import io.msengine.common.resource.I18n;
 import io.sutil.CommonUtils;
 import io.sutil.ThreadUtils;
 import io.sutil.lang.LanguageManager;
+
+import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
+import static org.lwjgl.openal.AL10.AL_VENDOR;
+import static org.lwjgl.openal.AL10.AL_VERSION;
+import static org.lwjgl.openal.AL10.alGetString;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
+import static org.lwjgl.opengl.GL11.GL_VENDOR;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
+import static io.msengine.common.util.GameLogger.LOGGER;
 
 public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame<E> {
 
@@ -71,9 +84,23 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		super.init();
 		
+		try {
+			this.options.load();
+		} catch (IOException e) {
+			LOGGER.log( Level.WARNING, "Enable to load options, using default !", e );
+		}
+		
 		this.window.start( this.bootoptions.getInitialWindowTitle() );
 		
 		this.renderConstantFields.init();
+		
+		LOGGER.info("Context constants :");
+		LOGGER.info( "- LWJGL : " + org.lwjgl.Version.getVersion() );
+		LOGGER.info( "- GLFW : " + glfwGetVersionString() );
+		LOGGER.info( "- OpenGL : " + glGetString( GL_VERSION ) + " (" + glGetString( GL_VENDOR ) + ")" );
+		LOGGER.info( "- Renderer : " + glGetString( GL_RENDERER ) );
+		LOGGER.info( "- GLSL : " + glGetString( GL_SHADING_LANGUAGE_VERSION ) );
+		LOGGER.info( "- OpenAL : " + alGetString( AL_VERSION ) + " (" + alGetString( AL_VENDOR ) + ")" );
 		
 	}
 	

@@ -29,6 +29,8 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 	@Override
 	protected void init() {
 		
+		super.init();
+		
 	}
 
 	@Override
