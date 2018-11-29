@@ -319,6 +319,10 @@ public class AxisAlignedBB {
 		
 	}
 	
+	public AxisAlignedBB copy() {
+		return new AxisAlignedBB( this.minX, this.minY, this.maxX, this.maxY );
+	}
+	
 	@Override
 	public String toString() {
 		return "{\"min_x\":" + this.minX + ",\"min_y\":" + this.minY + ",\"max_x\":" + this.maxX + ",\"max_y\":" + this.maxY + "}";
