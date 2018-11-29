@@ -27,8 +27,18 @@ public class SmoothCamera2D extends Camera2D {
 		return this.speed;
 	}
 	
-	public void setSpeed() {
-		
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+	
+	public void setTarget(float targetX, float targetY) {
+		this.targetX = targetX;
+		this.targetY = targetX;
+	}
+	
+	public void addTarget(float targetX, float targetY) {
+		this.targetX += targetX;
+		this.targetY += targetX;
 	}
 	
 	public void update() {
