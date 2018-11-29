@@ -6,8 +6,10 @@ import io.msengine.client.renderer.texture.TextureManager;
 import io.msengine.client.renderer.util.RenderConstantFields;
 import io.msengine.client.renderer.window.Window;
 import io.msengine.common.game.ServerGame;
+import io.msengine.common.resource.I18n;
 import io.sutil.CommonUtils;
 import io.sutil.ThreadUtils;
+import io.sutil.lang.LanguageManager;
 
 public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame<E> {
 
@@ -20,6 +22,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	protected double time;
 	protected boolean sync;
 
+	protected final LanguageManager languageManager;
+	
 	protected final Window window;
 	protected final TextureManager textureManager;
 	protected final RenderConstantFields renderConstantFields;
@@ -32,6 +36,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		this.setFPS( DEFAULT_FPS );
 		
+		this.languageManager = new I18n( bootoptions.getBaseLangsFolderPath() );
+		
 		this.window = new Window();
 		this.textureManager = new TextureManager();
 		this.renderConstantFields = new RenderConstantFields();
@@ -42,6 +48,14 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	public void setFPS(float fps) {
 		this.fpsInterval = 1f / ( fps == 0f ? DEFAULT_FPS : fps );
+	}
+	
+	public LanguageManager getLanguageManager() {
+		return this.languageManager;
+	}
+	
+	public Window getWindow() {
+		return this.window;
 	}
 	
 	public TextureManager getTextureManager() {

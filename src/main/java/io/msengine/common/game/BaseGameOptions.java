@@ -7,7 +7,6 @@ public abstract class BaseGameOptions {
 	
 	private final Class<?> runningClass;
 	private String resourceBaseFolderPath;
-	private String baseLangsFolderPath;
 	private String loggerName;
 	private File appdataDir;
 	private String optionsFilePath;
@@ -16,7 +15,6 @@ public abstract class BaseGameOptions {
 		
 		this.runningClass = runningClass;
 		this.resourceBaseFolderPath = "assets";
-		this.baseLangsFolderPath = "langs";
 		this.loggerName = "MSEngine";
 		
 		try {
@@ -41,14 +39,6 @@ public abstract class BaseGameOptions {
 	
 	public String getResourceBaseFolderPath() {
 		return this.resourceBaseFolderPath;
-	}
-	
-	public void setBaseLangsFolderPath(String baseLangsFolderPath) {
-		this.baseLangsFolderPath = baseLangsFolderPath;
-	}
-	
-	public String getBaseLangsFolderPath() {
-		return this.baseLangsFolderPath;
 	}
 	
 	public void setLoggerName(String loggerName) {

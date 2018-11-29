@@ -21,7 +21,6 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 	protected final O bootoptions;
 	
 	protected final ResourceManager resourceManager;
-	protected final LanguageManager languageManager;
 	protected final Options options;
 	protected final Logger logger;
 	
@@ -40,7 +39,6 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 		this.bootoptions = bootoptions;
 		
 		this.resourceManager = new ResourceManager( bootoptions.getRunningClass(), bootoptions.getResourceBaseFolderPath() );
-		this.languageManager = new I18n( bootoptions.getBaseLangsFolderPath() );
 		this.options = new Options( bootoptions.getOptionsFile() );
 		this.logger = GameLogger.create( bootoptions.getLoggerName() );
 		
@@ -57,10 +55,6 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 	
 	public ResourceManager getResourceManager() {
 		return this.resourceManager;
-	}
-
-	public LanguageManager getLanguageManager() {
-		return this.languageManager;
 	}
 
 	public Logger getLogger() {
@@ -121,6 +115,13 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 			
 		}
 		
+	}
+	
+	/**
+	 * Stop the game
+	 */
+	public void stopRunning() {
+		this.running = false;
 	}
 
 }
