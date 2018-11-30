@@ -61,4 +61,12 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 	
 	protected abstract void tick();
 
+	/**
+	 * Update a {@link GameTimed} implementation.
+	 * @param timed The implementation
+	 */
+	public void updateTimed(GameTimed timed) {
+		timed.setTime( this.now );
+	}
+	
 }
