@@ -92,7 +92,7 @@ public class RenderConstantFields {
 		
 		// - No texture
 		this.noTexture = new DynamicTexture( 1, 1 );
-		graphics = this.missingTexture.getImage().createGraphics();
+		graphics = this.noTexture.getImage().createGraphics();
 		graphics.setColor( new Color( 255, 255, 255 ) );
 		graphics.fillRect( 0, 0, 1, 1 );
 		this.noTexture.updateTexture();
