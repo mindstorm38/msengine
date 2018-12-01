@@ -46,12 +46,12 @@ public class SmoothCamera2D extends Camera2D {
 	
 	public void setTarget(float targetX, float targetY) {
 		this.targetX = targetX;
-		this.targetY = targetX;
+		this.targetY = targetY;
 	}
 	
 	public void addTarget(float targetX, float targetY) {
 		this.targetX += targetX;
-		this.targetY += targetX;
+		this.targetY += targetY;
 	}
 	
 	public void update() {
