@@ -2,6 +2,7 @@ package io.msengine.client.renderer.texture;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +10,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
+import javax.imageio.ImageIO;
+
 import io.msengine.client.renderer.util.RenderConstantFields;
+import io.msengine.common.game.BaseGame;
 import io.msengine.common.resource.DetailledResource;
 import io.msengine.common.resource.ResourceManager;
+import io.sutil.FileUtils;
 import io.sutil.StreamUtils;
 
 import static io.msengine.common.util.GameLogger.LOGGER;
@@ -20,11 +25,17 @@ public class TextureMap extends TextureMapBase {
 	
 	// Constants \\
 	
-	public static final boolean SAVE_ATLAS = true;
-	
 	public static final Function<String, String> PNG_FILTER = path -> {
 		return path.endsWith(".png") ? path.substring( 0, path.length() - 4 ) : null;
 	};
+	
+	// Static \\
+	
+	public static boolean debugAtlases = false;
+	
+	public static void setDebugAtlases(boolean debug) {
+		debugAtlases = debug;
+	}
 	
 	// Class \\
 	
@@ -154,14 +165,12 @@ public class TextureMap extends TextureMapBase {
 		
 		atlasGraphics.dispose();
 		
-		/*
-		if ( SAVE_ATLAS ) {
+		if ( debugAtlases ) {
 			
-			File debugFile = new File( Game.getInstance().getAppData(), FileUtils.getFileName( this.path ) + "_atlas.png" );
+			File debugFile = new File( BaseGame.getCurrent().getAppdata(), FileUtils.getFileName( this.path ) + "_atlas.png" );
 			ImageIO.write( atlas, "png", debugFile );
 			
 		}
-		*/
 		
 		this.texture = new TextureObject( atlas );
 		

@@ -8,8 +8,10 @@ import io.msengine.client.audio.AudioContext;
 import io.msengine.client.renderer.texture.TextureManager;
 import io.msengine.client.renderer.util.RenderConstantFields;
 import io.msengine.client.renderer.window.Window;
+import io.msengine.common.game.BaseGame;
 import io.msengine.common.game.ServerGame;
 import io.msengine.common.resource.I18n;
+import io.msengine.common.util.GameTypeRequired;
 import io.sutil.CommonUtils;
 import io.sutil.ThreadUtils;
 import io.sutil.lang.LanguageManager;
@@ -27,7 +29,19 @@ import static io.msengine.common.util.GameLogger.LOGGER;
 
 public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame<E> {
 
+	// Constants \\
+	
 	public static final float DEFAULT_FPS = 60f;
+	
+	// Static \\
+	
+	public static RenderGame<?> getCurrentServer() {
+		BaseGame<?> s = getCurrent();
+		if ( !( s instanceof ServerGame ) ) throw new GameTypeRequired( RenderGame.class );
+		return (RenderGame<?>) s;
+	}
+	
+	// Class \\
 	
 	protected float fpsInterval;
 	protected float delta;

@@ -8,6 +8,7 @@ import io.msengine.client.option.Options;
 import io.msengine.common.resource.I18n;
 import io.msengine.common.resource.ResourceManager;
 import io.msengine.common.util.GameLogger;
+import io.msengine.common.util.GameTypeRequired;
 
 import static io.msengine.common.util.GameLogger.LOGGER;
 
@@ -15,7 +16,12 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 
 	// Static \\
 	
-	private static BaseGame<?> CURRENT = null;
+	protected static BaseGame<?> CURRENT = null;
+	
+	public static BaseGame<?> getCurrent() {
+		if ( CURRENT == null ) throw new GameTypeRequired( BaseGame.class );
+		return CURRENT;
+	}
 	
 	// Class \\
 	

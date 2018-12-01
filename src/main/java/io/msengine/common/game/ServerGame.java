@@ -1,12 +1,25 @@
 package io.msengine.common.game;
 
+import io.msengine.common.util.GameTypeRequired;
 import io.sutil.CommonUtils;
 import io.sutil.ThreadUtils;
 
 public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E> {
 
+	// Constants \\
+	
 	public static final float DEFAULT_TPS = 20f;
 
+	// Static \\
+	
+	public static ServerGame<?> getCurrentServer() {
+		BaseGame<?> s = getCurrent();
+		if ( !( s instanceof ServerGame ) ) throw new GameTypeRequired( ServerGame.class );
+		return (ServerGame<?>) s;
+	}
+	
+	// Class \\
+	
 	protected double now;
 	protected float tpsInterval;
 	
