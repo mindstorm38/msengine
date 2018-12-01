@@ -104,16 +104,16 @@ public class TextureMap extends TextureMapBase {
 		if ( maxTileWidth == 0 ) maxTileWidth = 1;
 		if ( maxTileHeight == 0 ) maxTileHeight = 1;
 		
-		maxTileWidth += 2;
-		maxTileHeight += 2;
-		
 		// Missing texture
 		BufferedImage missingTextureImgRaw = RenderConstantFields.getInstance().getMissingTexture().getImage();
 		BufferedImage missingTextureImg = new BufferedImage( maxTileWidth, maxTileHeight, BufferedImage.TYPE_INT_ARGB );
 		Graphics2D missingTextureGraphics = missingTextureImg.createGraphics();
-		missingTextureGraphics.drawImage( missingTextureImgRaw, 0, 0, maxTileWidth - 2, maxTileHeight - 2, null );
+		missingTextureGraphics.drawImage( missingTextureImgRaw, 0, 0, maxTileWidth, maxTileHeight, null );
 		missingTextureGraphics.dispose();
 		images.put( null, missingTextureImg );
+		
+		maxTileWidth += 2;
+		maxTileHeight += 2;
 		
 		int imageSize = (int) Math.ceil( Math.sqrt( images.size() ) );
 		int imageWidth = imageSize * maxTileWidth;
