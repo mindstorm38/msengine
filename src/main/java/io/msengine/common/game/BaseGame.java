@@ -72,6 +72,8 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 	
 	protected void init() {
 		
+		this.appdata.mkdirs();
+		
 		try {
 			I18n.getInstance().init();
 		} catch (Exception e) {
