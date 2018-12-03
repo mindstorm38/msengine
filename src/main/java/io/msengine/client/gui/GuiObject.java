@@ -1,12 +1,11 @@
 package io.msengine.client.gui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.msengine.client.gui.event.GuiEvent;
 import io.msengine.client.gui.event.GuiListener;
+import io.msengine.client.gui.event.GuiListenerGroup;
 
 public abstract class GuiObject {
 	
@@ -14,7 +13,7 @@ public abstract class GuiObject {
 	protected float width, height;
 	protected float xAnchor, yAnchor;
 	
-	private final Map<Class<? extends GuiEvent<?>>, List<GuiListener<?>>> eventListeners;
+	private final List<GuiListenerGroup<?>> listeners;
 	
 	public GuiObject() {
 		
@@ -27,7 +26,7 @@ public abstract class GuiObject {
 		this.xAnchor = 0;
 		this.yAnchor = 0;
 		
-		this.eventListeners = new HashMap<>();
+		this.listeners = new ArrayList<>();
 		
 	}
 	
@@ -55,18 +54,44 @@ public abstract class GuiObject {
 	public abstract void render(float alpha);
 	public abstract void update();
 	
+	@SuppressWarnings("unchecked")
+	public <E extends GuiEvent<?>> GuiListenerGroup<E> getListenerGroup(Class<E> eventClass) {
+		for ( GuiListenerGroup<?> group : this.listeners )
+			if ( eventClass.equals( group.getClass() ) )
+				return (GuiListenerGroup<E>) group;
+		return null;
+	}
+	
 	public <E extends GuiEvent<?>> void addEventListener(Class<E> eventClass, GuiListener<E> listener) {
 		
-		List<GuiListener<?>> listeners = this.eventListeners.get( eventClass );
+		GuiListenerGroup<E> group = this.getListenerGroup( eventClass );
 		
-		if ( listeners == null ) {
+		if ( group == null ) {
 			
-			listeners = new ArrayList<>();
-			this.eventListeners.put( eventClass, listeners );
+			group = new GuiListenerGroup<E>( eventClass );
+			this.listeners.add( group );
 			
 		}
 		
-		listeners.add( listener );
+		group.getListeners().add( listener );
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <E extends GuiEvent<?>> void fireEvent(E event) {
+		
+		for ( GuiListenerGroup<?> group : this.listeners ) {
+			
+			if ( group.getClass().isAssignableFrom( event.getClass() ) ) {
+				
+				GuiListenerGroup<E> grp = (GuiListenerGroup<E>) group;
+				
+				for ( GuiListener<E> listener : grp.getListeners() )
+					listener.guiEvent( event );
+				
+			}
+			
+		}
 		
 	}
 	
