@@ -62,6 +62,8 @@ public class GuiManager {
 	 */
 	private GuiScene getSceneInstance(Class<? extends GuiScene> sceneClass) {
 		
+		if ( sceneClass == null ) return null;
+		
 		GuiScene scene = this.instances.get( sceneClass );
 		if ( scene != null ) return scene;
 		
@@ -128,13 +130,13 @@ public class GuiManager {
 		
 		if ( sceneIdentifier == null ) {
 			
-			Class<? extends GuiScene> sceneClass = this.scenes.get( sceneIdentifier);
-			if ( sceneClass == null ) throw new IllegalArgumentException("Invalid scene identifier");
-			this.loadScene( sceneClass, oncePreviousStoped );
+			this.loadScene( (Class<? extends GuiScene>) null, oncePreviousStoped );
 			
 		} else {
 			
-			this.loadScene( (Class<? extends GuiScene>) null, oncePreviousStoped );
+			Class<? extends GuiScene> sceneClass = this.scenes.get( sceneIdentifier);
+			if ( sceneClass == null ) throw new IllegalArgumentException("Invalid scene identifier");
+			this.loadScene( sceneClass, oncePreviousStoped );
 			
 		}
 		
@@ -171,6 +173,27 @@ public class GuiManager {
 		
 		this.unloadScene();
 		this.instances.clear();
+		
+	}
+	
+	/**
+	 * Render the current scene, or nothing if no scene is loaded.
+	 * @param alpha Partials ticks
+	 */
+	public void render(float alpha) {
+		
+		if ( this.currentScene != null )
+			this.currentScene.render( alpha );
+		
+	}
+	
+	/**
+	 * Update the current scene, or nothing if no scene is loaded.
+	 */
+	public void update() {
+		
+		if ( this.currentScene != null )
+			this.currentScene.update();
 		
 	}
 
