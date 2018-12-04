@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import io.msengine.client.gui.event.GuiSceneResizedEvent;
 import io.msengine.client.renderer.gui.GuiRenderer;
+import io.msengine.client.renderer.window.Window;
 import io.msengine.client.renderer.window.listener.WindowFramebufferSizeEventListener;
 import io.msengine.common.util.GameNotCreatedException;
 import io.sutil.SingletonAlreadyInstantiatedException;
@@ -34,7 +35,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	
 	// Class \\
 	
-	protected final GuiRenderer renderer;
+	private final Window window;
+	private final GuiRenderer renderer;
 	
 	private final NamespaceRegistry<Class<? extends GuiScene>> scenes; 
 	private final Map<Class<? extends GuiScene>, GuiScene> instances;
@@ -46,6 +48,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		if ( INSTANCE != null ) throw new SingletonAlreadyInstantiatedException( GuiManager.class );
 		INSTANCE = this;
 		
+		this.window = Window.getInstance();
 		this.renderer = new GuiRenderer();
 		
 		this.scenes = new NamespaceRegistry<>();
@@ -67,12 +70,17 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 
 		this.renderer.init();
 		
+		this.updateRenderSize( this.window );
+		this.window.addFramebufferSizeEventListener( this );
+		
 	}
 	
 	/**
 	 * Unload current scene and clear all instances cache.
 	 */
 	public void stop() {
+		
+		this.window.removeFramebufferSizeEventListener( this );
 		
 		this.unloadScene();
 		this.instances.clear();
@@ -90,7 +98,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		if ( this.currentScene != null ) {
 			
 			this.renderer.beginRender();
-			System.out.println("rendering gui");
+			
 			this.currentScene.render( alpha );
 			
 			this.renderer.endRender();
@@ -244,6 +252,14 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 			
 		}
 		
+	}
+	
+	/**
+	 * Internal mathod to update render size usinga {@link Window} instance.
+	 * @param window The window instance
+	 */
+	private void updateRenderSize(Window window) {
+		this.updateRenderSize( window.getWidth(), window.getHeight() );
 	}
 
 	@Override
