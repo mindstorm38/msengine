@@ -58,7 +58,7 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 		
 		this.now = CommonUtils.getTime();
 		
-		this.tick();
+		this.update();
 		
 		while ( CommonUtils.getTime() - this.now < this.tpsInterval )
 			ThreadUtils.safesleep( 1L );
@@ -72,7 +72,7 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 		
 	}
 	
-	protected abstract void tick();
+	protected abstract void update();
 
 	/**
 	 * Update a {@link GameTimed} implementation.

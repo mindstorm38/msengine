@@ -9,6 +9,7 @@ import io.msengine.common.resource.I18n;
 import io.msengine.common.resource.ResourceManager;
 import io.msengine.common.util.GameLogger;
 import io.msengine.common.util.GameTypeRequired;
+import io.sutil.profiler.Profiler;
 
 import static io.msengine.common.util.GameLogger.LOGGER;
 
@@ -31,6 +32,8 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 	protected final Options options;
 	protected final Logger logger;
 	
+	protected final Profiler profiler;
+	
 	protected final File appdata;
 	
 	protected boolean running;
@@ -48,6 +51,8 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 		this.resourceManager = new ResourceManager( bootoptions.getRunningClass(), bootoptions.getResourceBaseFolderPath() );
 		this.options = new Options( bootoptions.getOptionsFile() );
 		this.logger = GameLogger.create( bootoptions.getLoggerName() );
+		
+		this.profiler = new Profiler();
 		
 		this.appdata = bootoptions.getAppdataDir();
 		
@@ -111,7 +116,11 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 			
 			while ( this.running ) {
 				
+				this.profiler.startSection("root");
+				
 				this.loop();
+				
+				this.profiler.endSection();
 				
 			}
 			

@@ -172,7 +172,7 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		while ( this.accumulator >= this.tpsInterval ) {
 			
-			this.tick();
+			this.update();
 			this.accumulator -= this.tpsInterval;
 			
 		}
