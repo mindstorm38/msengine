@@ -112,6 +112,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		super.init();
 		
+		this.window.start( this.bootoptions.getInitialWindowTitle() );
+		
 		try {
 			this.options.load();
 		} catch (IOException e) {
@@ -125,8 +127,6 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		}
 		
 		this.audioContext.start();
-		
-		this.window.start( this.bootoptions.getInitialWindowTitle() );
 		
 		this.renderConstantFields.init();
 		
