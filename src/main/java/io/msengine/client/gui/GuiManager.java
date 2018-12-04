@@ -111,7 +111,7 @@ public class GuiManager {
 	}
 	
 	/**
-	 * Load a scene from its register identifier.
+	 * Load a scene from its registered identifier.
 	 * @param sceneIdentifier The scene identifier
 	 * @param oncePreviousStoped See {@link #loadScene(Class, Consumer)}
 	 * @see #loadScene(Class, Consumer)
@@ -122,6 +122,15 @@ public class GuiManager {
 		if ( sceneClass == null ) throw new IllegalArgumentException("Invalid scene identifier");
 		this.loadScene( sceneClass, oncePreviousStoped );
 		
+	}
+	
+	/**
+	 * Load a scene from its registered identifier.
+	 * @param sceneIdentifier The scene identifier
+	 * @see #loadScene(String, Consumer)
+	 */
+	public void loadScene(String sceneIdentifier) {
+		this.loadScene( sceneIdentifier, null );
 	}
 	
 	/**
