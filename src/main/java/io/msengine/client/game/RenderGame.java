@@ -192,8 +192,12 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	private void sync(double lastLoopTime) {
 		
+		this.profiler.startSection("sync");
+		
 		while ( CommonUtils.getTime() - lastLoopTime < this.fpsInterval )
 			ThreadUtils.safesleep( 1L );
+		
+		this.profiler.endSection();
 		
 	}
 
