@@ -158,11 +158,15 @@ public class GuiTextBase extends GuiObject {
 
 	public void renderText(float alpha) {
 		
-		this.model.push().translate( this.xOffset, this.yOffset ).apply();
-		
-			this.buffer.drawElements();
-		
-		this.model.pop();
+		this.renderer.setTextureSampler( this.font );
+			
+			this.model.push().scale( 2f ).translate( this.xOffset, this.yOffset ).apply();
+			
+				this.buffer.drawElements();
+			
+			this.model.pop();
+			
+		this.renderer.resetTextureSampler();
 		
 	}
 	
