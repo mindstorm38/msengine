@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import io.msengine.client.audio.AudioContext;
+import io.msengine.client.gui.GuiManager;
 import io.msengine.client.renderer.font.FontHandler;
 import io.msengine.client.renderer.texture.TextureManager;
 import io.msengine.client.renderer.util.RenderConstantFields;
@@ -61,6 +62,7 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	protected final File screeshots;
 	
+	protected final GuiManager guiManager;
 	protected final FontHandler defaultFont;
 	
 	protected RenderGame(E options) {
@@ -79,6 +81,7 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		this.screeshots = null;
 		
+		this.guiManager = new GuiManager();
 		this.defaultFont = new FontHandler( options.getDefaultFontPath() );
 		
 	}
@@ -101,6 +104,10 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	public RenderConstantFields getRenderConstantFields() {
 		return this.renderConstantFields;
+	}
+	
+	public GuiManager getGuiManager() {
+		return this.guiManager;
 	}
 	
 	public FontHandler getDefaultFont() {
