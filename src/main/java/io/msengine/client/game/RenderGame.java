@@ -172,7 +172,10 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		while ( this.accumulator >= this.tpsInterval ) {
 			
+			this.profiler.startSection("update");
 			this.update();
+			this.profiler.endSection();
+			
 			this.accumulator -= this.tpsInterval;
 			
 		}
@@ -211,11 +214,19 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	protected void winrender(float alpha) {
 		
+		this.profiler.startSection("window_render");
+		
 		this.window.pollEvents();
+		
+		this.profiler.startSection("render");
 		
 		this.render( alpha );
 		
+		this.profiler.endSection();
+		
 		this.window.swapBuffers();
+		
+		this.profiler.endSection();
 		
 	}
 	

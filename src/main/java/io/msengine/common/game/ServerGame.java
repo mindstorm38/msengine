@@ -58,10 +58,16 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 		
 		this.now = CommonUtils.getTime();
 		
+		this.profiler.startSection("update");
+		
 		this.update();
+		
+		this.profiler.endStartSection("sync");
 		
 		while ( CommonUtils.getTime() - this.now < this.tpsInterval )
 			ThreadUtils.safesleep( 1L );
+		
+		this.profiler.endSection();
 		
 	}
 
