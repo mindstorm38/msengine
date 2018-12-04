@@ -13,7 +13,7 @@ public abstract class GuiObject {
 	
 	protected final GuiRenderer renderer;
 	protected final ModelHandler model;
-	protected final SceneManager manager;
+	protected final GuiManager manager;
 	
 	protected float xPos, yPos;
 	protected float width, height;
