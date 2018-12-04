@@ -26,7 +26,7 @@ public abstract class GuiObject {
 		
 		this.renderer = GuiRenderer.getInstance();
 		this.model = this.renderer.model();
-		this.manager = null;
+		this.manager = GuiManager.getInstance();
 		
 		this.xPos = 0;
 		this.yPos = 0;

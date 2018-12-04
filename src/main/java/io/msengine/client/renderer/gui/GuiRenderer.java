@@ -8,6 +8,7 @@ import io.msengine.client.renderer.shader.ShaderSamplerObject;
 import io.msengine.client.renderer.util.BlendMode;
 import io.msengine.client.renderer.vertex.IndicesDrawBuffer;
 import io.msengine.common.util.Color;
+import io.msengine.common.util.GameNotCreatedException;
 import io.sutil.SingletonAlreadyInstantiatedException;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -19,7 +20,7 @@ public class GuiRenderer implements ModelApplyListener {
 	private static GuiRenderer INSTANCE;
 	
 	public static GuiRenderer getInstance() {
-		if ( INSTANCE == null ) new GuiRenderer();
+		if ( INSTANCE == null ) throw new GameNotCreatedException( GuiRenderer.class );
 		return INSTANCE;
 	}
 	
@@ -46,7 +47,7 @@ public class GuiRenderer implements ModelApplyListener {
 	private final Matrix4f projectionMatrix;
 	private Matrix4f modelMatrix;
 	
-	private GuiRenderer() {
+	public GuiRenderer() {
 		
 		if ( INSTANCE != null ) throw new SingletonAlreadyInstantiatedException( GuiRenderer.class );
 		INSTANCE = this;

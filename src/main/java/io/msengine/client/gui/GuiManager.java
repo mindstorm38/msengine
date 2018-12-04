@@ -24,7 +24,7 @@ public class GuiManager {
 	
 	private static GuiManager INSTANCE;
 	
-	public GuiManager getInstance() {
+	public static GuiManager getInstance() {
 		if ( INSTANCE == null ) throw new GameNotCreatedException( GuiManager.class );
 		return INSTANCE;
 	}
