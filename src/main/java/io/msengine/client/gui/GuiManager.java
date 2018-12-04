@@ -58,7 +58,7 @@ public class GuiManager {
 	/**
 	 * Internal method to get scene instance.
 	 * @param sceneClass The scene class
-	 * @return
+	 * @return A cached scene instance, or a newly created one if none is cached
 	 */
 	private GuiScene getSceneInstance(Class<? extends GuiScene> sceneClass) {
 		
@@ -111,6 +111,14 @@ public class GuiManager {
 	}
 	
 	/**
+	 * Load a scene from its class.
+	 * @param sceneClass The scene class
+	 */
+	public void loadScene(Class<? extends GuiScene> sceneClass) {
+		this.loadScene( sceneClass, null );
+	}
+	
+	/**
 	 * Load a scene from its registered identifier.
 	 * @param sceneIdentifier The scene identifier
 	 * @param oncePreviousStoped See {@link #loadScene(Class, Consumer)}
@@ -118,9 +126,17 @@ public class GuiManager {
 	 */
 	public void loadScene(String sceneIdentifier, Consumer<GuiScene> oncePreviousStoped) {
 		
-		Class<? extends GuiScene> sceneClass = this.scenes.get( sceneIdentifier);
-		if ( sceneClass == null ) throw new IllegalArgumentException("Invalid scene identifier");
-		this.loadScene( sceneClass, oncePreviousStoped );
+		if ( sceneIdentifier == null ) {
+			
+			Class<? extends GuiScene> sceneClass = this.scenes.get( sceneIdentifier);
+			if ( sceneClass == null ) throw new IllegalArgumentException("Invalid scene identifier");
+			this.loadScene( sceneClass, oncePreviousStoped );
+			
+		} else {
+			
+			this.loadScene( (Class<? extends GuiScene>) null, oncePreviousStoped );
+			
+		}
 		
 	}
 	
@@ -134,6 +150,13 @@ public class GuiManager {
 	}
 	
 	/**
+	 * Unload the current loaded class
+	 */
+	public void unloadScene() {
+		this.loadScene( (Class<? extends GuiScene>) null );
+	}
+	
+	/**
 	 * Uncache a scene instance from internal map, this can be passed in <code>oncePreviousStoped</code> parameter in {@link #loadScene(Class, Consumer)}.
 	 * @param sceneClass The scene class to uncache
 	 */
@@ -141,4 +164,14 @@ public class GuiManager {
 		this.instances.remove( sceneClass );
 	}
 	
+	/**
+	 * Unload current scene and clear all instances cache.
+	 */
+	public void stop() {
+		
+		this.unloadScene();
+		this.instances.clear();
+		
+	}
+
 }
