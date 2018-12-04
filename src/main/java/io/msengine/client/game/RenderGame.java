@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import io.msengine.client.audio.AudioContext;
+import io.msengine.client.renderer.font.FontHandler;
 import io.msengine.client.renderer.texture.TextureManager;
 import io.msengine.client.renderer.util.RenderConstantFields;
 import io.msengine.client.renderer.window.Window;
@@ -35,7 +36,7 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	// Static \\
 	
-	public static RenderGame<?> getCurrentServer() {
+	public static RenderGame<?> getCurrentRender() {
 		BaseGame<?> s = getCurrent();
 		if ( !( s instanceof ServerGame ) ) throw new GameTypeRequired( RenderGame.class );
 		return (RenderGame<?>) s;
@@ -60,13 +61,15 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	protected final File screeshots;
 	
+	protected final FontHandler defaultFont;
+	
 	protected RenderGame(E options) {
 		
 		super( options );
 		
 		this.setFPS( DEFAULT_FPS );
 		
-		this.languageManager = new I18n( bootoptions.getBaseLangsFolderPath() );
+		this.languageManager = new I18n( options.getBaseLangsFolderPath() );
 		
 		this.audioContext = new AudioContext();
 		
@@ -75,6 +78,8 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		this.renderConstantFields = new RenderConstantFields();
 		
 		this.screeshots = null;
+		
+		this.defaultFont = new FontHandler( options.getDefaultFontPath() );
 		
 	}
 	
@@ -98,6 +103,10 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		return this.renderConstantFields;
 	}
 	
+	public FontHandler getDefaultFont() {
+		return this.defaultFont;
+	}
+	
 	@Override
 	protected void init() {
 		
@@ -106,7 +115,13 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		try {
 			this.options.load();
 		} catch (IOException e) {
-			LOGGER.log( Level.WARNING, "Enable to load options, using default !", e );
+			LOGGER.log( Level.WARNING, "Unable to load options, using default !", e );
+		}
+		
+		try {
+			this.defaultFont.load();
+		} catch (Exception e) {
+			LOGGER.log( Level.WARNING, "Unable to load default font at '" + this.defaultFont.getPath() + "'", e );
 		}
 		
 		this.audioContext.start();
