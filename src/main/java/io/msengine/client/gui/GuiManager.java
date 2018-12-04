@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
+import io.msengine.client.gui.event.GuiSceneResizedEvent;
+import io.msengine.client.renderer.gui.GuiRenderer;
+import io.msengine.client.renderer.window.listener.WindowFramebufferSizeEventListener;
 import io.msengine.common.util.GameNotCreatedException;
 import io.sutil.SingletonAlreadyInstantiatedException;
 import io.sutil.registry.NamespaceRegistry;
@@ -18,7 +21,7 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * @author Mindstorm38
  *
  */
-public class GuiManager {
+public class GuiManager implements WindowFramebufferSizeEventListener {
 	
 	// Singleton \\
 	
@@ -31,6 +34,8 @@ public class GuiManager {
 	
 	// Class \\
 	
+	protected final GuiRenderer renderer;
+	
 	private final NamespaceRegistry<Class<? extends GuiScene>> scenes; 
 	private final Map<Class<? extends GuiScene>, GuiScene> instances;
 	
@@ -41,8 +46,66 @@ public class GuiManager {
 		if ( INSTANCE != null ) throw new SingletonAlreadyInstantiatedException( GuiManager.class );
 		INSTANCE = this;
 		
+		this.renderer = new GuiRenderer();
+		
 		this.scenes = new NamespaceRegistry<>();
 		this.instances = new HashMap<>();
+		
+	}
+	
+	/**
+	 * @return The {@link GuiRenderer} singleton instance
+	 */
+	public GuiRenderer getRenderer() {
+		return this.renderer;
+	}
+	
+	/**
+	 * Init internal {@link GuiRenderer}
+	 */
+	public void init() {
+
+		this.renderer.init();
+		
+	}
+	
+	/**
+	 * Unload current scene and clear all instances cache.
+	 */
+	public void stop() {
+		
+		this.unloadScene();
+		this.instances.clear();
+		
+		this.renderer.stop();
+		
+	}
+	
+	/**
+	 * Render the current scene, or nothing if no scene is loaded.
+	 * @param alpha Partials ticks
+	 */
+	public void render(float alpha) {
+		
+		if ( this.currentScene != null ) {
+			
+			this.renderer.beginRender();
+			System.out.println("rendering gui");
+			this.currentScene.render( alpha );
+			
+			this.renderer.endRender();
+			
+		}
+		
+	}
+	
+	/**
+	 * Update the current scene, or nothing if no scene is loaded.
+	 */
+	public void update() {
+		
+		if ( this.currentScene != null )
+			this.currentScene.update();
 		
 	}
 	
@@ -167,34 +230,25 @@ public class GuiManager {
 	}
 	
 	/**
-	 * Unload current scene and clear all instances cache.
+	 * Internal method to update render size.
+	 * @param width The new width used to render
+	 * @param height The new height used to render
 	 */
-	public void stop() {
+	private void updateRenderSize(int width, int height) {
 		
-		this.unloadScene();
-		this.instances.clear();
+		this.renderer.updateRenderSize( width, height );
 		
-	}
-	
-	/**
-	 * Render the current scene, or nothing if no scene is loaded.
-	 * @param alpha Partials ticks
-	 */
-	public void render(float alpha) {
-		
-		if ( this.currentScene != null )
-			this.currentScene.render( alpha );
-		
-	}
-	
-	/**
-	 * Update the current scene, or nothing if no scene is loaded.
-	 */
-	public void update() {
-		
-		if ( this.currentScene != null )
-			this.currentScene.update();
+		if ( this.currentScene != null ) {
+			
+			this.currentScene.fireEvent( new GuiSceneResizedEvent( width, height ) );
+			
+		}
 		
 	}
 
+	@Override
+	public void windowFramebufferSizeChangedEvent(int width, int height) {
+		this.updateRenderSize( width, height );
+	}
+	
 }

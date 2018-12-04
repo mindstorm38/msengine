@@ -3,7 +3,7 @@ package io.msengine.client.gui.event;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiListenerGroup<E extends GuiEvent<?>> {
+public class GuiListenerGroup<E extends GuiEvent> {
 
 	private final Class<E> eventClass;
 	private final List<GuiListener<E>> listeners;

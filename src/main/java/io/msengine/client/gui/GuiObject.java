@@ -146,14 +146,14 @@ public abstract class GuiObject {
 	public abstract void update();
 	
 	@SuppressWarnings("unchecked")
-	public <E extends GuiEvent<?>> GuiListenerGroup<E> getListenerGroup(Class<E> eventClass) {
+	public <E extends GuiEvent> GuiListenerGroup<E> getListenerGroup(Class<E> eventClass) {
 		for ( GuiListenerGroup<?> group : this.listeners )
 			if ( eventClass.equals( group.getClass() ) )
 				return (GuiListenerGroup<E>) group;
 		return null;
 	}
 	
-	public <E extends GuiEvent<?>> void addEventListener(Class<E> eventClass, GuiListener<E> listener) {
+	public <E extends GuiEvent> void addEventListener(Class<E> eventClass, GuiListener<E> listener) {
 		
 		GuiListenerGroup<E> group = this.getListenerGroup( eventClass );
 		
@@ -169,7 +169,9 @@ public abstract class GuiObject {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <E extends GuiEvent<?>> void fireEvent(E event) {
+	public <E extends GuiEvent> void fireEvent(E event) {
+		
+		event.setOrigin( this );
 		
 		for ( GuiListenerGroup<?> group : this.listeners ) {
 			

@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import io.msengine.client.audio.AudioContext;
 import io.msengine.client.gui.GuiManager;
 import io.msengine.client.renderer.font.FontHandler;
-import io.msengine.client.renderer.gui.GuiRenderer;
 import io.msengine.client.renderer.texture.TextureManager;
 import io.msengine.client.renderer.util.RenderConstantFields;
 import io.msengine.client.renderer.window.Window;
@@ -63,7 +62,6 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	protected final File screeshots;
 	
-	protected final GuiRenderer guiRenderer;
 	protected final GuiManager guiManager;
 	protected final FontHandler defaultFont;
 	
@@ -83,7 +81,6 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		this.screeshots = null;
 		
-		this.guiRenderer = new GuiRenderer();
 		this.guiManager = new GuiManager();
 		this.defaultFont = new FontHandler( options.getDefaultFontPath() );
 		
@@ -107,10 +104,6 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 	
 	public RenderConstantFields getRenderConstantFields() {
 		return this.renderConstantFields;
-	}
-	
-	public GuiRenderer getGuiRenderer() {
-		return this.guiRenderer;
 	}
 	
 	public GuiManager getGuiManager() {
@@ -142,9 +135,9 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		
 		this.audioContext.start();
 		
-		this.guiRenderer.init();
-		
 		this.renderConstantFields.init();
+		
+		this.guiManager.init();
 		
 		LOGGER.info("Context constants :");
 		LOGGER.info( "- LWJGL : " + org.lwjgl.Version.getVersion() );
@@ -216,8 +209,6 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		super.stop();
 
 		this.guiManager.stop();
-		
-		this.guiRenderer.stop();
 		
 		this.renderConstantFields.stop();
 		

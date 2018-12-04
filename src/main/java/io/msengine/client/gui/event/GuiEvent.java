@@ -2,9 +2,9 @@ package io.msengine.client.gui.event;
 
 import io.msengine.client.gui.GuiObject;
 
-public class GuiEvent<O extends GuiObject> {
+public class GuiEvent {
 	
-	private O origin;
+	private GuiObject origin;
 	
 	public GuiEvent() {
 		
@@ -12,11 +12,11 @@ public class GuiEvent<O extends GuiObject> {
 		
 	}
 	
-	public void setOrigin(O origin) {
+	public void setOrigin(GuiObject origin) {
 		this.origin = origin;
 	}
 	
-	public O getOrigin() {
+	public GuiObject getOrigin() {
 		return this.origin;
 	}
 	
