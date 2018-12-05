@@ -43,7 +43,7 @@ public abstract class GuiParent extends GuiObject {
 	public void render(float alpha) {
 		
 		for ( GuiObject child : this.children )
-			if ( child.visible() )
+			if ( child.renderable() )
 				child.render( alpha );
 		
 	}
@@ -52,7 +52,7 @@ public abstract class GuiParent extends GuiObject {
 	public void update() {
 		
 		for ( GuiObject child : this.children )
-			if ( child.visible() )
+			if ( child.renderable() )
 				child.update();
 		
 	}

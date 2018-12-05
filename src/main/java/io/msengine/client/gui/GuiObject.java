@@ -21,6 +21,7 @@ public abstract class GuiObject {
 	protected float xOffset, yOffset;
 	
 	private boolean initied;
+	private boolean visible;
 	
 	private final List<GuiListenerGroup<?>> listeners;
 	
@@ -45,6 +46,7 @@ public abstract class GuiObject {
 		this.yOffset = 0;
 		
 		this.initied = false;
+		this.visible = true;
 		
 		this.listeners = new ArrayList<>();
 		
@@ -147,12 +149,20 @@ public abstract class GuiObject {
 		
 	}
 	
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+	
+	public boolean isVisible() {
+		return this.visible;
+	}
+	
 	public boolean usable() {
 		return this.initied;
 	}
 	
-	public boolean visible() {
-		return this.initied && true; // TODO Add a visible property
+	public boolean renderable() {
+		return this.initied && this.visible;
 	}
 	
 	public GuiParent getParent() {
