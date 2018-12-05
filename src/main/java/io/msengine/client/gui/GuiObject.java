@@ -20,7 +20,11 @@ public abstract class GuiObject {
 	protected float xAnchor, yAnchor;
 	protected float xOffset, yOffset;
 	
+	private boolean initied;
+	
 	private final List<GuiListenerGroup<?>> listeners;
+	
+	private GuiParent parent;
 	
 	public GuiObject() {
 		
@@ -40,7 +44,11 @@ public abstract class GuiObject {
 		this.xOffset = 0;
 		this.yOffset = 0;
 		
+		this.initied = false;
+		
 		this.listeners = new ArrayList<>();
+		
+		this.parent = null;
 		
 	}
 	
@@ -139,8 +147,44 @@ public abstract class GuiObject {
 		
 	}
 	
-	public abstract void init();
-	public abstract void stop();
+	public boolean usable() {
+		return this.initied;
+	}
+	
+	public GuiParent getParent() {
+		return this.parent;
+	}
+	
+	public boolean hasParent() {
+		return this.parent != null;
+	}
+	
+	void setParent(GuiParent parent) {
+		this.parent = parent;
+	}
+	
+	void _init() {
+		
+		if ( this.initied ) throw new IllegalStateException("This GuiObject is already initied");
+		
+		this.initied = true;
+		
+		this.init();
+			
+	}
+	
+	void _stop() {
+		
+		if ( !this.initied ) throw new IllegalStateException("This GuiObject is not initied");
+	
+		this.stop();
+		
+		this.initied = false;
+		
+	}
+	
+	protected abstract void init();
+	protected abstract void stop();
 	
 	public abstract void render(float alpha);
 	public abstract void update();
