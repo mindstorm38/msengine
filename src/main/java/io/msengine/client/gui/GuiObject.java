@@ -151,6 +151,10 @@ public abstract class GuiObject {
 		return this.initied;
 	}
 	
+	public boolean visible() {
+		return this.initied && true; // TODO Add a visible property
+	}
+	
 	public GuiParent getParent() {
 		return this.parent;
 	}

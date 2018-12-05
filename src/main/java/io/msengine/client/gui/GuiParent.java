@@ -39,6 +39,24 @@ public abstract class GuiParent extends GuiObject {
 		
 	}
 	
+	@Override
+	public void render(float alpha) {
+		
+		for ( GuiObject child : this.children )
+			if ( child.visible() )
+				child.render( alpha );
+		
+	}
+	
+	@Override
+	public void update() {
+		
+		for ( GuiObject child : this.children )
+			if ( child.visible() )
+				child.update();
+		
+	}
+	
 	private void initChild(GuiObject child) {
 		
 		if ( this.usable() ) {
