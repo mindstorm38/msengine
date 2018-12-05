@@ -93,6 +93,22 @@ public abstract class GuiParent extends GuiObject {
 		return this.children.contains( child );
 	}
 	
+	@Override
+	public void updateXOffset() {
+		
+		super.updateXOffset();
+		this.children.forEach( GuiObject::updateXOffset );
+		
+	}
+	
+	@Override
+	public void updateYOffset() {
+		
+		super.updateYOffset();
+		this.children.forEach( GuiObject::updateYOffset );
+		
+	}
+	
 	/**
 	 * Add a child {@link GuiObject} to this parent.<br>
 	 * If the {@link GuiObject} is already added to another parent, an {@link IllegalArgumentException} is thrown.
