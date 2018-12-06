@@ -166,7 +166,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		
 		if ( this.currentScene != null ) {
 			
-			this.currentScene.stop();
+			this.currentScene._stop();
 			
 			if ( oncePreviousStoped != null )
 				oncePreviousStoped.accept( this.currentScene );
@@ -177,7 +177,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		
 		if ( inst != null ) {
 			
-			inst.init();
+			inst._init();
 			
 		}
 		
