@@ -17,7 +17,7 @@ import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
 public class GuiTextBase extends GuiObject {
 	
 	protected IndicesDrawBuffer buffer;
-	protected boolean updateTextBuffers;
+	protected boolean updateBuffer;
 
 	protected FontHandler font;
 	protected String text;
@@ -130,7 +130,7 @@ public class GuiTextBase extends GuiObject {
 			
 		}
 		
-		this.updateTextBuffers = false;
+		this.updateBuffer = false;
 		
 		this.width = x;
 		this.updateXOffset();
@@ -146,7 +146,7 @@ public class GuiTextBase extends GuiObject {
 	@Override
 	public void render(float alpha) {
 		
-		if ( this.updateTextBuffers ) {
+		if ( this.updateBuffer ) {
 			
 			this.updateTextBuffers();
 			
@@ -192,7 +192,7 @@ public class GuiTextBase extends GuiObject {
 		if ( font.equals( this.font ) ) return false;
 		
 		this.font = font;
-		this.updateTextBuffers = true;
+		this.updateBuffer = true;
 		
 		this.height = font.getHeight();
 		this.updateYOffset();
@@ -215,7 +215,7 @@ public class GuiTextBase extends GuiObject {
 		this.text = text;
 		this.textChars = text.toCharArray();
 		this.charsOffsets = new float[ this.textChars.length ];
-		this.updateTextBuffers = true;
+		this.updateBuffer = true;
 		
 		return true;
 		

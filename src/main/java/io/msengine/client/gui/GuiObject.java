@@ -11,6 +11,8 @@ import io.msengine.client.renderer.model.ModelHandler;
 
 public abstract class GuiObject {
 	
+	public static final int SIZE_AUTO = -1;
+	
 	protected final GuiRenderer renderer;
 	protected final ModelHandler model;
 	protected final GuiManager manager;
@@ -56,12 +58,18 @@ public abstract class GuiObject {
 	
 	public void setXPos(float xPos) {
 		
+		if ( this.xPos == xPos )
+			return;
+		
 		this.xPos = xPos;
 		this.updateXOffset();
 		
 	}
 	
 	public void setYPos(float yPos) {
+		
+		if ( this.yPos == yPos )
+			return;
 		
 		this.yPos = yPos;
 		this.updateYOffset();
@@ -80,12 +88,30 @@ public abstract class GuiObject {
 	
 	public void setWidth(float width) {
 		
+		if ( this.width == width )
+			return;
+		
+		if ( width == SIZE_AUTO )
+			width = this.getAutoWidth();
+		
+		if ( width < 0 )
+			throw new IllegalArgumentException( "Invalid width given : " + width );
+		
 		this.width = width;
 		this.updateXOffset();
 		
 	}
 	
 	public void setHeight(float height) {
+		
+		if ( this.height == height )
+			return;
+		
+		if ( height == SIZE_AUTO )
+			height = this.getAutoHeight();
+		
+		if ( height < 0 )
+			throw new IllegalArgumentException( "Invalid height given : " + height );
 		
 		this.height = height;
 		this.updateYOffset();
@@ -101,6 +127,9 @@ public abstract class GuiObject {
 	
 	public float getWidth() { return this.width; }
 	public float getHeight() { return this.height; }
+	
+	public float getAutoWidth() { return 0f; }
+	public float getAutoHeight() { return 0f; }
 	
 	public void setXAnchor(float xAnchor) {
 		
