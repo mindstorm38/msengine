@@ -93,6 +93,10 @@ public class ShaderUniform {
 		if ( this.shaderManager.isCurrent() ) this._upload();
 	}
 	
+	public void set(boolean b) {
+		this.set( b ? 1 : 0 );
+	}
+	
 	public void set(int i) {
 		
 		this.checkUsable();
