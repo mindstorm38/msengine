@@ -354,7 +354,7 @@ public class AxisAlignedBB {
 		return this.copy().addCoord( x, y );
 	}
 	
-	public AxisAlignedBB copyOffset(float x, float y) {
+	public AxisAlignedBB copyMove(float x, float y) {
 		return new AxisAlignedBB( this.minX + x, this.minY + y, this.maxX + x, this.maxY + y );
 	}
 	
