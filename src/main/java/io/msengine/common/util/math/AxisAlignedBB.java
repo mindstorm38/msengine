@@ -212,17 +212,6 @@ public class AxisAlignedBB {
 		return this.expand( -xy );
 	}
 	
-	public AxisAlignedBB offset(float x, float y) {
-		
-		this.minX += x;
-		this.minY += y;
-		this.maxX += x;
-		this.maxY += y;
-		
-		return this;
-		
-	}
-	
 	/**
 	 * Test if a point intersects with this bounding box
 	 * @param x Point X position
@@ -242,6 +231,32 @@ public class AxisAlignedBB {
 	}
 	
 	public float calculateXOffset(AxisAlignedBB other, float offsetX) {
+		
+		/*
+		if ( other.maxY > this.minY && other.minY < this.maxY ) {
+			
+			if ( offsetX > 0 && other.maxX > this.minX ) {
+				System.out.println( "offsetX:" + offsetX );
+				float f = offsetX - other.maxX - this.minX;
+				System.out.println( "f:" + f );
+				if ( f < offsetX ) {
+					offsetX = f;
+				}
+				
+			} else if ( offsetX < 0 && other.minX < this.maxX ) {
+				
+				float f = offsetX - other.minX - this.maxX;
+				
+				if ( f > offsetX ) {
+					offsetX = f;
+				}
+				
+			}
+			
+		}
+		
+		return offsetX;
+		*/
 		
 		if ( other.maxY > this.minY && other.minY < this.maxY ) {
 			
@@ -274,6 +289,32 @@ public class AxisAlignedBB {
 	}
 	
 	public float calculateYOffset(AxisAlignedBB other, float offsetY) {
+		
+		/*
+		if ( other.maxX > this.minX && other.minX < this.maxX ) {
+			
+			if ( offsetY > 0 && other.maxY > this.minY ) {
+				
+				float f = offsetY - other.maxY - this.minY;
+				
+				if ( f < offsetY ) {
+					offsetY = f;
+				}
+				
+			} else if ( offsetY < 0 && other.minY < this.maxY ) {
+				
+				float f = offsetY - other.minX - this.maxX;
+				
+				if ( f > offsetY ) {
+					offsetY = f;
+				}
+				
+			}
+			
+		}
+			
+		return offsetY;
+		*/
 		
 		if ( other.maxX > this.minX && other.minX < this.maxX ) {
 			
