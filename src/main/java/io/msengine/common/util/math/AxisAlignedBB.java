@@ -1,10 +1,5 @@
 package io.msengine.common.util.math;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.joml.Vector2f;
-
 import io.msengine.common.osf.OSF;
 import io.msengine.common.osf.OSFArray;
 import io.msengine.common.osf.OSFNode;
@@ -12,7 +7,6 @@ import io.msengine.common.osf.OSFNumber;
 import io.msengine.common.osf.serializer.OSFDeserializationContext;
 import io.msengine.common.osf.serializer.OSFSerializationContext;
 import io.msengine.common.osf.serializer.OSFTypeAdapter;
-import io.sutil.LazyLoadValue;
 
 /**
  * 
@@ -86,22 +80,12 @@ public class AxisAlignedBB {
 	private float maxX;
 	private float maxY;
 	
-	private final LazyLoadValue<List<Vector2f>> vertices;
-	
 	public AxisAlignedBB(float minX, float minY, float maxX, float maxY) {
 		
 		this.minX = minX;
 		this.minY = minY;
 		this.maxX = maxX;
 		this.maxY = maxY;
-		
-		this.vertices = new LazyLoadValue<List<Vector2f>>() {
-			
-			public List<Vector2f> create() {
-				return AxisAlignedBB.this.createVertices();
-			}
-			
-		};
 		
 	}
 	
@@ -177,64 +161,54 @@ public class AxisAlignedBB {
 		
 	}
 	
-	private List<Vector2f> createVertices() {
-		return Arrays.asList(
-				new Vector2f( this.minX, this.minY ),
-				new Vector2f( this.maxX, this.minY ),
-				new Vector2f( this.maxX, this.maxY ),
-				new Vector2f( this.minX, this.maxY )
-		);
-	}
-	
-	public List<Vector2f> getVertices() {
-		return this.vertices.get();
-	}
-	
-	public AxisAlignedBB addCoord(float x, float y) {
-		
-		float minX = this.minX;
-		float minY = this.minY;
-		float maxX = this.maxX;
-		float maxY = this.maxY;
+	public void addCoord(float x, float y) {
 		
 		if ( x < 0 ) {
-			minX += x;
-		} else if ( x > 0 ) {
-			maxX += x;
+			this.minX += x;
+		} else {
+			this.maxX += x;
 		}
 		
 		if ( y < 0 ) {
-			minY += y;
-		} else if ( y > 0 ) {
-			maxY += y;
+			this.minY += y;
+		} else {
+			this.maxY += y;
 		}
 		
-		return new AxisAlignedBB( minX, minY, maxX, maxY );
+	}
+	
+	public void expand(float x, float y) {
+		
+		this.minX -= x;
+		this.minY -= y;
+		this.maxX += x;
+		this.maxY += y;
 		
 	}
 	
-	public AxisAlignedBB expand(float x, float y) {
-		return new AxisAlignedBB( this.minX - x, this.minY - y, this.maxX + x, this.maxY + y );
+	public void expand(float xy) {
+		this.expand( xy, xy );
 	}
 	
-	public AxisAlignedBB expand(float xy) {
-		return this.expand( xy, xy );
+	public void contract(float x, float y) {
+		this.expand( -x, -y );
 	}
 	
-	public AxisAlignedBB contract(float x, float y) {
-		return this.expand( -x, -y );
+	public void contract(float xy) {
+		this.expand( -xy );
 	}
 	
-	public AxisAlignedBB contract(float xy) {
-		return this.expand( -xy );
+	public void offset(float x, float y) {
+		
+		this.minX += x;
+		this.minY += y;
+		this.maxX += x;
+		this.maxY += y;
+		
 	}
 	
-	public AxisAlignedBB offset(float x, float y) {
-		return new AxisAlignedBB( this.minX + x, this.minY + y, this.maxX + x, this.maxY + y );
-	}
-	
-	public AxisAlignedBB offset(int x, int y) {
-		return new AxisAlignedBB( this.minX + x, this.minY + y, this.maxX + x, this.maxY + y );
+	public void offset(int x, int y) {
+		this.offset( x, y );
 	}
 	
 	/**
