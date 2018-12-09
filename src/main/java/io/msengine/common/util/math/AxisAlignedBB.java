@@ -152,16 +152,26 @@ public class AxisAlignedBB {
 		this.maxY = maxY;
 	}
 	
-	public void move(float x, float y) {
+	public float getMiddleX() {
+		return ( this.minX + this.maxX ) / 2f;
+	}
+	
+	public float getMiddleY() {
+		return ( this.minY + this.maxY ) / 2f;
+	}
+	
+	public AxisAlignedBB move(float x, float y) {
 		
 		this.minX += x;
 		this.maxX += x;
 		this.minY += y;
 		this.maxY += y;
 		
+		return this;
+		
 	}
 	
-	public void addCoord(float x, float y) {
+	public AxisAlignedBB addCoord(float x, float y) {
 		
 		if ( x < 0 ) {
 			this.minX += x;
@@ -175,40 +185,42 @@ public class AxisAlignedBB {
 			this.maxY += y;
 		}
 		
+		return this;
+		
 	}
 	
-	public void expand(float x, float y) {
+	public AxisAlignedBB expand(float x, float y) {
 		
 		this.minX -= x;
 		this.minY -= y;
 		this.maxX += x;
 		this.maxY += y;
 		
+		return this;
+		
 	}
 	
-	public void expand(float xy) {
-		this.expand( xy, xy );
+	public AxisAlignedBB expand(float xy) {
+		return this.expand( xy, xy );
 	}
 	
-	public void contract(float x, float y) {
-		this.expand( -x, -y );
+	public AxisAlignedBB contract(float x, float y) {
+		return this.expand( -x, -y );
 	}
 	
-	public void contract(float xy) {
-		this.expand( -xy );
+	public AxisAlignedBB contract(float xy) {
+		return this.expand( -xy );
 	}
 	
-	public void offset(float x, float y) {
+	public AxisAlignedBB offset(float x, float y) {
 		
 		this.minX += x;
 		this.minY += y;
 		this.maxX += x;
 		this.maxY += y;
 		
-	}
-	
-	public void offset(int x, int y) {
-		this.offset( x, y );
+		return this;
+		
 	}
 	
 	/**
@@ -295,6 +307,14 @@ public class AxisAlignedBB {
 	
 	public AxisAlignedBB copy() {
 		return new AxisAlignedBB( this.minX, this.minY, this.maxX, this.maxY );
+	}
+	
+	public AxisAlignedBB copyAddCoord(float x, float y) {
+		return this.copy().addCoord( x, y );
+	}
+	
+	public AxisAlignedBB copyOffset(float x, float y) {
+		return new AxisAlignedBB( this.minX + x, this.minY + y, this.maxX + x, this.maxY + y );
 	}
 	
 	@Override
