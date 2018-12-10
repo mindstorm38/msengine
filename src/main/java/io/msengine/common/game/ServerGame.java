@@ -39,6 +39,10 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 		this.tpsInterval = 1f / ( tps == 0f ? DEFAULT_TPS : tps );
 	}
 	
+	public float getTPSInterval() {
+		return this.tpsInterval;
+	}
+	
 	@Override
 	protected void init() {
 		

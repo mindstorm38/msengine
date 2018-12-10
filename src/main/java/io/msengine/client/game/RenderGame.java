@@ -90,6 +90,10 @@ public abstract class RenderGame<E extends RenderGameOptions> extends ServerGame
 		this.fpsInterval = 1f / ( fps == 0f ? DEFAULT_FPS : fps );
 	}
 	
+	public float getFPSInternal() {
+		return this.fpsInterval;
+	}
+	
 	public LanguageManager getLanguageManager() {
 		return this.languageManager;
 	}
