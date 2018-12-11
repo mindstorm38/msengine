@@ -15,7 +15,7 @@ import io.msengine.common.osf.serializer.OSFTypeAdapter;
  * @author Mindstorm38
  *
  */
-public class AxisAlignedBB {
+public class AxisAlignedBB implements RectBoundingBox {
 	
 	// Constants \\
 	
@@ -91,6 +91,27 @@ public class AxisAlignedBB {
 	
 	public AxisAlignedBB() {
 		this( 0f, 0f, 0f, 0f );
+	}
+
+	@Override
+	public float[] getCorners() {
+		
+		final float[] corners = new float[8];
+		
+		corners[0] = this.minX;
+		corners[1] = this.minY;
+		
+		corners[2] = this.maxX;
+		corners[3] = this.minY;
+		
+		corners[4] = this.maxX;
+		corners[5] = this.maxY;
+		
+		corners[6] = this.minX;
+		corners[7] = this.maxY;
+		
+		return corners;
+		
 	}
 	
 	public float getMinX() {
