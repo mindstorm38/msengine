@@ -4,6 +4,7 @@ import io.sutil.math.MathHelper;
 
 public class BoundingBox implements RectBoundingBox {
 
+	public static final float PI = (float) Math.PI;
 	public static final float PI_HALF = (float) MathHelper.PI_HALF;
 	
 	private float posX;
@@ -39,14 +40,14 @@ public class BoundingBox implements RectBoundingBox {
 		pos[0] = this.posX;
 		pos[1] = this.posY;
 		
-		pos[2] = (float) Math.cos( this.angle ) * this.width;
-		pos[3] = (float) Math.sin( this.angle ) * this.width;
+		pos[2] = this.posX + (float) Math.cos( this.angle ) * this.width;
+		pos[3] = this.posY + (float) Math.sin( this.angle ) * this.width;
 		
-		pos[4] = (float) Math.cos( tanAngle ) * tanLen;
-		pos[5] = (float) Math.sin( tanAngle ) * tanLen;
+		pos[4] = this.posX + (float) Math.cos( tanAngle ) * tanLen;
+		pos[5] = this.posY + (float) Math.sin( tanAngle ) * tanLen;
 		
-		pos[6] = (float) Math.cos( this.vangle ) * this.height;
-		pos[7] = (float) Math.sin( this.vangle + MathHelper.PI_HALF ) * this.height;
+		pos[6] = this.posX + (float) Math.cos( this.vangle ) * this.height;
+		pos[7] = this.posY + (float) Math.sin( this.vangle ) * this.height;
 		
 		return pos;
 		
@@ -70,11 +71,11 @@ public class BoundingBox implements RectBoundingBox {
 	
 	public void rotateRel(float angle, float originX, float originY) {
 		
-		float posAngle = (float) Math.atan2( -originX, -originY ) + (float) Math.PI + angle;
+		float posAngle = (float) Math.atan2( originX, originY ) + PI + this.angle + angle;
 		float posDist = (float) Math.sqrt( originX * originX + originY * originX );
 		
-		this.posX = (float) Math.cos( posAngle ) * posDist;
-		this.posY = (float) Math.sin( posAngle ) * posDist;
+		this.posX += originX + (float) Math.cos( posAngle ) * posDist;
+		this.posY += originY + (float) Math.sin( posAngle ) * posDist;
 		
 		this.angle += angle;
 		this.vangle = this.angle + PI_HALF;
@@ -83,25 +84,28 @@ public class BoundingBox implements RectBoundingBox {
 	
 	public void addSize(float x, float y) {
 		
-		this.width += x;
-		this.height += y;
-		
 		if ( x < 0 ) {
+			
+			this.width -= x;
 			
 			this.posX += (float) Math.cos( this.angle ) * x;
 			this.posY += (float) Math.sin( this.angle ) * x;
 			
+		} else {
+			this.width += x;
 		}
 		
 		if ( y < 0 ) {
 			
+			this.height -= y;
+			
 			this.posX += (float) Math.cos( this.vangle ) * y;
 			this.posY += (float) Math.sin( this.vangle ) * y;
 			
+		} else {
+			this.height += y;
 		}
 		
 	}
-	
-	
 	
 }
