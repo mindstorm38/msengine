@@ -379,6 +379,41 @@ public class AxisAlignedBB implements RectBoundingBox {
 		return new AxisAlignedBB( this.minX + x, this.minY + y, this.maxX + x, this.maxY + y );
 	}
 	
+	public RayTraceResult intersectsRay(float a, float b, float deltaX, float deltaY) {
+		
+		float xBottom = ( this.minY - b ) / a;
+		float xTop = ( this.maxY - b ) / a;
+		float yLeft = a * this.minX + b;
+		float yRight = a * this.maxX + b;
+		
+		if ( deltaX > 0f ) {
+			
+			if ( yLeft >= this.minY && yLeft <= this.maxY ) 
+				return new RayTraceResult( this.minX, yLeft );
+			
+		} else if ( deltaX < 0f ) {
+			
+			if ( yRight >= this.minY && yRight <= this.maxY )
+				return new RayTraceResult( this.maxX, yRight );
+			
+		}
+		
+		if ( deltaY > 0f ) {
+			
+			if ( xBottom >= this.minX && xBottom <= this.maxX )
+				return new RayTraceResult( xBottom, this.minY );
+			
+		} else if ( deltaY < 0f ) {
+			
+			if ( xTop >= this.minX && xTop <= this.maxX )
+				return new RayTraceResult( xTop, this.maxY );
+			
+		}
+		
+		return null;
+		
+	}
+	
 	@Override
 	public String toString() {
 		return "{\"min_x\":" + this.minX + ",\"min_y\":" + this.minY + ",\"max_x\":" + this.maxX + ",\"max_y\":" + this.maxY + "}";

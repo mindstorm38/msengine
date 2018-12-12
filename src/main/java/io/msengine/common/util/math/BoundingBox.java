@@ -71,11 +71,12 @@ public class BoundingBox implements RectBoundingBox {
 	
 	public void rotateRel(float angle, float originX, float originY) {
 		
-		float posAngle = (float) Math.atan2( originX, originY ) + PI + this.angle + angle;
+		float posAngle = (float) Math.atan2( originX, originY ) + this.angle;
+		float posAngleOpos = posAngle + PI + angle;
 		float posDist = (float) Math.sqrt( originX * originX + originY * originX );
 		
-		this.posX += originX + (float) Math.cos( posAngle ) * posDist;
-		this.posY += originY + (float) Math.sin( posAngle ) * posDist;
+		this.posX += (float) Math.cos( posAngle ) * posDist + (float) Math.cos( posAngleOpos ) * posDist;
+		this.posY += (float) Math.sin( posAngle ) * posDist + (float) Math.sin( posAngleOpos ) * posDist;
 		
 		this.angle += angle;
 		this.vangle = this.angle + PI_HALF;
@@ -107,5 +108,22 @@ public class BoundingBox implements RectBoundingBox {
 		}
 		
 	}
+	
+	/*
+	public boolean intersects(float x, float y) {
+		
+		float ptAngle = (float) Math.atan2( y, x ) - this.angle;
+		
+		
+	}
+	*/
+	
+	/*
+	public void intersects(BoundingBox box) {
+		
+		
+		
+	}
+	*/
 	
 }
