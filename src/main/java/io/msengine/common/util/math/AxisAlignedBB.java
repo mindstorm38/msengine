@@ -379,31 +379,34 @@ public class AxisAlignedBB implements RectBoundingBox {
 		return new AxisAlignedBB( this.minX + x, this.minY + y, this.maxX + x, this.maxY + y );
 	}
 	
-	public RayTraceResult intersectsRay(float a, float b, float deltaX, float deltaY) {
+	public RayTraceResult intersectsRayLine(Ray ray) {
+		
+		float a = ray.getA();
+		float b = ray.getB();
 		
 		float xBottom = ( this.minY - b ) / a;
 		float xTop = ( this.maxY - b ) / a;
 		float yLeft = a * this.minX + b;
 		float yRight = a * this.maxX + b;
 		
-		if ( deltaX > 0f ) {
+		if ( ray.getVecX() > 0f ) {
 			
 			if ( yLeft >= this.minY && yLeft <= this.maxY ) 
 				return new RayTraceResult( this.minX, yLeft );
 			
-		} else if ( deltaX < 0f ) {
+		} else if ( ray.getVecX() < 0f ) {
 			
 			if ( yRight >= this.minY && yRight <= this.maxY )
 				return new RayTraceResult( this.maxX, yRight );
 			
 		}
 		
-		if ( deltaY > 0f ) {
+		if ( ray.getVecY() > 0f ) {
 			
 			if ( xBottom >= this.minX && xBottom <= this.maxX )
 				return new RayTraceResult( xBottom, this.minY );
 			
-		} else if ( deltaY < 0f ) {
+		} else if ( ray.getVecY() < 0f ) {
 			
 			if ( xTop >= this.minX && xTop <= this.maxX )
 				return new RayTraceResult( xTop, this.maxY );
@@ -411,6 +414,18 @@ public class AxisAlignedBB implements RectBoundingBox {
 		}
 		
 		return null;
+		
+	}
+	
+	public RayTraceResult intersectsRay(Ray ray) {
+		
+		RayTraceResult res = this.intersectsRayLine( ray );
+		if ( res == null ) return null;
+		
+		if ( res.getNewToX() > ray.getToX() || res.getNewToX() < ray.getToX() ) return null;
+		if ( res.getNewToY() > ray.getToY() || res.getNewToX() < ray.getFromY() ) return null;
+		
+		return res;
 		
 	}
 	
