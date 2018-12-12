@@ -19,8 +19,8 @@ public class Ray {
 		this.vecX = toX - fromX;
 		this.vecY = toY - fromY;
 		
-		this.a = this.vecX / this.vecY;
-		this.b = fromY / ( a * fromX );
+		this.a = this.vecY / this.vecX;
+		this.b = fromY - ( this.a * fromX );
 		
 	}
 	

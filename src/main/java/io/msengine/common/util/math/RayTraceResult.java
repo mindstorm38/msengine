@@ -23,4 +23,9 @@ public class RayTraceResult {
 		return this.newToY;
 	}
 	
+	@Override
+	public String toString() {
+		return "{RayTraceResult: " + this.newToX + "/" + this.newToY + "}";
+	}
+	
 }

@@ -422,8 +422,8 @@ public class AxisAlignedBB implements RectBoundingBox {
 		RayTraceResult res = this.intersectsRayLine( ray );
 		if ( res == null ) return null;
 		
-		if ( res.getNewToX() > ray.getToX() || res.getNewToX() < ray.getToX() ) return null;
-		if ( res.getNewToY() > ray.getToY() || res.getNewToX() < ray.getFromY() ) return null;
+		//if ( res.getNewToX() > ray.getToX() || res.getNewToX() < ray.getToX() ) return null;
+		//if ( res.getNewToY() > ray.getToY() || res.getNewToX() < ray.getFromY() ) return null;
 		
 		return res;
 		
