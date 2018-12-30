@@ -9,14 +9,17 @@ import org.joml.Vector3i;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
-public class ShaderDefaultUniform extends ShaderUniform {
+public class ShaderDefaultUniform extends ShaderUniformBase {
 
 	protected ShaderDefaultUniform() {
-		super( null, "default", null );
+		super( "default", null );
 	}
 	
 	@Override
 	protected void checkUsable() {}
+
+	@Override
+	protected void _upload() {}
 	
 	@Override
 	public boolean usable() {

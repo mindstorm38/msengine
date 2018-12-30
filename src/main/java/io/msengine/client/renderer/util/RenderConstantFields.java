@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL13.GL_MAX_TEXTURE_UNITS;
 import static org.lwjgl.opengl.GL20.GL_MAX_TEXTURE_COORDS;
 import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
 import static org.lwjgl.opengl.GL30.GL_MAX_COLOR_ATTACHMENTS;
+import static org.lwjgl.opengl.GL31.GL_MAX_UNIFORM_BUFFER_BINDINGS;
 import static io.msengine.common.util.GameLogger.*;
 
 import java.awt.Color;
@@ -52,6 +53,8 @@ public class RenderConstantFields {
 	
 	private int maxColorAttachment = -1;
 	
+	private int maxUniformBufferBindings = -1;
+	
 	/**
 	 * Missing texture object
 	 */
@@ -76,6 +79,7 @@ public class RenderConstantFields {
 		this.maxTextureCoords = glGetFloat( GL_MAX_TEXTURE_COORDS );
 		this.maxTextureUnits = glGetInteger( GL_MAX_TEXTURE_UNITS );
 		this.maxColorAttachment = glGetInteger( GL_MAX_COLOR_ATTACHMENTS );
+		this.maxUniformBufferBindings = glGetInteger( GL_MAX_UNIFORM_BUFFER_BINDINGS );
 		
 		// Shared graphics var
 		Graphics2D graphics;
@@ -104,6 +108,7 @@ public class RenderConstantFields {
 		LOGGER.info( "- Maximum texture coords : " + this.maxTextureCoords );
 		LOGGER.info( "- Maximum texture units : " + this.maxTextureUnits );
 		LOGGER.info( "- Maximum color attachmend : " + this.maxColorAttachment );
+		LOGGER.info( "- Maximum uniform buffer bindings : " + this.maxUniformBufferBindings );
 		
 	}
 	
@@ -132,6 +137,10 @@ public class RenderConstantFields {
 	
 	public int getMaxColorAttachment() {
 		return this.maxColorAttachment;
+	}
+	
+	public int getMaxUniformBufferBindings() {
+		return this.maxUniformBufferBindings;
 	}
 	
 	public DynamicTexture getMissingTexture() {

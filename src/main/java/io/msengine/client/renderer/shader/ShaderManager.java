@@ -10,6 +10,7 @@ import io.msengine.client.renderer.vertex.VertexElement;
 
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
+import static org.lwjgl.opengl.GL31.*;
 import static io.msengine.common.util.GameLogger.LOGGER;
 
 /**
@@ -17,11 +18,7 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * @author Mindstorm38
  *
  */
-public class ShaderManager {
-	
-	// Constants \\
-	
-	public static final ShaderDefaultUniform DEFAULT_UNIFORM = new ShaderDefaultUniform();
+public class ShaderManager implements ShaderUniformHandler {
 	
 	// Static \\
 	
@@ -37,6 +34,8 @@ public class ShaderManager {
 	private final List<ShaderSampler> samplers;
 	private final List<ShaderUniform> uniforms;
 	private final List<ShaderAttribute> attributes;
+	
+	private final List<ShaderUniformBlock> uniformBlocks;
 	
 	private final List<ShaderAttribute> attributesView;
 	
@@ -55,6 +54,8 @@ public class ShaderManager {
 		this.samplers = new ArrayList<>();
 		this.uniforms = new ArrayList<>();
 		this.attributes = new ArrayList<>();
+		
+		this.uniformBlocks = new ArrayList<>();
 		
 		this.attributesView = Collections.unmodifiableList( this.attributes );
 		
@@ -113,6 +114,20 @@ public class ShaderManager {
 			throw new IllegalArgumentException( "This vertex element '" + vertexElement.toString() + " is already used by an attribute" );
 		
 		this.attributes.add( new ShaderAttribute( vertexElement ) );
+		
+		return this;
+		
+	}
+	
+	public ShaderManager boundUniformBlock(ShaderUniformBlock uniformBlock) {
+		
+		this.checkBuilt();
+		
+		if ( this.uniformBlocks.contains( uniformBlock ) )
+			throw new IllegalArgumentException( "This uniform block '" + uniformBlock.getIdentifier() + "' is already bound to this shader" );
+		
+		this.uniformBlocks.add( uniformBlock );
+		
 		return this;
 		
 	}
@@ -156,6 +171,7 @@ public class ShaderManager {
 		
 		this.setupUniforms();
 		this.setupAttributes();
+		this.setupUniformBlocks();
 		
 		this.built = true;
 		
@@ -216,6 +232,33 @@ public class ShaderManager {
 			} else {
 				
 				attribute.location = location;
+				
+			}
+			
+		}
+		
+	}
+	
+	private void setupUniformBlocks() {
+		
+		for ( ShaderUniformBlock block : this.uniformBlocks ) {
+			
+			if ( !block.usable() ) {
+				
+				LOGGER.warning( "Could not use uniform block '" + block.identifier + "' in the program '" + this.identifier + "', initialize it first." );
+				continue;
+				
+			}
+			
+			int index = glGetUniformBlockIndex( this.program, block.identifier );
+			
+			if ( index == -1 ) {
+				
+				LOGGER.warning( "Could not find uniform block '" + block.identifier + "' in the program '" + this.identifier + "'." );
+				
+			} else {
+				
+				glUniformBlockBinding( this.program, index, block.binding );
 				
 			}
 			
@@ -294,14 +337,16 @@ public class ShaderManager {
 		this.delete();
 	}
 	
-	public ShaderUniform getShaderUniformOrDefault(String identifier) {
+	@Override
+	public ShaderUniformBase getShaderUniformOrDefault(String identifier) {
 		for ( ShaderUniform uniform : this.uniforms )
 			if ( uniform.usable() && uniform.identifier.equals( identifier ) )
 				return uniform;
 		return DEFAULT_UNIFORM;
 	}
-	
-	public ShaderUniform getShaderUniform(String identifier) {
+
+	@Override
+	public ShaderUniformBase getShaderUniform(String identifier) {
 		for ( ShaderUniform uniform : this.uniforms )
 			if ( uniform.usable() && uniform.identifier.equals( identifier ) )
 				return uniform;
@@ -390,6 +435,13 @@ public class ShaderManager {
 	
 	public int getShaderAttributeCount() {
 		return this.attributes.size();
+	}
+	
+	public ShaderUniformBlock getUniformBlock(String identifier) {
+		for ( ShaderUniformBlock block : this.uniformBlocks )
+			if ( identifier.equals( block.getIdentifier() ) )
+				return block;
+		return null;
 	}
 	
 	public int getProgram() {

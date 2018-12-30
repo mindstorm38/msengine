@@ -85,12 +85,18 @@ public enum ShaderValueType {
 	
 	public final Function<Integer, Buffer> createBufferFunction;
 	public final int size;
+	public final int uboSize;
 	
-	private ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size) {
+	private ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size, int uboSize) {
 		
 		this.createBufferFunction = createBufferFunction;
 		this.size = size;
+		this.uboSize = uboSize;
 		
+	}
+	
+	private ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size) {
+		this( createBufferFunction, size, size );
 	}
 	
 	public abstract void upload(int location, Buffer buffer);
