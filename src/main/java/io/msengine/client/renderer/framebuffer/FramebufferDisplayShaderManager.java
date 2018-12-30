@@ -3,7 +3,7 @@ package io.msengine.client.renderer.framebuffer;
 import static io.msengine.client.renderer.vertex.VertexElement.*;
 
 import io.msengine.client.renderer.shader.ShaderManager;
-import io.msengine.client.renderer.shader.ShaderUniform;
+import io.msengine.client.renderer.shader.ShaderUniformBase;
 import io.msengine.client.renderer.shader.ShaderValueType;
 import io.msengine.client.renderer.util.BlendMode;
 import io.msengine.client.renderer.window.Window;
@@ -43,11 +43,11 @@ public class FramebufferDisplayShaderManager extends ShaderManager implements Ga
 		this.setSamplerObject( FRAMEBUFFER_DISPLAY_TEXTURE_SAMPLER, framebuffer );
 	}
 	
-	public ShaderUniform getResolutionUniform() {
+	public ShaderUniformBase getResolutionUniform() {
 		return this.getShaderUniformOrDefault( FRAMEBUFFER_DISPLAY_RESOLUTION );
 	}
 	
-	public ShaderUniform getTimeUniform() {
+	public ShaderUniformBase getTimeUniform() {
 		return this.getShaderUniformOrDefault( FRAMEBUFFER_DISPLAY_TIME );
 	}
 	

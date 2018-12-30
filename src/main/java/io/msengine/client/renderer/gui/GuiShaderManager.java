@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 
 import io.msengine.client.renderer.shader.ShaderManager;
 import io.msengine.client.renderer.shader.ShaderSamplerObject;
-import io.msengine.client.renderer.shader.ShaderUniform;
+import io.msengine.client.renderer.shader.ShaderUniformBase;
 import io.msengine.client.renderer.shader.ShaderValueType;
 import io.msengine.client.renderer.vertex.IndicesDrawBuffer;
 import io.msengine.common.util.Color;
@@ -55,7 +55,7 @@ public class GuiShaderManager extends ShaderManager {
 		
 	}
 	
-	public ShaderUniform getGlobalMatrixUniform() {
+	public ShaderUniformBase getGlobalMatrixUniform() {
 		return this.getShaderUniformOrDefault( GUI_GLOBAL_MATRIX );
 	}
 	
@@ -63,7 +63,7 @@ public class GuiShaderManager extends ShaderManager {
 		this.getGlobalMatrixUniform().set( mat );
 	}
 	
-	public ShaderUniform getGlobalColorUniform() {
+	public ShaderUniformBase getGlobalColorUniform() {
 		return this.getShaderUniformOrDefault( GUI_GLOBAL_COLOR );
 	}
 	
