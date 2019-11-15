@@ -70,5 +70,13 @@ dependencies {
 }
 
 processResources {
-	filter([tokens: [version: project.version]], ReplaceTokens)
+	
+	filesNotMatching("**/*.png") {
+		
+		it.filter([tokens: [
+				version: project.version
+		]], ReplaceTokens)
+		
+	}
+	
 }
