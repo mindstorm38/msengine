@@ -4,7 +4,7 @@ import io.msengine.common.util.GameTypeRequired;
 import io.sutil.CommonUtils;
 import io.sutil.ThreadUtils;
 
-public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E> {
+public abstract class ServerGame<SELF extends ServerGame<SELF, E>, E extends ServerGameOptions> extends BaseGame<SELF, E> {
 
 	// Constants \\
 	
@@ -12,10 +12,10 @@ public abstract class ServerGame<E extends ServerGameOptions> extends BaseGame<E
 
 	// Static \\
 	
-	public static ServerGame<?> getCurrentServer() {
-		BaseGame<?> s = getCurrent();
+	public static ServerGame<?, ?> getCurrentServer() {
+		BaseGame<?, ?> s = getCurrent();
 		if ( !( s instanceof ServerGame ) ) throw new GameTypeRequired( ServerGame.class );
-		return (ServerGame<?>) s;
+		return (ServerGame<?, ?>) s;
 	}
 	
 	// Class \\

@@ -6,9 +6,9 @@ import java.util.List;
 import io.msengine.common.util.GameNotCreatedException;
 import io.sutil.SingletonAlreadyInstantiatedException;
 import io.sutil.resource.Resource;
-import io.sutil.resource.ResourceAccessorWrapper;
+import io.sutil.resource.ResourceAccessor;
 
-public class ResourceManager extends ResourceAccessorWrapper {
+public class ResourceManager extends io.sutil.resource.ResourceManager {
 	
 	// Singleton \\
 	
@@ -21,12 +21,19 @@ public class ResourceManager extends ResourceAccessorWrapper {
 	
 	// Class \\
 	
-	public ResourceManager(Class<?> runningClass, String baseFolderPath) {
-		
-		super( runningClass, baseFolderPath );
+	public ResourceManager(Class<?> runningClass, String baseDirectoryPath, String mainNamespace) {
 		
 		if ( INSTANCE != null ) throw new SingletonAlreadyInstantiatedException( ResourceManager.class );
 		INSTANCE = this;
+		
+		try {
+			
+			this.registerAccessor(mainNamespace, ResourceAccessor.findClassResourceAccessor(runningClass, baseDirectoryPath));
+			this.registerAccessor("msengine", ResourceAccessor.findClassResourceAccessor(ResourceManager.class, baseDirectoryPath));
+			
+		} catch (IllegalStateException e) {
+			throw new IllegalStateException( "Unable to create the ResourceManager", e );
+		}
 		
 	}
 	
