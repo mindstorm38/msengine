@@ -15,6 +15,8 @@ import io.sutil.StreamUtils;
 import io.sutil.StringUtils;
 import io.sutil.resource.Resource;
 
+import javax.imageio.ImageIO;
+
 public class DetailledResource extends Resource {
 	
 	private final LazyLoadValue<InputStream> resourceMetaInputStream;
@@ -47,7 +49,8 @@ public class DetailledResource extends Resource {
 		
 		byte[] bytes = StreamUtils.getStreamByteArraySafe( this.inputStream.get() );
 		
-		if ( bytes == null ) return null;
+		if ( bytes == null )
+			return null;
 		
 		ByteBuffer buffer = BufferUtils.createByteBuffer( bytes.length );
 		buffer.position( 0 );
@@ -57,13 +60,25 @@ public class DetailledResource extends Resource {
 	}
 	
 	/**
-	 * Get the {@link BufferedImage} from this resource stream<br>
-	 * This function close the stream at the end of reading
-	 * @return Image corresponding to this resource or null if unknown type
-	 * @see ImageUtils#readBufferedImageSafe(InputStream)
+	 * Get the {@link BufferedImage} from this resource stream.<br>
+	 * This function close the stream at the end of reading.
+	 * @return Image corresponding to this resource or null if unknown type.
 	 */
 	public BufferedImage getImage() {
-		return ImageUtils.readBufferedImageSafe( this.inputStream.get() );
+		
+		final InputStream stream = this.inputStream.get();
+		
+		try {
+			return ImageIO.read(stream);
+		} catch (IOException e) {
+			throw new IllegalStateException("Failed to decode BufferedImage.", e);
+		} finally {
+			
+			StreamUtils.safeclose(stream);
+			this.inputStream.reset();
+			
+		}
+		
 	}
 	
 	/**

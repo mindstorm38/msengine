@@ -50,15 +50,18 @@ public class FontHandler implements ShaderSamplerObject {
 				
 				this.resourceMetadataSection = resourceMetadata.getMetadataSection("font");
 				
-				if ( this.resourceMetadataSection == null ) throw new IllegalStateException("Invalid or not found FontMetadataSection");
+				if ( this.resourceMetadataSection == null )
+					throw new IllegalStateException("Invalid or not found FontMetadataSection");
 				
 			}
 			
 			this.glyphs.clear();
 			
 			BufferedImage image = resource.getImage();
-			
 			resource.close();
+			
+			if (image == null)
+				throw new IllegalStateException("Failed to load image !");
 			
 			int imageWidth = image.getWidth();
 			int imageHeight = image.getHeight();
