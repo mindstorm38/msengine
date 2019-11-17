@@ -23,7 +23,7 @@ import io.sutil.StringUtils;
  * 
  * Object Serialization Format (OSF)
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public class OSF implements OSFSerializationContext, OSFDeserializationContext {

@@ -1,6 +1,7 @@
 package io.msengine.client.renderer.model;
 
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
 /**
  * 
@@ -15,7 +16,7 @@ public class ModelHandler {
 	private Matrix4f[] models = new Matrix4f[0];
 	
 	/**
-	 * @param listener {@link ModelApplyListener} to use for {@link ModelHandler#modelApply()}
+	 * @param listener {@link ModelApplyListener} to use for {@link ModelHandler#apply()}
 	 */
 	public ModelHandler(ModelApplyListener listener) {
 		

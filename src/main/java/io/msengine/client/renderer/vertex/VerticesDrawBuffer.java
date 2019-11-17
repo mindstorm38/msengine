@@ -5,8 +5,10 @@ import static org.lwjgl.opengl.GL11.glDrawArrays;
 import io.msengine.client.renderer.shader.ShaderManager;
 
 /**
- * 
- * @author Mindstorm38
+ *
+ *
+ *
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public class VerticesDrawBuffer extends DrawBuffer {

@@ -50,24 +50,46 @@ public class TextureObject implements ShaderSamplerObject {
 	
 	// Static \\
 	
+	/**
+	 * Get a texture unit ID.
+	 * @param idx The index of the texture unit (from 0 to 31 included).
+	 * @return The sampler unit ID (GL constant {@link org.lwjgl.opengl.GL13#GL_TEXTURE0} for example).
+	 */
 	public static int getTextureActive(int idx) {
 		if ( idx < 0 || idx >= TEXTURE_ACTIVE.length ) throw new IllegalArgumentException( "Invalid active texture index " + idx + ". Must be between 0 and " + ( TEXTURE_ACTIVE.length - 1 ) + "." );
 		return TEXTURE_ACTIVE[ idx ];
 	}
 	
+	/**
+	 * Bind a GL texture id to the current sampler unit.
+	 * @param id The GL texture id.
+	 */
 	public static void bindTexture(int id) {
 		glBindTexture( GL_TEXTURE_2D, id );
 	}
 	
+	/**
+	 * Bind a GL texture id (like {@link #bindTexture(int)}),
+	 * but before set active texture ({@link org.lwjgl.opengl.GL13#glActiveTexture(int)}) to the texture sampler unit idx (see {@link #getTextureActive(int)}).
+	 * @param id The GL texture ID.
+	 * @param active The index of the texture unit.
+	 */
 	public static void bindTexture(int id, int active) {
 		glActiveTexture( getTextureActive( active ) );
 		glBindTexture( GL_TEXTURE_2D, id );
 	}
 	
+	/**
+	 * Unbind current texture from current texture unit.
+	 */
 	public static void unbind() {
 		bindTexture( 0 );
 	}
 	
+	/**
+	 * Unbind the current texture in the specified texture unit.
+	 * @param active Texture unit index.
+	 */
 	public static void unbind(int active) {
 		bindTexture( 0, active );
 	}

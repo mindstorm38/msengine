@@ -9,6 +9,9 @@ import static org.lwjgl.opengl.GL20.*;
 
 import org.lwjgl.system.MemoryUtil;
 
+/**
+ * All value type accepted as uniforms.
+ */
 public enum ShaderValueType {
 	
 	INT		( MemoryUtil::memAllocInt, 1 ) {
@@ -87,7 +90,7 @@ public enum ShaderValueType {
 	public final int size;
 	public final int uboSize;
 	
-	private ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size, int uboSize) {
+	ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size, int uboSize) {
 		
 		this.createBufferFunction = createBufferFunction;
 		this.size = size;
@@ -95,10 +98,15 @@ public enum ShaderValueType {
 		
 	}
 	
-	private ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size) {
+	ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size) {
 		this( createBufferFunction, size, size );
 	}
 	
+	/**
+	 * Upload a uniform to a GL program at a specific location from a buffer.
+	 * @param location The location, required
+	 * @param buffer The buffer containing the data to be uploaded.
+	 */
 	public abstract void upload(int location, Buffer buffer);
 	
 }

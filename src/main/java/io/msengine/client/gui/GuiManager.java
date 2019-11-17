@@ -19,7 +19,7 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * 
  * A Scene Manager
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public class GuiManager implements WindowFramebufferSizeEventListener {

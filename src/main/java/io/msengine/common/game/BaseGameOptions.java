@@ -6,6 +6,16 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
+/**
+ * Base class for game options, contains :
+ * <ul>
+ *     <li>Base folder for for resources (default to 'assets')</li>
+ *     <li>Logger name (default to 'MSEngine')</li>
+ *     <li>Appdata directory (default to folder where the current JAR is running)</li>
+ *     <li>Options file path from appdata directory (default to 'options.json')</li>
+ *     <li>Resource namespace for the game (default to 'root')</li>
+ * </ul>
+ */
 public abstract class BaseGameOptions {
 	
 	private final Class<?> runningClass;

@@ -6,7 +6,7 @@ import io.sutil.math.MathHelper;
 
 /**
  * 
- * A {@link Camera2D} with smooth effect using {@link #setSpeed()}, {@link #update()} and {@link #updateViewMatrix(float)}.
+ * A {@link Camera2D} with smooth effect using {@link #setSpeed(float)}, {@link #update()} and {@link #updateViewMatrix(float)}.
  * 
  * @author Mindstorm38
  *

@@ -393,7 +393,7 @@ public class Window {
 	}
 	
 	/**
-	 * @param newVsync New VSync state for the window
+	 * @param vsync New VSync state for the window
 	 */
 	public void setVsync(boolean vsync) {
 		this.checkWindowState();
@@ -402,7 +402,7 @@ public class Window {
 	
 	/**
 	 * Non-force version of {@link #setFullscreen(boolean, boolean)}
-	 * @param newFullscreen Fullscreen state
+	 * @param fullscreen Fullscreen state
 	 */
 	public void setFullscreen(boolean fullscreen) {
 		this.setFullscreen( fullscreen, false );
@@ -410,7 +410,7 @@ public class Window {
 	
 	/**
 	 * Change window fullscreen state
-	 * @param newFullscreen Fullscreen state
+	 * @param fullscreen Fullscreen state
 	 * @param force Force window to the desired fullscreen state
 	 */
 	public void setFullscreen(boolean fullscreen, boolean force) {

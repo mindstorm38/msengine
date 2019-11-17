@@ -28,10 +28,11 @@ import io.sutil.CollectionUtils;
 import static io.msengine.common.util.GameLogger.LOGGER;
 
 /**
+ *
+ * Draw buffers are an high level abstraction way to upload java buffers that contains vertices data to OpenGL context.<br>
+ * They are bound at instantiation to a {@link ShaderManager} for linking with {@link VertexArrayFormat}
  * 
- * This is a binding of a VAO and some VBO depending on bound {@link ShaderManager} and {@link VertexArrayFormat}
- * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public class DrawBuffer {
@@ -39,7 +40,7 @@ public class DrawBuffer {
 	// Constants \\
 	
 	/**
-	 * Default primitive type used for drawing. Currently {@link GL11#GL_TRIANGLES}
+	 * Default primitive type used for drawing. Currently {@link GL11#GL_TRIANGLES}.
 	 */
 	public static final int DEFAULT_PRIMITIVE_TYPE = GL_TRIANGLES;
 	
@@ -83,12 +84,12 @@ public class DrawBuffer {
 		
 		// Attributes locations and states
 		
-		List<ShaderAttribute> attributes = shaderManager.getShaderAttributes();
+		final List<ShaderAttribute> attributes = shaderManager.getShaderAttributes();
 		
 		this.attributesLocations = new int[ attributes.size() ];
 		this.attributesStates = new boolean[ attributes.size() ];
 		
-		// Creating buffers
+		// Creating Vertex Arrays Objects and Vertex Buffer Object list.
 		
 		this.vao = glGenVertexArrays();
 		
@@ -230,7 +231,9 @@ public class DrawBuffer {
 		
 		this.checkDeleted();
 		
-		if ( currentVAOLocation == this.vao ) return;
+		if ( currentVAOLocation == this.vao )
+			return;
+		
 		glBindVertexArray( currentVAOLocation = this.vao );
 		
 	}

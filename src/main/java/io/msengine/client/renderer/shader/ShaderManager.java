@@ -14,8 +14,11 @@ import static org.lwjgl.opengl.GL31.*;
 import static io.msengine.common.util.GameLogger.LOGGER;
 
 /**
- * 
- * @author Mindstorm38
+ *
+ * This class is used to manage a group of both vertex and fragment
+ * shaders. And then
+ *
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public class ShaderManager implements ShaderUniformHandler {
@@ -63,10 +66,18 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * Constructor creating a shader manager with same vertex and fragment shaders identifiers as the shader identifier.
+	 * @param identifier The identifier of vertex, fragement shaders and the identifier of this object.
+	 */
 	public ShaderManager(String identifier) {
 		this( identifier, identifier, identifier );
 	}
 	
+	/**
+	 * Common method for constructor and {@link #delete()}.<br>
+	 * Reset fields : buitt, program, shaderLoaders.
+	 */
 	private void reset() {
 		
 		this.built = false;
@@ -76,18 +87,33 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * @return If the shader was built.
+	 */
 	public boolean wasBuilt() {
 		return this.built;
 	}
 	
+	/**
+	 * @throws IllegalStateException If the shader was already built.
+	 */
 	public void checkBuilt() {
 		if ( this.built ) throw new IllegalStateException("This shader is already built");
 	}
 	
+	/**
+	 * @throws IllegalStateException If the shader isn't built.
+	 */
 	public void checkNotBuilt() {
 		if ( !this.built ) throw new IllegalStateException("This shader isn't built");
 	}
 	
+	/**
+	 * Register a texture sampler (2D) from its identifier.<br>
+	 * Reminder : Samplers are simples 'sampler2D' uniforms in shaders.
+	 * @param identifier Sampler uniform identifier in shader.
+	 * @return This manager instance.
+	 */
 	public ShaderManager registerSampler(String identifier) {
 		
 		this.checkBuilt();
@@ -96,6 +122,12 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * Register an uniform from its identifier and its type.
+	 * @param identifier Uniform identifier in shader.
+	 * @param type Uniform data type.
+	 * @return This manager instance.
+	 */
 	public ShaderManager registerUniform(String identifier, ShaderValueType type) {
 		
 		this.checkBuilt();
@@ -104,6 +136,13 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * Register an attribute from a VertexElement.<br>
+	 * <u>Note that</u> the given element will not be mutated by the manager,
+	 * so it can be a constant, like {@link VertexElement#POSITION_2F}.
+	 * @param vertexElement The vertex element to add.
+	 * @return This manager instance.
+	 */
 	public ShaderManager registerAttribute(VertexElement vertexElement) {
 		
 		this.checkBuilt();
@@ -119,7 +158,13 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
-	public ShaderManager boundUniformBlock(ShaderUniformBlock uniformBlock) {
+	/**
+	 * <u><b>WORK IN PROGRESS</b></u><br>
+	 * Bind a uniform block to the shader.
+	 * @param uniformBlock The uniform block to bind.
+	 * @return This manager instance.
+	 */
+	public ShaderManager bindUniformBlock(ShaderUniformBlock uniformBlock) {
 		
 		this.checkBuilt();
 		
@@ -132,16 +177,29 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * @throws ShaderBuildException If program not successfuly linked.
+	 */
 	private void checkLinkStatus() {
+		
 		if ( glGetProgrami( this.program, GL_LINK_STATUS ) != GL_TRUE )
 			throw new ShaderBuildException( glGetProgramInfoLog( this.program ) );
+		
 	}
 	
+	/**
+	 * @throws ShaderBuildException If program not successfuly validated.
+	 */
 	private void checkValidateStatus() {
+		
 		if ( glGetProgrami( this.program, GL_VALIDATE_STATUS ) != GL_TRUE )
 			throw new ShaderBuildException( glGetProgramInfoLog( this.program ) );
+		
 	}
 	
+	/**
+	 * Build the shader manager, once built no sampler, no attribute and no uniforms can be added to it.
+	 */
 	public void build() {
 		
 		this.checkBuilt();
@@ -177,6 +235,9 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * Internal method to setup uniforms to GL.
+	 */
 	private void setupUniforms() {
 		
 		List<ShaderSampler> removedSamplers = new ArrayList<>();
@@ -219,6 +280,9 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * Internal method to setup attributes and get their GL location.
+	 */
 	private void setupAttributes() {
 		
 		for ( ShaderAttribute attribute : this.attributes ) {
@@ -239,6 +303,10 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * <u><b>WORK IN PROGRESS</b></u><br>
+	 * Setup uniform blocks.
+	 */
 	private void setupUniformBlocks() {
 		
 		for ( ShaderUniformBlock block : this.uniformBlocks ) {
@@ -266,6 +334,9 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * Set this manager's program as current to GL, used to draw on the bound framebuffer.
+	 */
 	public void use() {
 		
 		this.checkNotBuilt();
@@ -298,10 +369,16 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * @return True if the current used (see {@link #use()}) shader manager is this instance.
+	 */
 	public boolean isCurrent() {
 		return currentShaderManager == this;
 	}
 	
+	/**
+	 * Finish use of the shader program to GL.
+	 */
 	public void end() {
 		
 		this.checkNotBuilt();
@@ -316,12 +393,16 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * Delete the shader program to GL and reset using {@link #reset()}.
+	 */
 	public void delete() {
 		
 		if ( !this.built ) return;
 		
 		this.vertexShaderLoader.releaseShader();
 		this.fragmentShaderLoader.releaseShader();
+		
 		glDeleteProgram( this.program );
 		
 		for ( ShaderUniform uniform : this.uniforms )
@@ -344,7 +425,7 @@ public class ShaderManager implements ShaderUniformHandler {
 				return uniform;
 		return DEFAULT_UNIFORM;
 	}
-
+	
 	@Override
 	public ShaderUniformBase getShaderUniform(String identifier) {
 		for ( ShaderUniform uniform : this.uniforms )
@@ -353,6 +434,12 @@ public class ShaderManager implements ShaderUniformHandler {
 		return null;
 	}
 	
+	/**
+	 * Set a sampler object to be passed as 'sampler2D' uniform type, registered previously.<br>
+	 * If the sampler is currently used (see {@link #use()}), it directly use it as new sampler for the shader program.
+	 * @param identifier The sampler identifier, previously register using {@link #registerSampler(String)}.
+	 * @param object The object to use as sampler.
+	 */
 	public void setSamplerObject(String identifier, ShaderSamplerObject object) {
 		
 		ShaderSampler sampler;
@@ -385,73 +472,150 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 	}
 	
+	/**
+	 * Get a shader attribute object, created by {@link #registerAttribute(VertexElement)}.
+	 * @param identifier The attribute identifier.
+	 * @return The shader attribute object, or Null if no shader attribute associated with this identifier.
+	 */
 	public ShaderAttribute getShaderAttribute(String identifier) {
+		
 		for ( ShaderAttribute attribute : this.attributes )
 			if ( attribute.identifier.equals( identifier ) )
 				return attribute;
+			
 		return null;
+		
 	}
 	
+	/**
+	 * Get a shader attribute object, create by {@link #registerAttribute(VertexElement)}
+	 * @param vertexElement The attribute vertex element definition.
+	 * @return The shader attribute object, or Null if no shader attribute associated with this vertex element definition.
+	 */
 	public ShaderAttribute getShaderAttribute(VertexElement vertexElement) {
+		
 		for ( ShaderAttribute attribute : this.attributes )
 			if ( attribute.vertexElement.equals( vertexElement ) )
 				return attribute;
+			
 		return null;
+		
 	}
 	
+	/**
+	 * Get a shader attribute index in internal registration list.
+	 * @param identifier The attribute identifier.
+	 * @return Attribute index, or -1 if not found.
+	 */
 	public int getShaderAttributeIndex(String identifier) {
+		
 		for ( int i = 0; i < this.attributes.size(); i++ )
 			if ( this.attributes.get( i ).identifier.equals( identifier ) )
 				return i;
+			
 		return -1;
+		
 	}
 	
+	/**
+	 * Get a shader attribute index in internal registration list.
+	 * @param attribute The attribute instance, can be queried by
+	 * {@link #getShaderAttribute(String)} or {@link #getShaderAttribute(VertexElement)}.
+	 * @return Attribute index, or -1 if not found.
+	 */
 	public int getShaderAttributeIndex(ShaderAttribute attribute) {
 		return this.attributes.indexOf( attribute );
 	}
 	
+	/**
+	 * Get a shader attribute location (in GL program) from its vertex element definition.
+	 * @param vertexElement The vertex element definition of the attribute.
+	 * @return Attribute GL program location, or -1 if not found.
+	 */
 	public int getShaderAttributeLocation(VertexElement vertexElement) {
+		
 		for ( ShaderAttribute attribute : this.attributes )
 			if ( attribute.vertexElement.equals( vertexElement ) )
 				return attribute.location;
+			
 		return -1;
+		
 	}
 	
+	/**
+	 * Get a shader attribute location (in GL program) from its identifier.
+	 * @param identifier The attribute identifier.
+	 * @return Attribute GL program location, or -1 if not found.
+	 */
 	public int getShaderAttributeLocation(String identifier) {
+		
 		for ( ShaderAttribute attribute : this.attributes )
 			if ( attribute.identifier.equals( identifier ) )
 				return attribute.location;
+			
 		return -1;
+		
 	}
 	
+	/**
+	 * Get a shader attribute location (in GL program), and use a consumer to return it.
+	 * @param vertexElement The vertex element definition of the attribute.
+	 * @param locationConsumer The consumer to execute if the attribute was found.
+	 */
 	public void getShaderAttributeLocationSafe(VertexElement vertexElement, Consumer<Integer> locationConsumer) {
+		
 		int location = this.getShaderAttributeLocation( vertexElement );
-		if ( location != -1 ) locationConsumer.accept( location );
+		if ( location != -1 )  locationConsumer.accept( location );
+		
 	}
 	
+	/**
+	 * @return An immutable list of current shader attributes.
+	 */
 	public List<ShaderAttribute> getShaderAttributes() {
 		return this.attributesView;
 	}
 	
+	/**
+	 * @return Shader attribute count.
+	 */
 	public int getShaderAttributeCount() {
 		return this.attributes.size();
 	}
 	
+	/**
+	 * <u><b>WORK IN PROGRESS</b></u><br>
+	 * Get an uniform block from its identifier.
+	 * @param identifier The uniform block identifier.
+	 * @return
+	 */
 	public ShaderUniformBlock getUniformBlock(String identifier) {
+		
 		for ( ShaderUniformBlock block : this.uniformBlocks )
 			if ( identifier.equals( block.getIdentifier() ) )
 				return block;
+			
 		return null;
+		
 	}
 	
+	/**
+	 * @return GL program identifier.
+	 */
 	public int getProgram() {
 		return this.program;
 	}
 	
+	/**
+	 * @return Vertex {@link ShaderLoader}
+	 */
 	public ShaderLoader getVertexShaderLoader() {
 		return this.vertexShaderLoader;
 	}
 	
+	/**
+	 * @return Fragment {@link ShaderLoader}
+	 */
 	public ShaderLoader getFragmentShaderLoader() {
 		return this.fragmentShaderLoader;
 	}
