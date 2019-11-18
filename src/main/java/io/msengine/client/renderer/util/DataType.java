@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL11.*;
  * 
  * Enumeration of OpenGL data types
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public enum DataType {

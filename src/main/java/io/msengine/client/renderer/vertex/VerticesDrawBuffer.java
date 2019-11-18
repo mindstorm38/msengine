@@ -6,7 +6,8 @@ import io.msengine.client.renderer.shader.ShaderManager;
 
 /**
  *
- *
+ * Extension of a {@link DrawBuffer} to send to GL the attributes in the order
+ * they were given.
  *
  * @author Théo Rozier (Mindstorm38)
  *

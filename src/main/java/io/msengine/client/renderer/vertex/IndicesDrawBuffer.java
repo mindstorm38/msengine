@@ -10,8 +10,11 @@ import io.msengine.client.renderer.shader.ShaderManager;
 import io.msengine.client.renderer.util.BufferUsage;
 
 /**
- * 
- * @author Mindstorm38
+ *
+ * Extension of a {@link DrawBuffer} to send to GL the attributes using the defined indices
+ * buffer object.
+ *
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public class IndicesDrawBuffer extends DrawBuffer {

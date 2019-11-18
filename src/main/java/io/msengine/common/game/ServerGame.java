@@ -86,7 +86,7 @@ public abstract class ServerGame<SELF extends ServerGame<SELF, E>, E extends Ser
 
 	/**
 	 * Update a {@link GameTimed} implementation.
-	 * @param timed The implementation
+	 * @param timed The implementation.
 	 */
 	public void updateTimed(GameTimed timed) {
 		timed.setTime( this.now );

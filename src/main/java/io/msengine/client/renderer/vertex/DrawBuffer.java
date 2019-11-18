@@ -125,15 +125,24 @@ public class DrawBuffer {
 				
 				if ( this.attributesStates[ i ] = CollectionUtils.arrayContains( enabledVertexAttribsIdentifiers, attribute.getIdentifier() ) ) {
 					
+					// If the attribute is enbled, get all informations about it.
 					element = attribute.getVertexElement();
 					bufferFormat = format.getBufferForElement( element );
 					bufferIndex = format.getBufferIndex( bufferFormat );
 					
+					// If this attribute's vertex element's buffer is not initialized, generate a GL buffer.
 					if ( this.vbos[ bufferIndex ] == -1 )
 						this.vbos[ bufferIndex ] = glGenBuffers();
 					
+					// Bind a VBO at a specific index.
 					this.bindVbo( bufferIndex );
 					
+					// Specifiy the position and type of a vertex attribute in the VBO.
+					// If the buffer has more than one vertex element definition, it define offsets in the buffer.
+					// For example, if a buffer has 2 elements (in this order) : position (2f), color (4f); offsets are :
+					// - position (offset: 0, stride: 24)
+					// - color (offset: 8, stride: 24)
+					// Example buffer : [<xy0><rgba0><xy1><rgba1>...<xy(n)><rgba(n)>]
 					glVertexAttribPointer( attributeLocation, element.count, element.type.i, false, bufferFormat.size, bufferFormat.getElementOffset( element ) );
 					
 				}
@@ -142,6 +151,7 @@ public class DrawBuffer {
 			
 		}
 		
+		// To finish unbind last VBO, and the VAO.
 		unbindVbo();
 		unbindVao();
 		
@@ -166,7 +176,7 @@ public class DrawBuffer {
 	// - Shader Manager link
 	
 	/**
-	 * Throw an {@link IllegalStateException} if the shader manager linked to this buffer is not active
+	 * @throws IllegalStateException If the shader manager linked to this buffer is not active.
 	 */
 	protected void checkCurrentShaderManager() {
 		if ( !this.shaderManager.isCurrent() ) throw new IllegalStateException("The linked ShaderManager must be used to use it");
@@ -175,8 +185,7 @@ public class DrawBuffer {
 	// - Deleted
 	
 	/**
-	 * Throw an {@link IllegalStateException} if this buffer was deleted
-	 * @throws IllegalStateException if this buffer was deleted
+	 * @throws IllegalStateException If this buffer was deleted.
 	 */
 	protected void checkDeleted() {
 		if ( this.deleted ) throw new IllegalStateException("Unusable because it has been deleted.");
@@ -231,10 +240,8 @@ public class DrawBuffer {
 		
 		this.checkDeleted();
 		
-		if ( currentVAOLocation == this.vao )
-			return;
-		
-		glBindVertexArray( currentVAOLocation = this.vao );
+		if ( currentVAOLocation != this.vao )
+			glBindVertexArray( currentVAOLocation = this.vao );
 		
 	}
 	
@@ -279,7 +286,9 @@ public class DrawBuffer {
 		
 		if ( currentVBODrawBuffer == this && currentVBOIndex == vbo ) return;
 		
-		if ( this.vbos[ vbo ] == -1 ) throw new IllegalStateException( "Disabled Vertex Buffer" );
+		if ( this.vbos[ vbo ] == -1 )
+			throw new IllegalStateException( "Disabled Vertex Buffer" );
+		
 		glBindBuffer( GL_ARRAY_BUFFER, currentVBOLocation = this.vbos[ vbo ] );
 		
 		currentVBODrawBuffer = this;

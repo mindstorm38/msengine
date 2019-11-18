@@ -9,7 +9,7 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * 
  * Used to extends defaults OpenGL functions
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public class GLUtils {

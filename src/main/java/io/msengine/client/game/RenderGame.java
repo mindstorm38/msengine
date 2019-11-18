@@ -241,5 +241,5 @@ public abstract class RenderGame<SELF extends RenderGame<SELF, E>, E extends Ren
 	}
 	
 	protected abstract void render(float alpha);
-
+	
 }

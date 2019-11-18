@@ -117,24 +117,17 @@ public class VertexArrayFormat {
 		return CollectionUtils.arrayIndexOf( this.buffers, buffer );
 	}
 	
+	/**
+	 * Internal method to validate this VAO format.
+	 * @throws IllegalBufferFormatException If a vertex element definition if used multiple time, in different buffers.
+	 */
 	private void validate() {
 		
-		for ( VertexBufferFormat buffer : this.buffers ) {
-			
-			for ( VertexElement element : buffer.elements ) {
-				
-				for ( VertexBufferFormat _buffer : this.buffers ) {
-					
-					if ( _buffer == buffer ) continue;
-					
-					if ( _buffer.hasElement( element ) )
+		for ( VertexBufferFormat buffer : this.buffers )
+			for ( VertexElement element : buffer.elements )
+				for ( VertexBufferFormat _buffer : this.buffers )
+					if ( _buffer != buffer && _buffer.hasElement( element ) )
 						throw new IllegalBufferFormatException( "Element " + element.toString() + " present in multiple buffers" );
-					
-				}
-				
-			}
-			
-		}
 		
 	}
 	

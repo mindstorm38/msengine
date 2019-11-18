@@ -12,8 +12,20 @@ import org.lwjgl.system.MemoryUtil;
 import io.msengine.client.renderer.framebuffer.Framebuffer;
 import io.msengine.client.util.Utils;
 
+/**
+ * Helper to take screenshots from a {@link Framebuffer}.
+ */
 public class ScreenshotHelper {
-		
+	
+	/**
+	 * Take a screenshot an return a {@link BufferedImage} taken from a {@link Framebuffer} region.
+	 * @param framebuffer The framebuffer.
+	 * @param x The start x coordinates on the Framebuffer.
+	 * @param y The start y coordinates on the Framebuffer.
+	 * @param width The width of the capture on the Framebuffer.
+	 * @param height The height of the capture on the Framebuffer.
+	 * @return The screenshot image.
+	 */
 	public static BufferedImage takeScreenshot(Framebuffer framebuffer, int x, int y, int width, int height) {
 			
 		if ( framebuffer == null ) Framebuffer.unbind();
