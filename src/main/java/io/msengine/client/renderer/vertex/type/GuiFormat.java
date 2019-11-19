@@ -13,9 +13,7 @@ public class GuiFormat extends VertexArrayFormat {
 	public static final String GUI_TEX_COORD = TEX_COORD_2F.getIdentifier();
 	
 	private GuiFormat() {
-		
-		super( POSITION_2F, COLOR_4F, TEX_COORD_2F );
-		
+		super(POSITION_2F, COLOR_4F, TEX_COORD_2F);
 	}
 	
 }

@@ -5,9 +5,10 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * 
- * Used to replace deprecated {@link GL11#glPushMatrix()} and {@link GL11#glPopMatrix()}.
+ * Used to replace deprecated {@link GL11#glPushMatrix()} and {@link GL11#glPopMatrix()}
+ * and the old render pipeline. You can now use this to update shader's model matrices.
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  * 
  */
 public class ModelHandler {
@@ -50,7 +51,7 @@ public class ModelHandler {
 	}
 	
 	/**
-	 * Translate current pushed matrix. Shortcut for {@link Matrix4f#translate(x, y, z)}
+	 * Translate current pushed matrix. Shortcut for {@link Matrix4f#translate(float, float, float)}
 	 * @param x Translate X parameter
 	 * @param y Translate Y parameter
 	 * @param z Translate Z parameter
@@ -118,7 +119,7 @@ public class ModelHandler {
 	}
 	
 	/**
-	 * Scale current pushed matrix. Shortcut {@link Matrix4f#scale(x, y, z)}
+	 * Scale current pushed matrix. Shortcut {@link Matrix4f#scale(float, float, float)}
 	 * @param x Scale X parameter
 	 * @param y Scale Y parameter
 	 * @param z Scale Z parameter
