@@ -83,7 +83,7 @@ public class FramebufferDisplayShaderManager extends ShaderManager implements Ga
 		
 	}
 	
-	private final void deleteBuffer() {
+	private void deleteBuffer() {
 		
 		if ( this.buffer != null ) {
 			

@@ -420,18 +420,24 @@ public class ShaderManager implements ShaderUniformHandler {
 	
 	@Override
 	public ShaderUniformBase getShaderUniformOrDefault(String identifier) {
+		
 		for ( ShaderUniform uniform : this.uniforms )
 			if ( uniform.usable() && uniform.identifier.equals( identifier ) )
 				return uniform;
+			
 		return DEFAULT_UNIFORM;
+		
 	}
 	
 	@Override
 	public ShaderUniformBase getShaderUniform(String identifier) {
+		
 		for ( ShaderUniform uniform : this.uniforms )
 			if ( uniform.usable() && uniform.identifier.equals( identifier ) )
 				return uniform;
+			
 		return null;
+		
 	}
 	
 	/**
