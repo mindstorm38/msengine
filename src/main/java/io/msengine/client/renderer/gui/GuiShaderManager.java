@@ -46,12 +46,14 @@ public class GuiShaderManager extends ShaderManager {
 		this.getShaderAttributeLocationSafe( COLOR_4F, location -> glVertexAttrib4f( location, 1.0f, 1.0f, 1.0f, 1.0f ) );
 		this.getShaderAttributeLocationSafe( TEX_COORD_2F, location -> glVertexAttrib2f( location, 0.0f, 0.0f ) );
 		
+		this.setTextureSampler(null);
+		
 	}
 	
 	public void setTextureSampler(ShaderSamplerObject sampler) {
 		
 		this.setSamplerObject( GUI_TEXTURE_SAMPLER, sampler );
-		this.getShaderUniformOrDefault( GUI_TEXTURE_ENABLED ).set( sampler == null ? 0 : 1 );
+		this.getShaderUniformOrDefault( GUI_TEXTURE_ENABLED ).set(sampler != null);
 		
 	}
 	

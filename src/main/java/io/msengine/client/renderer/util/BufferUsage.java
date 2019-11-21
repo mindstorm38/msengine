@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL15.*;
  * 
  * Enumeration of defaults OpenGL buffer usage
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public enum BufferUsage {
@@ -23,10 +23,8 @@ public enum BufferUsage {
 	
 	public final int i;
 	
-	private BufferUsage(int i) {
-		
+	BufferUsage(int i) {
 		this.i = i;
-		
 	}
 	
 }

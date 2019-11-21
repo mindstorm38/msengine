@@ -121,6 +121,8 @@ public abstract class BaseGame<SELF extends BaseGame<SELF, O>, O extends BaseGam
 			
 			this.setuploop();
 			
+			this.logger.info("Game started");
+			
 			while ( this.running ) {
 				
 				this.profiler.startSection("root");
@@ -130,8 +132,6 @@ public abstract class BaseGame<SELF extends BaseGame<SELF, O>, O extends BaseGam
 				this.profiler.endSection();
 				
 			}
-			
-			this.logger.info("Game started");
 			
 		} catch ( Throwable e ) {
 			

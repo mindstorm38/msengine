@@ -7,6 +7,13 @@ import org.joml.Vector4f;
 
 import io.sutil.LazyLoadValue;
 
+/**
+ *
+ * Represent a RGBA color.
+ *
+ * @author Théo Rozier
+ *
+ */
 public class Color {
 	
 	// Constants \\

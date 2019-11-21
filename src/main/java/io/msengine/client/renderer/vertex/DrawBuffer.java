@@ -15,9 +15,11 @@ import static io.msengine.client.renderer.util.GLUtils.glSetVertexAttribArray;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.lwjgl.opengl.GL11;
 
 import io.msengine.client.renderer.shader.ShaderAttribute;
@@ -231,6 +233,23 @@ public class DrawBuffer {
 		return this.shaderManager.getShaderAttributeLocation( identifier );
 	}
 	
+	/**
+	 * @return List of enabled attributes in this draw buffer.
+	 */
+	public List<String> getAttributesStates() {
+		
+		List<String> attributes = new ArrayList<>();
+		ShaderAttribute attr;
+		
+		for (int i = 0; i < this.attributesStates.length; i++)
+			if (this.attributesStates[i])
+				if ((attr = this.shaderManager.getShaderAttribute(this.attributesLocations[i])) != null)
+					attributes.add(attr.getIdentifier());
+				
+		return attributes;
+		
+	}
+	
 	// - Vertex Arrays Object
 	
 	/**
@@ -273,6 +292,16 @@ public class DrawBuffer {
 	}
 	
 	/**
+	 * Get a VBO identifier at specified index.
+	 * @param index The VBO index.
+	 * @return The VBO identifier.
+	 */
+	public String getVboIdentifier(int index) {
+		this.checkVboIndex(index);
+		return this.vbosIdentifiers[index];
+	}
+	
+	/**
 	 * Bind a Vertex Buffer Object (VBO)
 	 * @param vbo The VBO index in this buffer (see {@link #getVboIndex(String)})
 	 * @throws IllegalArgumentException If this buffer doesn't exists in the {@link #format}
@@ -287,7 +316,7 @@ public class DrawBuffer {
 		if ( currentVBODrawBuffer == this && currentVBOIndex == vbo ) return;
 		
 		if ( this.vbos[ vbo ] == -1 )
-			throw new IllegalStateException( "Disabled Vertex Buffer" );
+			throw new IllegalStateException( "Disabled Vertex Buffer " + vbo + " : '" + this.vbosIdentifiers[vbo] + "'" );
 		
 		glBindBuffer( GL_ARRAY_BUFFER, currentVBOLocation = this.vbos[ vbo ] );
 		

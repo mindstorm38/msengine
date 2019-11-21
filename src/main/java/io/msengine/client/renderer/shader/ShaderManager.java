@@ -494,7 +494,7 @@ public class ShaderManager implements ShaderUniformHandler {
 	}
 	
 	/**
-	 * Get a shader attribute object, create by {@link #registerAttribute(VertexElement)}
+	 * Get a shader attribute object, create by {@link #registerAttribute(VertexElement)}.
 	 * @param vertexElement The attribute vertex element definition.
 	 * @return The shader attribute object, or Null if no shader attribute associated with this vertex element definition.
 	 */
@@ -503,6 +503,25 @@ public class ShaderManager implements ShaderUniformHandler {
 		for ( ShaderAttribute attribute : this.attributes )
 			if ( attribute.vertexElement.equals( vertexElement ) )
 				return attribute;
+			
+		return null;
+		
+	}
+	
+	/**
+	 * Get a shader attribute object, create bu {@link #registerAttribute(VertexElement)}
+	 * from its built location, error thrown if shader not built.
+	 * @param location The known attribute location.
+	 * @return The shader attribute if found at this location, else Null.
+	 * @throws IllegalStateException If the shader isn't built.
+	 */
+	public ShaderAttribute getShaderAttribute(int location) {
+		
+		this.checkNotBuilt();
+		
+		for (ShaderAttribute attr : this.attributes)
+			if (attr.location == location)
+				return attr;
 			
 		return null;
 		
@@ -593,7 +612,7 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * <u><b>WORK IN PROGRESS</b></u><br>
 	 * Get an uniform block from its identifier.
 	 * @param identifier The uniform block identifier.
-	 * @return
+	 * @return Found uniform block, or Null if not found.
 	 */
 	public ShaderUniformBlock getUniformBlock(String identifier) {
 		

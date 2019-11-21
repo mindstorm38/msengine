@@ -209,7 +209,7 @@ public class Window {
 	}
 	
 	/**
-	 * Set icons of the window, only used in {@link #start()}
+	 * Set icons of the window, only used in {@link #start(String)}
 	 */
 	private void setIcons() {
 		
@@ -571,6 +571,13 @@ public class Window {
 	public boolean isMouseButtonPressed(int buttonCode) {
 		this.checkWindowState();
 		return glfwGetMouseButton( this.id, buttonCode ) == GLFW_PRESS;
+	}
+	
+	/**
+	 * @return Current window time.
+	 */
+	public double getTime() {
+		return glfwGetTime();
 	}
 	
 	// - Listeners

@@ -10,10 +10,8 @@ public enum TextureFilterMode {
 	
 	public final int i;
 	
-	private TextureFilterMode(int i) {
-		
+	TextureFilterMode(int i) {
 		this.i = i;
-		
 	}
 	
 }
