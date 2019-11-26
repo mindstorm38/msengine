@@ -18,9 +18,9 @@ public abstract class BasicShaderManager extends ShaderManager {
 	public static final String BASIC_TEXTURE_SAMPLER = "texture_sampler";
 	public static final String BASIC_TEXTURE_ENABLED = "texture_enabled";
 	
-	public BasicShaderManager(String identifier, String vertexShaderIdentifier, VertexElement position) {
+	public BasicShaderManager(String identifier, String vertexShaderIdentifier, String fragmentShaderIdentifier, VertexElement position) {
 		
-		super(identifier, vertexShaderIdentifier, "basic");
+		super(identifier, vertexShaderIdentifier, fragmentShaderIdentifier);
 		
 		this.registerAttribute(position);
 		this.registerAttribute(VertexElement.COLOR_4F);
@@ -30,6 +30,10 @@ public abstract class BasicShaderManager extends ShaderManager {
 		this.registerUniform(BASIC_TEXTURE_ENABLED, ShaderValueType.INT);
 		this.registerSampler(BASIC_TEXTURE_SAMPLER);
 		
+	}
+	
+	public BasicShaderManager(String identifier, String vertexShaderIdentifier, VertexElement position) {
+		this(identifier, vertexShaderIdentifier, "basic", position);
 	}
 	
 	@Override

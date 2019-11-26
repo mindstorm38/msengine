@@ -10,7 +10,7 @@ uniform vec4 global_color;
 uniform int texture_enabled;
 
 void main() {
-	
-	frag_color = (texture_enabled * texture(texture_sampler, out_tex_coord) + abs(texture_enabled - 1.0)) * out_color * global_color;
+
+	frag_color = mix(vec4(1.0), texture(texture_sampler, out_tex_coord), texture_enabled) * out_color * global_color;
 	
 }

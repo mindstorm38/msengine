@@ -7,6 +7,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.lwjgl.glfw.Callbacks;
@@ -310,6 +311,17 @@ public class Window {
 	 */
 	public WindowCursor getCursor() {
 		return this.cursor;
+	}
+	
+	/**
+	 * Set cursor mode.
+	 * @param cursorMode Cursor mode.
+	 */
+	public void setCursorMode(CursorMode cursorMode) {
+		
+		this.checkWindowState();
+		glfwSetInputMode(this.getWindowId(), GLFW_CURSOR, Objects.requireNonNull(cursorMode).nativ);
+		
 	}
 	
 	/**

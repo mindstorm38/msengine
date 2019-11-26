@@ -25,9 +25,8 @@ public class TextureMap extends TextureMapBase {
 	
 	// Constants \\
 	
-	public static final Function<String, String> PNG_FILTER = path -> {
-		return path.endsWith(".png") ? path.substring( 0, path.length() - 4 ) : null;
-	};
+	public static final Function<String, String> PNG_FILTER = path ->
+			path.endsWith(".png") ? path.substring( 0, path.length() - 4 ) : null;
 	
 	// Static \\
 	

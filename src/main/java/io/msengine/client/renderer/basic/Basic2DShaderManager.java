@@ -14,6 +14,14 @@ public class Basic2DShaderManager extends BasicShaderManager {
 		super(identifier, "basic2d", VertexElement.POSITION_2F);
 	}
 	
+	public Basic2DShaderManager(String identifier, String fragmentShaderIdentifier) {
+		super(identifier, "basic2d", fragmentShaderIdentifier, VertexElement.POSITION_2F);
+	}
+	
+	public Basic2DShaderManager(String identifier, String vertexShaderIdentifier, String fragmentShaderIdentifier) {
+		super(identifier, vertexShaderIdentifier, fragmentShaderIdentifier, VertexElement.POSITION_2F);
+	}
+	
 	@Override
 	public IndicesDrawBuffer createBasicDrawBuffer(boolean color, boolean texcoords) {
 		return new IndicesDrawBuffer(this, BASIC2D, CollectionUtils.arrayStringConditional(VERTEX_ATTRIBS, new boolean[]{true, color, texcoords}));

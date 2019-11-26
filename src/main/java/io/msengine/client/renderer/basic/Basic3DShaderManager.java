@@ -14,6 +14,14 @@ public class Basic3DShaderManager extends BasicShaderManager {
 		super(identifier, "basic3d", VertexElement.POSITION_3F);
 	}
 	
+	public Basic3DShaderManager(String identifier, String fragmentShaderIdentifier) {
+		super(identifier, "basic3d", fragmentShaderIdentifier, VertexElement.POSITION_3F);
+	}
+	
+	public Basic3DShaderManager(String identifier, String vertexShaderIdentifier, String fragmentShaderIdentifier) {
+		super(identifier, vertexShaderIdentifier, fragmentShaderIdentifier, VertexElement.POSITION_3F);
+	}
+	
 	@Override
 	public IndicesDrawBuffer createBasicDrawBuffer(boolean color, boolean texcoords) {
 		return new IndicesDrawBuffer(this, BASIC3D, CollectionUtils.arrayStringConditional(VERTEX_ATTRIBS, new boolean[]{true, color, texcoords}));

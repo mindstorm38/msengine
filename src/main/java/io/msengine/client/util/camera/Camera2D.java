@@ -6,7 +6,7 @@ import org.joml.Matrix4f;
  * 
  * A 2D camera used to store camera position, rotation and scale.
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
 public class Camera2D {
