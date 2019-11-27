@@ -92,7 +92,7 @@ public class SeedSimplexNoise {
 	
 	// Current noise seed.
 	private final long seed;
-	private final byte[] p = new byte[pSupply.length];
+	private final byte[] p;
 	private final byte[] perm = new byte[512];
 	private final byte[] permMod12 = new byte[512];
 	
@@ -104,6 +104,8 @@ public class SeedSimplexNoise {
 		this.seed = seed;
 		
 		Random rand = new Random(seed);
+		
+		p = pSupply.clone();
 		
 		int from, to;
 		byte tmp;
