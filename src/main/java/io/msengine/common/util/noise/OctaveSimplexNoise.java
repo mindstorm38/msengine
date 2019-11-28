@@ -23,15 +23,19 @@ public class OctaveSimplexNoise {
 		float freq = scale;
 		float ampl = 1f;
 		
+		float totalAmpl = 1f;
+		
 		for (SeedSimplexNoise simplex : this.noises) {
 		
-			noise += simplex.normnoise(x * freq, y * freq) * ampl;
+			noise += simplex.noise(x * freq, y * freq) * ampl;
 			ampl *= this.persistance;
 			freq *= this.lacunarity;
 			
+			totalAmpl += ampl;
+			
 		}
 		
-		return noise;
+		return noise / totalAmpl;
 	
 	}
 
