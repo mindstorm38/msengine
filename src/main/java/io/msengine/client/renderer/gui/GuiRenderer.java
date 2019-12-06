@@ -146,6 +146,7 @@ public class GuiRenderer implements ModelApplyListener {
 		
 		if ( this.rendering ) throw new IllegalStateException( "GuiRenderer is already rendering" );
 		
+		glEnable(GL_BLEND);
 		BlendMode.TRANSPARENCY.use();
 		
 		this.shaderManager.use();
