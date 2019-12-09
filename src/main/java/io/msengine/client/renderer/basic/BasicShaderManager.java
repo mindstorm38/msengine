@@ -23,7 +23,7 @@ public abstract class BasicShaderManager extends ShaderManager {
 		super(identifier, vertexShaderIdentifier, fragmentShaderIdentifier);
 		
 		this.registerAttribute(position);
-		this.registerAttribute(VertexElement.COLOR_4F);
+		this.registerAttribute(VertexElement.COLOR_3F);
 		this.registerAttribute(VertexElement.TEX_COORD_2F);
 		
 		this.registerUniform(BASIC_GLOBAL_MATRIX, ShaderValueType.MAT4);
@@ -41,7 +41,7 @@ public abstract class BasicShaderManager extends ShaderManager {
 		
 		super.build();
 		
-		this.getShaderAttributeLocationSafe(VertexElement.COLOR_4F, loc -> glVertexAttrib4f(loc, 1f, 1f, 1f, 1f));
+		this.getShaderAttributeLocationSafe(VertexElement.COLOR_3F, loc -> glVertexAttrib3f(loc, 1f, 1f, 1f));
 		this.getShaderAttributeLocationSafe(VertexElement.TEX_COORD_2F, loc -> glVertexAttrib2f(loc, 0f, 0f));
 		
 		this.setTextureSampler(null);

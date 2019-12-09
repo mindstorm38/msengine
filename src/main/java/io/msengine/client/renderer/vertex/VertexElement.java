@@ -15,6 +15,7 @@ public class VertexElement {
 	
 	public static final VertexElement POSITION_2F		= new VertexElement("position",       DataType.FLOAT, 2);
 	public static final VertexElement POSITION_3F       = new VertexElement("position",       DataType.FLOAT, 3);
+	public static final VertexElement COLOR_3F          = new VertexElement("color",          DataType.FLOAT, 3);
 	public static final VertexElement COLOR_4F			= new VertexElement("color",          DataType.FLOAT, 4);
 	public static final VertexElement TEX_COORD_2F		= new VertexElement("tex_coord",      DataType.FLOAT, 2);
 	public static final VertexElement OCCL_TEX_COORD_2F	= new VertexElement("occl_tex_coord", DataType.FLOAT, 2);
