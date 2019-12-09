@@ -16,7 +16,7 @@ public class BasicFormat extends VertexArrayFormat {
 	public static final String BASIC3D_POSITION  = POSITION_3F.getIdentifier();
 	
 	private BasicFormat(VertexElement position) {
-		super(position, COLOR_4F, TEX_COORD_2F);
+		super(position, COLOR_3F, TEX_COORD_2F);
 	}
 	
 }
