@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import io.msengine.client.renderer.texture.metadata.AnimationMetadataSection;
 import io.sutil.registry.NamespaceRegistry;
 
 public class MetadataSerializer {
@@ -30,8 +31,12 @@ public class MetadataSerializer {
 		
 		this.builder = new GsonBuilder();
 		
-		this.registerMetadataSectionType( new FontMetadataSection.Serializer(), FontMetadataSection.class );
+		this.registerMetadataSectionType(new FontMetadataSection.Serializer(), FontMetadataSection.class);
 		
+	}
+	
+	public boolean hasMetadataSectionType(Class<AnimationMetadataSection> sectionClass) {
+		return this.metadataSectionSerializerRegistry.containsValue(sectionClass);
 	}
 	
 	public <T extends MetadataSection> void registerMetadataSectionType(MetadataSectionSerializer<T> serializer, Class<T> clazz) {

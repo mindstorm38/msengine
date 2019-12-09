@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class TextureMapBase extends TextureLoadable {
+public abstract class TextureMapBase<T extends TextureMapTile> extends TextureLoadable {
 	
-	protected final Map<String, TextureMapTile> atlasTiles;
+	protected final Map<String, T> atlasTiles;
 	
 	public TextureMapBase(String path) {
 		
@@ -16,11 +16,11 @@ public abstract class TextureMapBase extends TextureLoadable {
 		
 	}
 	
-	public TextureMapTile getTile(String path) {
+	public T getTile(String path) {
 		return this.atlasTiles.get( path );
 	}
 	
-	public Map<String, TextureMapTile> getTiles() {
+	public Map<String, T> getTiles() {
 		return Collections.unmodifiableMap( this.atlasTiles );
 	}
 	

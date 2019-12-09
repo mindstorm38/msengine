@@ -4,11 +4,19 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 
 import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import io.msengine.client.renderer.shader.ShaderSamplerObject;
 import io.msengine.client.util.Utils;
 
+/**
+ *
+ * TextureObject is the base wrapper class for native OpenGL textures.
+ *
+ * @author Theo Rozier
+ *
+ */
 public class TextureObject implements ShaderSamplerObject {
 	
 	// Constants \\
@@ -158,14 +166,26 @@ public class TextureObject implements ShaderSamplerObject {
 	
 	public void upload(BufferedImage image, int x, int y, int width, int height) {
 		
+		if ((x + width) > this.width || (y + height) > this.height)
+			throw new IndexOutOfBoundsException( "Max size of texture reached" );
+		
 		this.bind();
 		
-		if ( ( x + width ) > this.width || ( y + height ) > this.height ) throw new IndexOutOfBoundsException( "Max size of texture reached" );
-		
 		// Uploading sub image from read pixels
-		glTexSubImage2D( GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, Utils.getImageBuffer( image, x, y, width, height ) );
+		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, Utils.getImageBuffer(image, x, y, width, height));
 		
 		// Unbinding current texture
+		unbind();
+		
+	}
+	
+	public void upload(ByteBuffer rawBuffer, int x, int y, int width, int height) {
+		
+		if ((x + width) > this.width || (y + height) > this.height)
+			throw new IndexOutOfBoundsException( "Max size of texture reached" );
+		
+		this.bind();
+		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rawBuffer);
 		unbind();
 		
 	}

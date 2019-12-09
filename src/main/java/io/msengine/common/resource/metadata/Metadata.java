@@ -69,11 +69,12 @@ public class Metadata {
 			
 			try {
 				
-				ret = (A) this.serializer.parseMetadataSection( section, this.json );
+				ret = this.serializer.parseMetadataSection( section, this.json );
 				
-				if ( ret != null ) this.sections.put( section, ret );
+				if ( ret != null )
+					this.sections.put( section, ret );
 				
-			} catch (Exception e) {}
+			} catch (Exception ignored) {}
 			
 		}
 		

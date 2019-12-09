@@ -5,6 +5,13 @@ import java.io.IOException;
 import io.msengine.client.renderer.shader.ShaderSamplerObject;
 import io.msengine.common.resource.ResourceManager;
 
+/**
+ *
+ * Texture is a basic class for all high-level textures types.
+ *
+ * @author Theo Rozier
+ *
+ */
 public abstract class Texture implements ShaderSamplerObject {
 	
 	// Class \\

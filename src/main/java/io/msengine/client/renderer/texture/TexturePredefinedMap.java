@@ -12,10 +12,10 @@ import io.sutil.StreamUtils;
  * 
  * A predefined map of tiles.
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
-public class TexturePredefinedMap extends TextureMapBase {
+public class TexturePredefinedMap extends TextureMapBase<TextureMapTile> {
 	
 	public static final Function<Integer, String> DEFAULT_FRAME_PATH_BUILDER = ( i ) -> "frame_" + i;
 	

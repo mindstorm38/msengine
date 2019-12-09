@@ -2,14 +2,14 @@ package io.msengine.client.renderer.texture;
 
 public class TextureMapTile {
 	
-	public final TextureMapBase map;
+	public final TextureMapBase<?> map;
 	
 	public final float x;
 	public final float y;
 	public final float width;
 	public final float height;
 	
-	TextureMapTile(TextureMapBase map, float x, float y, float width, float height) {
+	TextureMapTile(TextureMapBase<?> map, float x, float y, float width, float height) {
 		
 		this.map = map;
 		this.x = x;

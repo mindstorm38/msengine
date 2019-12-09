@@ -5,6 +5,6 @@ import com.google.gson.JsonSerializer;
 
 public interface MetadataSectionSerializer<T extends MetadataSection> extends JsonDeserializer<T>, JsonSerializer<T> {
 	
-	public String getSectionIdentifier();
+	String getSectionIdentifier();
 	
 }

@@ -26,11 +26,21 @@ public class FontMetadataSection implements MetadataSection {
 		
 	}
 	
-	public int getHeight() { return this.height; }
-	public Map<Character, FontMetadataGlyph> getGlyphs() { return this.glyphs; }
+	public int getHeight() {
+		return this.height;
+	}
+	
+	public Map<Character, FontMetadataGlyph> getGlyphs() {
+		return this.glyphs;
+	}
 	
 	public static class Serializer implements MetadataSectionSerializer<FontMetadataSection> {
-
+		
+		@Override
+		public String getSectionIdentifier() {
+			return "font";
+		}
+		
 		@Override
 		public FontMetadataSection deserialize(JsonElement jsonRaw, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 			
@@ -66,9 +76,7 @@ public class FontMetadataSection implements MetadataSection {
 						
 					}
 					
-				} catch (Exception e) {
-					continue;
-				}
+				} catch (Exception ignored) {}
 				
 			}
 			
@@ -102,11 +110,6 @@ public class FontMetadataSection implements MetadataSection {
 			
 			return json;
 			
-		}
-
-		@Override
-		public String getSectionIdentifier() {
-			return "font";
 		}
 		
 	}
