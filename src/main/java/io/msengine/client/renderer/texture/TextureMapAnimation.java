@@ -33,10 +33,12 @@ public class TextureMapAnimation {
 	
 	public void tick() {
 		
-		if ((++this.tickCounter) == this.tickSpeed) {
+		if ((++this.tickCounter) >= this.tickSpeed) {
 			
 			this.frameCounter = (++this.frameCounter) % this.framesCount;
 			this.uploadFrame();
+			
+			this.tickCounter = 0;
 			
 		}
 		
