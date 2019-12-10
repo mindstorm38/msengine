@@ -154,7 +154,7 @@ public class TextureMap extends TextureMapBase<TextureMapTile> {
 				int width = sprite.getWidth();
 				int height = sprite.getHeight();
 				
-				atlasGraphics.drawImage( bi, x, y, null ); // Center
+				atlasGraphics.drawImage( bi, x, y, width, height, null ); // Center
 				atlasGraphics.drawImage( bi, x - 1, y, x, y + height, 0, 0, 1, height, null ); // Left
 				atlasGraphics.drawImage( bi, x, y + height, x + width, y + height + 1, 0, height - 1, width, height, null ); // Bottom
 				atlasGraphics.drawImage( bi, x + width, y, x + width + 1, y + height, width - 1, 0, width, height, null ); // Right
