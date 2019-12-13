@@ -85,6 +85,13 @@ public class Color {
 		this.a = 1f;
 	}
 	
+	public void setAll(int r255, int g255, int b255) {
+		this.r = r255 / 255f;
+		this.g = g255 / 255f;
+		this.b = b255 / 255f;
+		this.a = 1f;
+	}
+	
 	public void setAll(Color color) {
 		this.r = color.r;
 		this.g = color.g;
