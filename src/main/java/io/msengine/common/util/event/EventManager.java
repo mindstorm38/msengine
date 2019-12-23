@@ -37,7 +37,7 @@ public class EventManager<E extends BaseEvent> {
 		
 	}
 	
-	private <C extends E> void fireEvent(C event) {
+	public <C extends E> void fireEvent(C event) {
 	
 		event.setManager(this);
 		
