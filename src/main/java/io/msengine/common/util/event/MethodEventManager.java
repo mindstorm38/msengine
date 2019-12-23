@@ -30,12 +30,20 @@ public class MethodEventManager {
 		return (List<A>) this.eventListeners.computeIfAbsent(listenerClass, cl -> new ArrayList<A>());
 	}
 	
-	public <A> void addEventListener(A listener) {
-		this.getListenerGroup(this.checkClassAllowed((Class<A>) listener.getClass())).add(listener);
+	public <A> void addEventListener(Class<A> clazz, A listener) {
+		this.getListenerGroup(this.checkClassAllowed(clazz)).add(listener);
 	}
 	
-	public void removeEventListener(Object listener) {
-		this.getListenerGroup(this.checkClassAllowed(listener.getClass())).remove(listener);
+	public <A> void addEventListener(A listener) {
+		this.addEventListener((Class<A>) listener.getClass(), listener);
+	}
+	
+	public <A> void removeEventListener(Class<A> clazz, A listener) {
+		this.getListenerGroup(this.checkClassAllowed(clazz)).remove(listener);
+	}
+	
+	public <A> void removeEventListener(A listener) {
+		this.removeEventListener((Class<A>) listener.getClass(), listener);
 	}
 	
 	public <A> void fireListeners(Class<A> listenerClass, Consumer<A> listenerCaller) {
