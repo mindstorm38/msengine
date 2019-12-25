@@ -13,8 +13,15 @@ import org.lwjgl.opengl.GL11;
  */
 public class ModelHandler {
 	
+	private static final int INITIAL_CAPACITY = 16;
+	
 	private final ModelApplyListener listener;
-	private Matrix4f[] models = new Matrix4f[0];
+	private final Matrix4f matrix;
+	
+	private float[] models = new float[INITIAL_CAPACITY];
+	private int step = 0;
+	
+	private Matrix4f[] modelsMatrices = new Matrix4f[0];
 	
 	/**
 	 * @param listener {@link ModelApplyListener} to use for {@link ModelHandler#apply()}
@@ -22,6 +29,7 @@ public class ModelHandler {
 	public ModelHandler(ModelApplyListener listener) {
 		
 		this.listener = listener;
+		this.matrix = new Matrix4f();
 		
 	}
 	
@@ -33,18 +41,40 @@ public class ModelHandler {
 	 */
 	public ModelHandler push() {
 		
-		if ( this.models.length == 0 ) {
+		if (this.step == 0) {
 			
-			this.models = new Matrix4f[] { new Matrix4f() };
+			this.matrix.identity();
+			this.step = 1;
 			
 		} else {
 			
-			Matrix4f[] newModels = new Matrix4f[ this.models.length + 1 ];
-			System.arraycopy( this.models, 0, newModels, 0, this.models.length );
-			newModels[ this.models.length ] = new Matrix4f( newModels[ this.models.length - 1 ] );
-			this.models = newModels;
+			int neededSize = this.step << 4;
+			
+			if (this.models.length < neededSize) {
+				float[] nmodels = new float[neededSize];
+				System.arraycopy(this.models, 0, nmodels, 0, this.models.length);
+				this.models = nmodels;
+			}
+			
+			this.matrix.get(this.models, neededSize - 16);
+			++this.step;
 			
 		}
+		
+		/*
+		if ( this.modelsMatrices.length == 0 ) {
+			
+			this.modelsMatrices = new Matrix4f[] { new Matrix4f() };
+			
+		} else {
+			
+			Matrix4f[] newModels = new Matrix4f[ this.modelsMatrices.length + 1 ];
+			System.arraycopy( this.modelsMatrices, 0, newModels, 0, this.modelsMatrices.length );
+			newModels[ this.modelsMatrices.length ] = new Matrix4f( newModels[ this.modelsMatrices.length - 1 ] );
+			this.modelsMatrices = newModels;
+			
+		}
+		*/
 		
 		return this;
 		
@@ -60,8 +90,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler translate(float x, float y, float z) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].translate( x, y, z );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].translate( x, y, z );
+		this.matrix.translate(x, y, z);
 		return this;
 		
 	}
@@ -84,8 +115,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler translateX(float x) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].translate( x, 0, 0 );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].translate( x, 0, 0 );
+		this.matrix.translate(x, 0, 0);
 		return this;
 		
 	}
@@ -98,8 +130,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler translateY(float y) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].translate( 0, y, 0 );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].translate( 0, y, 0 );
+		this.matrix.translate(0, y, 0);
 		return this;
 		
 	}
@@ -112,8 +145,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler translateZ(float z) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].translate( 0, 0, z );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].translate( 0, 0, z );
+		this.matrix.translate(0, 0, z);
 		return this;
 		
 	}
@@ -128,8 +162,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler scale(float x, float y, float z) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].scale( x, y, z );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].scale( x, y, z );
+		this.matrix.scale(x, y, z);
 		return this;
 		
 	}
@@ -152,8 +187,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler scaleX(float x) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].scale( x, 1, 1 );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].scale( x, 1, 1 );
+		this.matrix.scale(x, 1, 1);
 		return this;
 		
 	}
@@ -166,8 +202,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler scaleY(float y) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].scale( 1, y, 1 );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].scale( 1, y, 1 );
+		this.matrix.scale(1, y, 1);
 		return this;
 		
 	}
@@ -180,8 +217,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler scaleZ(float z) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].scale( 1, 1, z );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].scale( 1, 1, z );
+		this.matrix.scale(1, 1, z);
 		return this;
 		
 	}
@@ -194,8 +232,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler scale(float xyz) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].scale( xyz );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].scale( xyz );
+		this.matrix.scale(xyz);
 		return this;
 		
 	}
@@ -211,8 +250,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler rotate(float ang, float x, float y, float z) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].rotate( ang, x, y, z );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].rotate( ang, x, y, z );
+		this.matrix.rotate(ang, x, y, z);
 		return this;
 		
 	}
@@ -225,8 +265,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler rotateX(float ang) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].rotateX( ang );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].rotateX( ang );
+		this.matrix.rotateX(ang);
 		return this;
 		
 	}
@@ -239,8 +280,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler rotateY(float ang) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].rotateY( ang );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].rotateY( ang );
+		this.matrix.rotateY(ang);
 		return this;
 		
 	}
@@ -253,8 +295,9 @@ public class ModelHandler {
 	 */
 	public ModelHandler rotateZ(float ang) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].rotateZ( ang );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].rotateZ( ang );
+		this.matrix.rotateZ(ang);
 		return this;
 		
 	}
@@ -274,27 +317,37 @@ public class ModelHandler {
 	 */
 	public ModelHandler rotateOrigin(float originX, float originY, float originZ, float ang, float x, float y, float z) {
 		
-		if ( this.models.length == 0 ) return this;
-		this.models[ this.models.length - 1 ].translate( originX, originY, originZ ).rotate( ang, x, y, z ).translate( -originX, -originY, -originZ );
+		// if ( this.modelsMatrices.length == 0 ) return this;
+		// this.modelsMatrices[ this.modelsMatrices.length - 1 ].translate( originX, originY, originZ ).rotate( ang, x, y, z ).translate( -originX, -originY, -originZ );
+		this.matrix.translate( originX, originY, originZ ).rotate( ang, x, y, z ).translate( -originX, -originY, -originZ );
 		return this;
 		
 	}
 	
 	/**
 	 * Pop current model matrix. (like {@link GL11#glPopMatrix()})
-	 * This function remove (only if the array as at least one matrix) the current matrix from the array. And (if one matrix remain) new using previous matrix.
+	 * This function remove (only if the array has at least one matrix) the current matrix from the array.
+	 * And (if one matrix remain) using previous matrix.
 	 * @return This {@link ModelHandler} instance.
 	 */
 	public ModelHandler pop() {
 		
-		if ( this.models.length == 0 ) return this;
+		/*
+		if ( this.modelsMatrices.length == 0 ) return this;
 		
-		Matrix4f[] newModels = new Matrix4f[ this.models.length - 1 ];
-		System.arraycopy( this.models, 0, newModels, 0, newModels.length );
-		this.models = newModels;
+		Matrix4f[] newModels = new Matrix4f[ this.modelsMatrices.length - 1 ];
+		System.arraycopy( this.modelsMatrices, 0, newModels, 0, newModels.length );
+		this.modelsMatrices = newModels;
 		
 		this.apply();
-			
+		*/
+		
+		if (this.step == 0)
+			return this;
+		
+		this.matrix.set(this.models, (--this.step) << 4);
+		this.apply();
+		
 		return this;
 		
 	}
@@ -303,8 +356,9 @@ public class ModelHandler {
 	 * @return Current model matrix, or null if no matrix as been initialized.
 	 */
 	public Matrix4f current() {
-		if ( this.models.length == 0 ) return null;
-		return this.models[ this.models.length - 1 ];
+		// if ( this.modelsMatrices.length == 0 ) return null;
+		// return this.modelsMatrices[ this.modelsMatrices.length - 1 ];
+		return this.matrix;
 	}
 	
 	/**
@@ -313,17 +367,22 @@ public class ModelHandler {
 	 */
 	public ModelHandler apply() {
 		
-		if ( this.models.length == 0 ) this.listener.modelApply( null );
-		else this.listener.modelApply( this.models[ this.models.length - 1 ] );
+		// if ( this.modelsMatrices.length == 0 ) this.listener.modelApply( null );
+		// else this.listener.modelApply( this.modelsMatrices[ this.modelsMatrices.length - 1 ] );
+		this.listener.modelApply(this.step == 0 ? null : this.matrix);
 		return this;
 		
 	}
 	
 	/**
-	 * Clearing this {@link ModelHandler} matrix array.
+	 * Clear this {@link ModelHandler} matrix array.
 	 */
 	public void reset() {
-		this.models = new Matrix4f[0];
+		
+		// this.modelsMatrices = new Matrix4f[0];
+		this.step = 0;
+		this.models = new float[INITIAL_CAPACITY];
+		
 	}
 	
 }
