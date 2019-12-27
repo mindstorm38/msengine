@@ -8,13 +8,25 @@ public class Camera3D {
 	protected float yaw;
 	protected float pitch;
 	
-	private final Matrix4f viewMatrix;
+	protected final Matrix4f viewMatrix;
 	
 	public Camera3D() {
 	
+		this.reset();
+		
 		this.viewMatrix = new Matrix4f();
 		this.updateViewMatrix();
 	
+	}
+	
+	public void reset() {
+		
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+		this.yaw = 0;
+		this.pitch = 0;
+		
 	}
 	
 	public float getX() {

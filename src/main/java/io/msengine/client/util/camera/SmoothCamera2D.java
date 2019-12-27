@@ -34,6 +34,8 @@ public class SmoothCamera2D extends Camera2D {
 		this.targetX = 0;
 		this.targetY = 0;
 		
+		this.speed = 1f;
+		
 	}
 	
 	public float getSpeed() {
