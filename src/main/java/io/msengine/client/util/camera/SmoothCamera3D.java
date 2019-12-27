@@ -58,6 +58,22 @@ public class SmoothCamera3D extends Camera3D {
 		this.targetPitch += dpitch;
 	}
 	
+	public void instantTarget() {
+		
+		this.x = this.targetX;
+		this.y = this.targetY;
+		this.z = this.targetZ;
+		this.yaw = this.targetYaw;
+		this.pitch = this.targetPitch;
+		
+		this.lastX = this.x;
+		this.lastY = this.y;
+		this.lastZ = this.z;
+		this.lastYaw = this.yaw;
+		this.lastPitch = this.pitch;
+		
+	}
+	
 	public void update() {
 		
 		this.lastX = this.x;
