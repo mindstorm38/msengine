@@ -58,6 +58,26 @@ public class SmoothCamera3D extends Camera3D {
 		this.targetPitch += dpitch;
 	}
 	
+	public float getTargetX() {
+		return targetX;
+	}
+	
+	public float getTargetY() {
+		return targetY;
+	}
+	
+	public float getTargetZ() {
+		return targetZ;
+	}
+	
+	public float getTargetYaw() {
+		return targetYaw;
+	}
+	
+	public float getTargetPitch() {
+		return targetPitch;
+	}
+	
 	public void instantTarget() {
 		
 		this.x = this.targetX;
@@ -90,15 +110,19 @@ public class SmoothCamera3D extends Camera3D {
 		
 	}
 	
-	public Matrix4f updateViewMatrix(float alpha) {
+	public Matrix4f updateViewMatrix(float alpha, int offsetX, int offsetY, int offsetZ) {
 		
 		this.viewMatrix.identity();
 		this.viewMatrix.rotateX(-MathHelper.interpolate(alpha, this.pitch, this.lastPitch));
 		this.viewMatrix.rotateY(MathHelper.interpolate(alpha, this.yaw, this.lastYaw));
-		this.viewMatrix.translate( -MathHelper.interpolate(alpha, this.x, this.lastX), -MathHelper.interpolate(alpha, this.y, this.lastY), -MathHelper.interpolate(alpha, this.z, this.lastZ) );
+		this.viewMatrix.translate( -MathHelper.interpolate(alpha, this.x + offsetX, this.lastX + offsetX), -MathHelper.interpolate(alpha, this.y + offsetY, this.lastY + offsetY), -MathHelper.interpolate(alpha, this.z + offsetZ, this.lastZ + offsetZ) );
 		
 		return this.viewMatrix;
 		
+	}
+	
+	public Matrix4f updateViewMatrix(float alpha) {
+		return this.updateViewMatrix(alpha, 0, 0, 0);
 	}
 	
 }
