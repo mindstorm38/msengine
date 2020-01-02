@@ -110,6 +110,36 @@ public class SmoothCamera3D extends Camera3D {
 		
 	}
 	
+	public float getLerpedX(float alpha) {
+		return MathHelper.interpolate(alpha, this.x, this.lastX);
+	}
+	
+	public float getLerpedY(float alpha) {
+		return MathHelper.interpolate(alpha, this.y, this.lastY);
+	}
+	
+	public float getLerpedZ(float alpha) {
+		return MathHelper.interpolate(alpha, this.z, this.lastZ);
+	}
+	
+	public float getLerpedPitch(float alpha) {
+		return MathHelper.interpolate(alpha, this.pitch, this.lastPitch);
+	}
+	
+	public float getLerpedYaw(float alpha) {
+		return MathHelper.interpolate(alpha, this.yaw, this.lastYaw);
+	}
+	
+	public Matrix4f updateRotatedViewMatrix(float alpha) {
+		
+		this.viewMatrix.identity();
+		this.viewMatrix.rotateX(-MathHelper.interpolate(alpha, this.pitch, this.lastPitch));
+		this.viewMatrix.rotateY(MathHelper.interpolate(alpha, this.yaw, this.lastYaw));
+		
+		return this.viewMatrix;
+		
+	}
+	
 	public Matrix4f updateViewMatrix(float alpha, int offsetX, int offsetY, int offsetZ) {
 		
 		this.viewMatrix.identity();

@@ -18,6 +18,8 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * This class is used to manage a group of both vertex and fragment
  * shaders. And then
  *
+ * TODO : Rework this class to use Maps to access samplers, uniforms and attributes faster.
+ *
  * @author Théo Rozier (Mindstorm38)
  *
  */

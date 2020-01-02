@@ -1,6 +1,5 @@
 package io.msengine.client.renderer.basic;
 
-import io.msengine.client.renderer.framebuffer.Framebuffer;
 import io.msengine.client.renderer.shader.ShaderManager;
 import io.msengine.client.renderer.shader.ShaderSamplerObject;
 import io.msengine.client.renderer.shader.ShaderUniformBase;
@@ -8,7 +7,6 @@ import io.msengine.client.renderer.shader.ShaderValueType;
 import io.msengine.client.renderer.vertex.IndicesDrawBuffer;
 import io.msengine.client.renderer.vertex.VertexElement;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL30;
 
 import static org.lwjgl.opengl.GL20.*;
 
