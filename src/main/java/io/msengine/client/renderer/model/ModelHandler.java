@@ -21,8 +21,6 @@ public class ModelHandler {
 	private float[] models = new float[INITIAL_CAPACITY];
 	private int step = 0;
 	
-	private Matrix4f[] modelsMatrices = new Matrix4f[0];
-	
 	/**
 	 * @param listener {@link ModelApplyListener} to use for {@link ModelHandler#apply()}
 	 */
@@ -51,9 +49,11 @@ public class ModelHandler {
 			int neededSize = this.step << 4;
 			
 			if (this.models.length < neededSize) {
+				
 				float[] nmodels = new float[neededSize];
 				System.arraycopy(this.models, 0, nmodels, 0, this.models.length);
 				this.models = nmodels;
+				
 			}
 			
 			this.matrix.get(this.models, neededSize - 16);
@@ -345,7 +345,12 @@ public class ModelHandler {
 		if (this.step == 0)
 			return this;
 		
-		this.matrix.set(this.models, (--this.step) << 4);
+		if ((--this.step) == 0) {
+			this.matrix.identity();
+		} else {
+			this.matrix.set(this.models, (this.step << 4) - 16);
+		}
+		
 		this.apply();
 		
 		return this;
