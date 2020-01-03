@@ -13,6 +13,16 @@ public class MethodEventManager {
 		this.allowedClass.addAll(Arrays.asList(allowedClasses));
 	}
 	
+	public void addAllowedClass(Class<?> clazz) {
+		this.allowedClass.add(clazz);
+	}
+	
+	public void removeAllowedClass(Class<?> clazz) {
+		if (this.allowedClass.remove(clazz)) {
+			this.eventListeners.remove(clazz);
+		}
+	}
+	
 	public boolean isClassAllowed(Class<?> clazz) {
 		return this.allowedClass.isEmpty() || this.allowedClass.contains(clazz);
 	}
