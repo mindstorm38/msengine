@@ -374,7 +374,7 @@ public class ModelHandler {
 		
 		// if ( this.modelsMatrices.length == 0 ) this.listener.modelApply( null );
 		// else this.listener.modelApply( this.modelsMatrices[ this.modelsMatrices.length - 1 ] );
-		this.listener.modelApply(this.step == 0 ? null : this.matrix);
+		this.listener.modelApply(this.matrix);
 		return this;
 		
 	}
