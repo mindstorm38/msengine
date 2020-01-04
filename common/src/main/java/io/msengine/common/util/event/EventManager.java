@@ -1,0 +1,59 @@
+package io.msengine.common.util.event;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@SuppressWarnings({"unchecked"})
+public class EventManager<E extends BaseEvent> {
+
+	private final Class<E> baseEventClass;
+	private final Map<Class<E>, List<EventListener<E>>> groups = new HashMap<>();
+	
+	public EventManager(Class<E> baseEventClass) {
+		this.baseEventClass = baseEventClass;
+	}
+	
+	public Class<E> getBaseEventClass() {
+		return this.baseEventClass;
+	}
+	
+	private List<EventListener<E>> getListenersGroup(Class<? extends E> eventClass) {
+		return this.groups.computeIfAbsent((Class<E>) eventClass, c -> new ArrayList<>());
+	}
+	
+	public <C extends E> void addEventListener(Class<C> eventClass, EventListener<C> listener) {
+		
+		List<EventListener<E>> group = this.getListenersGroup(eventClass);
+		group.add((EventListener<E>) listener);
+		
+	}
+	
+	public <C extends E> void removeEventListener(Class<C> eventClass, EventListener<C> listener) {
+		
+		List<EventListener<E>> group = this.getListenersGroup(eventClass);
+		group.remove(listener);
+		
+	}
+	
+	public <C extends E> void fireEvent(C event) {
+	
+		event.setManager(this);
+		
+		Class<?> clazz = event.getClass();
+		
+		do {
+			
+			List<EventListener<E>> group = this.getListenersGroup((Class<E>) clazz);
+			
+			if (group != null)
+				group.forEach(l -> l.event(event));
+			
+			clazz = clazz.getSuperclass();
+			
+		} while (clazz != this.baseEventClass);
+		
+	}
+	
+}
