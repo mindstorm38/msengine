@@ -3,11 +3,10 @@ description = rootProject.description + " - Client Side"
 
 dependencies {
 
-    val lwjglVersion = rootProject.ext["lwjglVersion"]
-    val lwjglNatives: List<String> = rootProject.ext["lwjglNatives"] as List<String>
-    val jomlVersion = rootProject.ext["jomlVersion"]
+    val lwjglVersion = project.ext["lwjglVersion"]
+    val lwjglNatives: List<String> = project.ext["lwjglNatives"] as List<String>
+    val jomlVersion = project.ext["jomlVersion"]
 
-    "compile"(project(":sutil"))
     "compile"(project(":common"))
 
     "compile"("org.lwjgl:lwjgl:$lwjglVersion")

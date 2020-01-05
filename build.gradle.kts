@@ -19,24 +19,24 @@ buildscript {
 
 }
 
-description = "Proc Gen"
-
-ext {
-
-    set("lwjglVersion", "3.1.6")
-    set("lwjglNatives", listOf("natives-windows", "natives-linux", "natives-macos"))
-    set("jomlVersion", "1.9.6")
-    set("guavaVersion", "23.2-jre")
-    set("gsonVersion", "2.8.2")
-    set("nettyVersion", "4.1.17.Final")
-
-}
+description = "MS Engine"
 
 allprojects {
 
     apply(plugin = "com.github.johnrengelman.shadow")
 
-    version = "0.0.1"
+    version = "1.0.0"
+
+    ext {
+
+        set("lwjglVersion", "3.1.6")
+        set("lwjglNatives", listOf("natives-windows", "natives-linux", "natives-macos"))
+        set("jomlVersion", "1.9.6")
+        set("guavaVersion", "23.2-jre")
+        set("gsonVersion", "2.8.2")
+        set("nettyVersion", "4.1.17.Final")
+
+    }
 
 }
 
@@ -46,6 +46,10 @@ subprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    dependencies {
+        "compile"(files("../libs/sutil-1.0.14.jar"))
     }
 
     configure<JavaPluginConvention> {
@@ -58,3 +62,4 @@ subprojects {
     }
 
 }
+
