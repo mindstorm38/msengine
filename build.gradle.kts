@@ -1,3 +1,5 @@
+import java.net.URI
+
 /*
 
 	-- MS Engine (MSE) --
@@ -19,13 +21,11 @@ buildscript {
 
 }
 
-description = "MS Engine"
-
 allprojects {
 
     apply(plugin = "com.github.johnrengelman.shadow")
 
-    version = "1.0.0"
+    version = "1.0.1"
 
     ext {
 
@@ -63,3 +63,20 @@ subprojects {
 
 }
 
+description = "MS Engine"
+
+typealias ShadowJar = com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+tasks.create<Copy>("distrib") {
+
+    group = "shadow"
+    dependsOn("common:shadowJar", "client:shadowJar")
+
+    from(
+        project("common").tasks.named<ShadowJar>("shadowJar").get().archiveFile,
+        project("client").tasks.named<ShadowJar>("shadowJar").get().archiveFile
+    )
+
+    into("build/libs")
+
+}
