@@ -1,5 +1,3 @@
-import java.net.URI
-
 /*
 
 	-- MS Engine (MSE) --
@@ -21,9 +19,9 @@ buildscript {
 
 }
 
-allprojects {
+typealias ShadowJar = com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-    apply(plugin = "com.github.johnrengelman.shadow")
+allprojects {
 
     version = "1.0.1"
 
@@ -43,6 +41,7 @@ allprojects {
 subprojects {
 
     apply(plugin = "java")
+    apply(plugin = "com.github.johnrengelman.shadow")
 
     repositories {
         mavenCentral()
@@ -61,11 +60,15 @@ subprojects {
         options.encoding = "UTF-8"
     }
 
+    tasks.named<ShadowJar>("shadowJar") {
+        exclude("*.dll.git", "*.dll.sha1")
+        exclude("*.dylib.git", "*.dylib.sha1")
+        exclude("*.so.git", "*.so.sha1")
+    }
+
 }
 
 description = "MS Engine"
-
-typealias ShadowJar = com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 tasks.create<Copy>("distrib") {
 
