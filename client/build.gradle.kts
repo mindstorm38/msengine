@@ -5,7 +5,6 @@ dependencies {
 
     val lwjglVersion = project.ext["lwjglVersion"]
     val lwjglNatives: List<String> = project.ext["lwjglNatives"] as List<String>
-    val jomlVersion = project.ext["jomlVersion"]
 
     "compile"(project(":common"))
 
@@ -15,7 +14,6 @@ dependencies {
     "compile"("org.lwjgl:lwjgl-openal:$lwjglVersion")
     "compile"("org.lwjgl:lwjgl-opengl:$lwjglVersion")
     "compile"("org.lwjgl:lwjgl-stb:$lwjglVersion")
-    "compile"("org.joml:joml:${jomlVersion}")
 
     lwjglNatives.forEach { natives ->
 
