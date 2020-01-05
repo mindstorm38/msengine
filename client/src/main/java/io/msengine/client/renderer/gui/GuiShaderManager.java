@@ -7,7 +7,7 @@ import io.msengine.client.renderer.shader.ShaderSamplerObject;
 import io.msengine.client.renderer.shader.ShaderUniformBase;
 import io.msengine.client.renderer.shader.ShaderValueType;
 import io.msengine.client.renderer.vertex.IndicesDrawBuffer;
-import io.msengine.client.util.Color;
+import io.msengine.common.util.Color;
 import io.sutil.CollectionUtils;
 
 import static io.msengine.client.renderer.vertex.VertexElement.*;

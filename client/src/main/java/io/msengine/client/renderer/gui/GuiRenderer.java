@@ -7,7 +7,7 @@ import io.msengine.client.renderer.model.ModelHandler;
 import io.msengine.client.renderer.shader.ShaderSamplerObject;
 import io.msengine.client.renderer.util.BlendMode;
 import io.msengine.client.renderer.vertex.IndicesDrawBuffer;
-import io.msengine.client.util.Color;
+import io.msengine.common.util.Color;
 import io.msengine.common.util.GameNotCreatedException;
 import io.sutil.SingletonAlreadyInstantiatedException;
 

@@ -1,4 +1,4 @@
-package io.msengine.client.util;
+package io.msengine.common.util;
 
 import java.nio.FloatBuffer;
 

@@ -23,7 +23,7 @@ typealias ShadowJar = com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 allprojects {
 
-    version = "1.0.2"
+    version = "1.0.3"
 
     ext {
 

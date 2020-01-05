@@ -14,7 +14,7 @@ import org.joml.Vector4f;
 import org.joml.Vector4i;
 import org.lwjgl.system.MemoryUtil;
 
-import io.msengine.client.util.Color;
+import io.msengine.common.util.Color;
 import io.sutil.ReflectUtils;
 
 public abstract class ShaderUniformBase {
