@@ -1,14 +1,14 @@
 
 dependencies {
 
-    val jomlVersion = project.ext["jomlVersion"]
-    val guavaVersion = project.ext["guavaVersion"]
-    val gsonVersion = project.ext["gsonVersion"]
-    val nettyVersion = project.ext["nettyVersion"]
+    val jomlVersion = project.ext["jomlVersion"] as String
+    val guavaVersion = project.ext["guavaVersion"] as String
+    val gsonVersion = project.ext["gsonVersion"] as String
+    val nettyVersion = project.ext["nettyVersion"] as String
 
-    "compile"("com.google.guava:guava:${guavaVersion}")
-    "compile"("com.google.code.gson:gson:${gsonVersion}")
-    "compile"("io.netty:netty-all:${nettyVersion}")
-    "compile"("org.joml:joml:${jomlVersion}")
+    "api"("com.google.guava", "guava", guavaVersion)
+    "api"("com.google.code.gson", "gson", gsonVersion)
+    "api"("io.netty", "netty-all", nettyVersion)
+    "api"("org.joml", "joml", jomlVersion)
 
 }

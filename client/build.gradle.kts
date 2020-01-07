@@ -1,26 +1,26 @@
 
 dependencies {
 
-    val lwjglVersion = project.ext["lwjglVersion"]
+    val lwjglVersion = project.ext["lwjglVersion"] as String
     val lwjglNatives: List<String> = project.ext["lwjglNatives"] as List<String>
 
-    "compile"(project(":common"))
+    "compileOnly"(project(":common"))
 
-    "compile"("org.lwjgl:lwjgl:$lwjglVersion")
-    "compile"("org.lwjgl:lwjgl-glfw:$lwjglVersion")
-    "compile"("org.lwjgl:lwjgl-jemalloc:$lwjglVersion")
-    "compile"("org.lwjgl:lwjgl-openal:$lwjglVersion")
-    "compile"("org.lwjgl:lwjgl-opengl:$lwjglVersion")
-    "compile"("org.lwjgl:lwjgl-stb:$lwjglVersion")
+    "api"("org.lwjgl", "lwjgl", lwjglVersion)
+    "api"("org.lwjgl", "lwjgl-glfw", lwjglVersion)
+    "api"("org.lwjgl", "lwjgl-jemalloc", lwjglVersion)
+    "api"("org.lwjgl", "lwjgl-openal", lwjglVersion)
+    "api"("org.lwjgl", "lwjgl-opengl", lwjglVersion)
+    "api"("org.lwjgl", "lwjgl-stb", lwjglVersion)
 
     lwjglNatives.forEach { natives ->
 
-        "runtime"("org.lwjgl:lwjgl:$lwjglVersion:$natives")
-        "runtime"("org.lwjgl:lwjgl-glfw:$lwjglVersion:$natives")
-        "runtime"("org.lwjgl:lwjgl-jemalloc:$lwjglVersion:$natives")
-        "runtime"("org.lwjgl:lwjgl-openal:$lwjglVersion:$natives")
-        "runtime"("org.lwjgl:lwjgl-opengl:$lwjglVersion:$natives")
-        "runtime"("org.lwjgl:lwjgl-stb:$lwjglVersion:$natives")
+        "runtimeOnly"("org.lwjgl", "lwjgl", lwjglVersion, classifier=natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-glfw", lwjglVersion, classifier=natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-jemalloc", lwjglVersion, classifier=natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-openal", lwjglVersion, classifier=natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-opengl", lwjglVersion, classifier=natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-stb", lwjglVersion, classifier=natives)
 
     }
 

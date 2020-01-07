@@ -27,7 +27,7 @@ val ossrhPassword: String by project
 
 allprojects {
 
-    version = "1.0.5"
+    version = "1.0.6"
     group = "fr.theorozier"
 
     ext {
@@ -49,9 +49,8 @@ project("common").description = "$description - Common library, containing math 
 
 subprojects {
 
-    apply(plugin = "java")
+    apply(plugin = "java-library")
     apply(plugin = "maven-publish")
-    apply(plugin = "maven")
     apply(plugin = "signing")
     // apply(plugin = "com.github.johnrengelman.shadow")
 
@@ -60,7 +59,7 @@ subprojects {
     }
 
     dependencies {
-        "compile"("fr.theorozier:sutil:1.1.0")
+        "api"("fr.theorozier", "sutil", "1.1.0")
     }
 
     configure<JavaPluginConvention> {
@@ -80,6 +79,10 @@ subprojects {
     tasks.register<Jar>("javadocJar") {
         archiveClassifier.set("javadoc")
         from(tasks.named<Javadoc>("javadoc"))
+    }
+
+    tasks.register("showConf") {
+        configurations.named("runtimeClasspath").get().forEach { println(it) }
     }
 
     configure<PublishingExtension> {
