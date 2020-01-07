@@ -212,7 +212,7 @@ public class GuiTexture extends GuiObject {
 	}
 	
 	/**
-	 * Reset coordinates : x & y to <code>0f</code> and width & height to <code>1f</code>.
+	 * Reset coordinates : x and y to <code>0f</code> and width and height to <code>1f</code>.
 	 */
 	public void resetCoordinates() {
 		

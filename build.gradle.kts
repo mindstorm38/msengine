@@ -14,16 +14,21 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
+        // classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
     }
 
 }
 
-typealias ShadowJar = com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+// typealias ShadowJar = com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+// Import from your gradle.properties
+val ossrhUsername: String by project
+val ossrhPassword: String by project
 
 allprojects {
 
-    version = "1.0.3"
+    version = "1.0.5"
+    group = "fr.theorozier"
 
     ext {
 
@@ -38,17 +43,24 @@ allprojects {
 
 }
 
+description = "A Java 3D engine on top of LWJGL 3, using OpenGL, GLFW and JOML"
+project("client").description = "$description - Client side library, containing OpenGL natives."
+project("common").description = "$description - Common library, containing math utilies and resources handling."
+
 subprojects {
 
     apply(plugin = "java")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "maven-publish")
+    apply(plugin = "maven")
+    apply(plugin = "signing")
+    // apply(plugin = "com.github.johnrengelman.shadow")
 
     repositories {
         mavenCentral()
     }
 
     dependencies {
-        "compile"(files("../libs/sutil-1.0.14.jar"))
+        "compile"("fr.theorozier:sutil:1.1.0")
     }
 
     configure<JavaPluginConvention> {
@@ -60,16 +72,95 @@ subprojects {
         options.encoding = "UTF-8"
     }
 
+    tasks.register<Jar>("sourcesJar") {
+        archiveClassifier.set("sources")
+        from(project.the<SourceSetContainer>()["main"].allSource)
+    }
+
+    tasks.register<Jar>("javadocJar") {
+        archiveClassifier.set("javadoc")
+        from(tasks.named<Javadoc>("javadoc"))
+    }
+
+    configure<PublishingExtension> {
+
+        publications {
+            register<MavenPublication>("mavenJar") {
+
+                from(components["java"])
+                artifact(tasks.named<Jar>("sourcesJar").get())
+                artifact(tasks.named<Jar>("javadocJar").get())
+
+                pom {
+
+                    artifactId = "${rootProject.name}-${project.name}"
+
+                    name.set("${groupId}-${artifactId}")
+                    description.set(project.description)
+                    url.set("https://gitlab.com/mindstorm38/msengine")
+
+                    developers {
+                        developer {
+
+                            id.set("fr.theorozier")
+                            name.set("Théo Rozier")
+                            email.set("contact@theorozier.fr")
+                            url.set("https://github.com/mindstorm38")
+
+                        }
+                    }
+
+                    licenses {
+                        license {
+                            name.set("GNU General Public License v3.0")
+                            url.set("https://opensource.org/licenses/GPL-3.0")
+                        }
+                    }
+
+                    scm {
+                        connection.set("scm:git:git://github.com/mindstorm38/sutil.git")
+                        developerConnection.set("scm:git:ssh://github.com:mindstorm38/sutil.git")
+                        url.set("https://github.com/mindstorm38/sutil/tree/master")
+                    }
+
+                }
+
+            }
+        }
+
+        repositories {
+            maven {
+
+                credentials {
+                    username = ossrhUsername
+                    password = ossrhPassword
+                }
+
+                val releaseRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                val snapshotRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+
+                url = uri(if ((project.version as String).endsWith("SNAPSHOT")) snapshotRepoUrl else releaseRepoUrl)
+
+            }
+        }
+
+    }
+
+    configure<SigningExtension> {
+        sign(project.the<PublishingExtension>().publications.named("mavenJar").get())
+    }
+
+    /*
     tasks.named<ShadowJar>("shadowJar") {
         exclude("*.dll.git", "*.dll.sha1")
         exclude("*.dylib.git", "*.dylib.sha1")
         exclude("*.so.git", "*.so.sha1")
     }
+    */
 
 }
 
-description = "MS Engine"
-
+/*
 tasks.create<Copy>("distrib") {
 
     group = "shadow"
@@ -83,3 +174,4 @@ tasks.create<Copy>("distrib") {
     into("build/libs")
 
 }
+*/

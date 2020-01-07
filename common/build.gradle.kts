@@ -1,6 +1,4 @@
 
-description = rootProject.description + " - Common Libs"
-
 dependencies {
 
     val jomlVersion = project.ext["jomlVersion"]
