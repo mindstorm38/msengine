@@ -13,7 +13,7 @@ val ossrhPassword: String by project
 
 allprojects {
 
-    version = "1.0.6"
+    version = "1.0.7"
     group = "fr.theorozier"
 
     ext {
