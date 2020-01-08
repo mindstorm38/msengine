@@ -13,7 +13,13 @@ This library is a game engine helper for LWJGL 3 adding support for :
 - OpenGL 4.0 minimum is required and will be configurable in the future
 
 This engine is available on Maven Central since version `1.0.5` in two versions :
-- `fr.theorozier:msengine-client:<version>`
-- `fr.theorozier:msengine-common:<version>`
+- `fr.theorozier:msengine-client:1.0.6`
+- `fr.theorozier:msengine-common:1.0.6`
 
 Each version released on GitLab will be soon available on Maven Central.
+
+## Contribute
+
+Section TODO.
+
+Remember to use `./gradlew` or `./gradlew.bat` to use gradle.
