@@ -7,20 +7,6 @@
 
 */
 
-buildscript {
-
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        // classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
-    }
-
-}
-
-// typealias ShadowJar = com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 // Import from your gradle.properties
 val ossrhUsername: String by project
 val ossrhPassword: String by project
@@ -52,7 +38,6 @@ subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
-    // apply(plugin = "com.github.johnrengelman.shadow")
 
     repositories {
         mavenCentral()
@@ -153,28 +138,4 @@ subprojects {
         sign(project.the<PublishingExtension>().publications.named("mavenJar").get())
     }
 
-    /*
-    tasks.named<ShadowJar>("shadowJar") {
-        exclude("*.dll.git", "*.dll.sha1")
-        exclude("*.dylib.git", "*.dylib.sha1")
-        exclude("*.so.git", "*.so.sha1")
-    }
-    */
-
 }
-
-/*
-tasks.create<Copy>("distrib") {
-
-    group = "shadow"
-    dependsOn("common:shadowJar", "client:shadowJar")
-
-    from(
-        project("common").tasks.named<ShadowJar>("shadowJar").get().archiveFile,
-        project("client").tasks.named<ShadowJar>("shadowJar").get().archiveFile
-    )
-
-    into("build/libs")
-
-}
-*/

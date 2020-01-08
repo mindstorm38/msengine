@@ -15,12 +15,12 @@ dependencies {
 
     lwjglNatives.forEach { natives ->
 
-        "runtimeOnly"("org.lwjgl", "lwjgl", lwjglVersion, classifier=natives)
-        "runtimeOnly"("org.lwjgl", "lwjgl-glfw", lwjglVersion, classifier=natives)
-        "runtimeOnly"("org.lwjgl", "lwjgl-jemalloc", lwjglVersion, classifier=natives)
-        "runtimeOnly"("org.lwjgl", "lwjgl-openal", lwjglVersion, classifier=natives)
-        "runtimeOnly"("org.lwjgl", "lwjgl-opengl", lwjglVersion, classifier=natives)
-        "runtimeOnly"("org.lwjgl", "lwjgl-stb", lwjglVersion, classifier=natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl", lwjglVersion, classifier = natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-glfw", lwjglVersion, classifier = natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-jemalloc", lwjglVersion, classifier = natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-openal", lwjglVersion, classifier = natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-opengl", lwjglVersion, classifier = natives)
+        "runtimeOnly"("org.lwjgl", "lwjgl-stb", lwjglVersion, classifier = natives)
 
     }
 
