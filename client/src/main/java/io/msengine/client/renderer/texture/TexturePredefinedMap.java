@@ -19,14 +19,34 @@ public class TexturePredefinedMap extends TextureMapBase<TextureMapTile> {
 	
 	public static final Function<Integer, String> DEFAULT_FRAME_PATH_BUILDER = ( i ) -> "frame_" + i;
 	
-	public TexturePredefinedMap(String path) {
+	private int imageWidth;
+	private int imageHeight;
+	
+	/**
+	 * Construct a predefined map.
+	 * @param path Image path in resource system.
+	 * @param imageWidth The image width, this property is <b>ONLY</b> used as utility to add tile using pixel coordinates.
+	 * @param imageHeight The image height, this property is <b>ONLY</b> used as utility to add tile using pixel coordinates.
+	 */
+	public TexturePredefinedMap(String path, int imageWidth, int imageHeight) {
 		
-		super( path );
+		super(path);
+		
+		this.imageWidth = imageWidth;
+		this.imageHeight = imageHeight;
 		
 	}
 	
+	/**
+	 * Construct a predefined map.
+	 * @param path Image path in resource system.
+	 */
+	public TexturePredefinedMap(String path) {
+		this(path, 0, 0);
+	}
+	
 	@Override
-	public void loadTexture(ResourceManager resourceManager) throws IOException {
+	public void loadTexture(ResourceManager resourceManager) {
 		
 		this.delete();
 		
@@ -49,17 +69,34 @@ public class TexturePredefinedMap extends TextureMapBase<TextureMapTile> {
 	
 	/**
 	 * Register a new tile in this map with normalized coordinates.
-	 * @param path The used to get this tile
-	 * @param x X pos (top left)
-	 * @param y Y pos (top left)
-	 * @param width Width
-	 * @param height Height
-	 * @return The new registered tile
+	 * @param path The tile path, or identifier.
+	 * @param x X pos (top left).
+	 * @param y Y pos (top left).
+	 * @param width Width.
+	 * @param height Height.
+	 * @return The new registered tile.
 	 */
 	public TextureMapTile newTile(String path, float x, float y, float width, float height) {
 		TextureMapTile tile = new TextureMapTile( this, x, y, width, height );
 		this.atlasTiles.put( path, tile );
 		return tile;
+	}
+	
+	/**
+	 * Register a new tile in this map with pixel coordinates (not normalized), this method use image
+	 * width and height defined using {@link #setImageWidth(int)} and {@link #setImageHeight(int)} to
+	 * transform given pixel coordinates to normalized ones.
+	 * @param path The tile path, or identifier.
+	 * @param x X pos (top left).
+	 * @param y Y pos (top left).
+	 * @param width Width.
+	 * @param height Height.
+	 * @return The new registered tile.
+	 */
+	public TextureMapTile newPixelTile(String path, int x, int y, int width, int height) {
+		float iw = (float) this.imageWidth;
+		float ih = (float) this.imageHeight;
+		return this.newTile(path, x / iw, y / ih, width / iw, height / ih);
 	}
 	
 	/**
@@ -86,6 +123,14 @@ public class TexturePredefinedMap extends TextureMapBase<TextureMapTile> {
 		
 		return tiles;
 		
+	}
+	
+	public void setImageWidth(int imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+	
+	public void setImageHeight(int imageHeight) {
+		this.imageHeight = imageHeight;
 	}
 	
 }
