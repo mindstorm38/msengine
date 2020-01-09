@@ -13,22 +13,38 @@ import org.lwjgl.opengl.GL11;
  */
 public class ModelHandler {
 	
-	private static final int INITIAL_CAPACITY = 16;
+	private static final int INITIAL_MODELS_CAPACITY = 1;
 	
 	private final ModelApplyListener listener;
 	private final Matrix4f matrix;
 	
-	private float[] models = new float[INITIAL_CAPACITY];
+	private float[] models;
 	private int step = 0;
 	
 	/**
-	 * @param listener {@link ModelApplyListener} to use for {@link ModelHandler#apply()}
+	 * @param listener {@link ModelApplyListener} to use for {@link ModelHandler#apply()}.
+	 * @param initialModelsCapacity The initial number of models to allocate in internal models array,
+	 *                              can be used to increase default capacity of 1 model and make faster
+	 *                              first uses.
 	 */
-	public ModelHandler(ModelApplyListener listener) {
+	public ModelHandler(ModelApplyListener listener, int initialModelsCapacity) {
+		
+		if (initialModelsCapacity < 0)
+			throw new IllegalArgumentException("Invalid initial models capacity, can't be negative.");
 		
 		this.listener = listener;
 		this.matrix = new Matrix4f();
+		this.models = new float[initialModelsCapacity << 4];
 		
+	}
+	
+	/**
+	 * Calling {@link ModelHandler#ModelHandler(ModelApplyListener, int)} with initial capacity of 1.
+	 * @param listener {@link ModelApplyListener} to use for {@link ModelHandler#apply()}.
+	 * @see #ModelHandler(ModelApplyListener, int)
+	 */
+	public ModelHandler(ModelApplyListener listener) {
+		this(listener, INITIAL_MODELS_CAPACITY);
 	}
 	
 	/**
@@ -314,7 +330,9 @@ public class ModelHandler {
 	 * @return This {@link ModelHandler} instance.
 	 * @see Matrix4f#translate(float, float, float)
 	 * @see Matrix4f#rotate(float, float, float, float)
+	 * @deprecated Should not be used, wrong explanation and behaviour.
 	 */
+	@Deprecated
 	public ModelHandler rotateOrigin(float originX, float originY, float originZ, float ang, float x, float y, float z) {
 		
 		// if ( this.modelsMatrices.length == 0 ) return this;
@@ -351,7 +369,7 @@ public class ModelHandler {
 			this.matrix.set(this.models, (this.step << 4) - 16);
 		}
 		
-		this.apply();
+		// this.apply(); // FIXME : Removed this to avoid unused model uploads
 		
 		return this;
 		
@@ -386,7 +404,7 @@ public class ModelHandler {
 		
 		// this.modelsMatrices = new Matrix4f[0];
 		this.step = 0;
-		this.models = new float[INITIAL_CAPACITY];
+		this.models = new float[INITIAL_MODELS_CAPACITY << 4];
 		
 	}
 	
