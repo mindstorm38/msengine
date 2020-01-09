@@ -13,7 +13,7 @@ val ossrhPassword: String by project
 
 allprojects {
 
-    version = "1.0.7"
+    version = "1.0.7-SNAPSHOT"
     group = "fr.theorozier"
 
     ext {
@@ -69,6 +69,8 @@ subprojects {
     tasks.register("showConf") {
         configurations.named("runtimeClasspath").get().forEach { println(it) }
     }
+
+    val snapshot = (project.version as String).endsWith("SNAPSHOT")
 
     configure<PublishingExtension> {
 
@@ -127,15 +129,17 @@ subprojects {
                 val releaseRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
                 val snapshotRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
 
-                url = uri(if ((project.version as String).endsWith("SNAPSHOT")) snapshotRepoUrl else releaseRepoUrl)
+                url = uri(if (snapshot) snapshotRepoUrl else releaseRepoUrl)
 
             }
         }
 
     }
 
-    configure<SigningExtension> {
-        sign(project.the<PublishingExtension>().publications.named("mavenJar").get())
+    if (!snapshot) {
+        configure<SigningExtension> {
+            sign(project.the<PublishingExtension>().publications.named("mavenJar").get())
+        }
     }
 
 }
