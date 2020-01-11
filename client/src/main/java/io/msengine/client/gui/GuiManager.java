@@ -162,14 +162,16 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	public void loadScene(Class<? extends GuiScene> sceneClass, Consumer<GuiScene> oncePreviousStoped) {
 		
 		GuiScene inst = this.getSceneInstance( sceneClass );
-		if ( this.currentScene == inst ) return;
 		
-		if ( this.currentScene != null ) {
+		if (this.currentScene == inst)
+			return;
+		
+		if (this.currentScene != null) {
 			
 			this.currentScene._stop();
 			
-			if ( oncePreviousStoped != null )
-				oncePreviousStoped.accept( this.currentScene );
+			if (oncePreviousStoped != null)
+				oncePreviousStoped.accept(this.currentScene);
 			
 		}
 		
@@ -178,6 +180,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		if ( inst != null ) {
 			
 			inst._init();
+			inst.fireEvent(new GuiSceneResizedEvent(this.window));
 			
 		}
 		
