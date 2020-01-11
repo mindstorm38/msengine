@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
 
+import io.msengine.client.renderer.util.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
 import io.msengine.client.game.RenderGame;
@@ -124,9 +125,9 @@ public class GuiTextBase extends GuiObject {
 			
 		} finally {
 			
-			if ( verticesBuffer != null ) MemoryUtil.memFree( verticesBuffer );
-			if ( texCoordsBuffer != null ) MemoryUtil.memFree( texCoordsBuffer );
-			if ( indicesBuffer != null ) MemoryUtil.memFree( indicesBuffer );
+			BufferUtils.safeFree(verticesBuffer);
+			BufferUtils.safeFree(texCoordsBuffer);
+			BufferUtils.safeFree(indicesBuffer);
 			
 		}
 		

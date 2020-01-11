@@ -3,6 +3,7 @@ package io.msengine.client.gui;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import io.msengine.client.renderer.util.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
 import io.msengine.client.renderer.texture.Texture;
@@ -61,9 +62,7 @@ public class GuiTexture extends GuiObject {
 			this.buffer.uploadIboData( indicesBuffer, BufferUsage.STATIC_DRAW );
 			
 		} finally {
-			
-			if ( indicesBuffer != null ) MemoryUtil.memFree( indicesBuffer );
-			
+			BufferUtils.safeFree(indicesBuffer);
 		}
 		
 		this.updateVerticesBuffer();
@@ -90,9 +89,7 @@ public class GuiTexture extends GuiObject {
 			this.buffer.uploadVboSubData( GUI_POSITION, 0, verticesBuffer );
 			
 		} finally {
-			
-			if ( verticesBuffer != null ) MemoryUtil.memFree( verticesBuffer );
-			
+			BufferUtils.safeFree(verticesBuffer);
 		}
 		
 		this.updateVertices = false;
@@ -118,9 +115,7 @@ public class GuiTexture extends GuiObject {
 			this.buffer.uploadVboSubData( GUI_TEX_COORD, 0, texCoordsBuffer );
 			
 		} finally {
-			
-			if ( texCoordsBuffer != null ) MemoryUtil.memFree( texCoordsBuffer );
-			
+			BufferUtils.safeFree(texCoordsBuffer);
 		}
 		
 		this.updateTexCoords = false;
@@ -157,8 +152,14 @@ public class GuiTexture extends GuiObject {
 	}
 	
 	@Override
-	public void setSize(float width, float height) {
-		super.setSize(width, height);
+	public void setWidth(float width) {
+		super.setWidth(width);
+		this.updateVertices = true;
+	}
+	
+	@Override
+	public void setHeight(float height) {
+		super.setHeight(height);
 		this.updateVertices = true;
 	}
 	

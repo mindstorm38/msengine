@@ -160,7 +160,7 @@ public abstract class GuiObject {
 	 */
 	public void updateXOffset() {
 		
-		this.xOffset = ( this.xPos + ( this.xAnchor + 1f ) * ( -this.width / 2f ) ) + 1f;
+		this.xOffset = ( this.xPos + ( this.xAnchor + 1f ) * ( -this.width / 2f ) )/* + 1f*/;
 		if ( this.parent != null ) this.xOffset += this.parent.xOffset;
 		
 	}
@@ -170,7 +170,7 @@ public abstract class GuiObject {
 	 */
 	public void updateYOffset() {
 		
-		this.yOffset = ( this.yPos + ( this.yAnchor + 1f ) * ( -this.height / 2f ) ) + 1f;
+		this.yOffset = ( this.yPos + ( this.yAnchor + 1f ) * ( -this.height / 2f ) )/* + 1f*/;
 		if ( this.parent != null ) this.yOffset += this.parent.yOffset;
 		
 	}
