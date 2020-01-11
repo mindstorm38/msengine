@@ -253,7 +253,7 @@ public abstract class GuiObject {
 	@SuppressWarnings("unchecked")
 	public <E extends GuiEvent> GuiListenerGroup<E> getListenerGroup(Class<E> eventClass) {
 		for ( GuiListenerGroup<?> group : this.listeners )
-			if ( eventClass.equals( group.getClass() ) )
+			if ( eventClass.equals( group.getEventClass() ) )
 				return (GuiListenerGroup<E>) group;
 		return null;
 	}
@@ -264,7 +264,7 @@ public abstract class GuiObject {
 		
 		if ( group == null ) {
 			
-			group = new GuiListenerGroup<E>( eventClass );
+			group = new GuiListenerGroup<>( eventClass );
 			this.listeners.add( group );
 			
 		}
@@ -280,7 +280,7 @@ public abstract class GuiObject {
 		
 		for ( GuiListenerGroup<?> group : this.listeners ) {
 			
-			if ( group.getClass().isAssignableFrom( event.getClass() ) ) {
+			if ( group.getEventClass().isAssignableFrom( event.getClass() ) ) {
 				
 				GuiListenerGroup<E> grp = (GuiListenerGroup<E>) group;
 				

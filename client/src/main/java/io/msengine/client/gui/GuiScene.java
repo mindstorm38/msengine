@@ -31,7 +31,7 @@ public abstract class GuiScene extends GuiParent {
 	
 	@Override
 	void setParent(GuiParent parent) {
-		throw new UnsupportedOperationException("Can't add scene a other parent objects.");
+		throw new UnsupportedOperationException("Can't add scene to a parent object.");
 	}
 	
 	private void onSceneResized(GuiSceneResizedEvent event) {

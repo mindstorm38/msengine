@@ -243,13 +243,11 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 * @param height The new height used to render
 	 */
 	private void updateRenderSize(int width, int height) {
-		
+		//System.out.println("GuiManager#updateRenderSize(" + width + "," + height + ")");
 		this.renderer.updateRenderSize( width, height );
 		
 		if ( this.currentScene != null ) {
-			
-			this.currentScene.fireEvent( new GuiSceneResizedEvent( width, height ) );
-			
+			this.currentScene.fireEvent(new GuiSceneResizedEvent(width, height));
 		}
 		
 	}
