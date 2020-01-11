@@ -72,6 +72,7 @@ public class GuiTextBase extends GuiObject {
 		int height = this.font.getHeight();
 		
 		float textureHeight = this.font.getTextureHeight();
+		float scale = this.textScale;
 		
 		float x = 0f;
 		
@@ -84,8 +85,6 @@ public class GuiTextBase extends GuiObject {
 			verticesBuffer = MemoryUtil.memAllocFloat( length * 12 );
 			texCoordsBuffer = MemoryUtil.memAllocFloat( length * 8 );
 			indicesBuffer = MemoryUtil.memAllocInt( this.buffer.setIndicesCount( length * 6 ) );
-			
-			float scale = this.textScale;
 			
 			for ( int i = 0; i < length; i++ ) {
 				
@@ -199,7 +198,7 @@ public class GuiTextBase extends GuiObject {
 		this.font = font;
 		this.updateBuffer = true;
 		
-		this.height = font.getHeight();
+		this.updateTextHeight();
 		this.updateYOffset();
 		
 		return true;
@@ -258,8 +257,16 @@ public class GuiTextBase extends GuiObject {
 	public void setTextScale(float scale) {
 		
 		this.textScale = scale;
+		this.updateTextHeight();
 		this.updateBuffer = true;
 		
+	}
+	
+	/**
+	 * Update text height, using font height and text scale.
+	 */
+	public void updateTextHeight() {
+		this.height = this.font.getHeight() * this.textScale;
 	}
 	
 	/**
