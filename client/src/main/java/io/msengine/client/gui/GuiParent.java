@@ -10,10 +10,10 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * 
  * Representing a special {@link GuiObject} that can contains other {@link GuiObject}.
  * 
- * @author Mindstorm38
+ * @author Théo Rozier (Mindstorm38)
  *
  */
-public abstract class GuiParent extends GuiObject {
+public class GuiParent extends GuiObject {
 	
 	private final List<GuiObject> children;
 	
