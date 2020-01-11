@@ -25,13 +25,15 @@ public class GuiTextBase extends GuiObject {
 	protected char[] textChars;
 	protected float[] charsOffsets;
 	protected float charSpacing;
+	protected float textScale;
 	
 	public GuiTextBase(FontHandler font, String text) {
 
-		this.setFont( font );
-		this.setText( text );
+		this.setFont(font);
+		this.setText(text);
 		
-		this.charSpacing = 1f;
+		this.setCharSpacing(1f);
+		this.setTextScale(2f);
 		
 	}
 	
@@ -83,6 +85,8 @@ public class GuiTextBase extends GuiObject {
 			texCoordsBuffer = MemoryUtil.memAllocFloat( length * 8 );
 			indicesBuffer = MemoryUtil.memAllocInt( this.buffer.setIndicesCount( length * 6 ) );
 			
+			float scale = this.textScale;
+			
 			for ( int i = 0; i < length; i++ ) {
 				
 				FontHandlerGlyph glyph = this.font.getCharacterGlyph( this.textChars[i] );
@@ -90,9 +94,9 @@ public class GuiTextBase extends GuiObject {
 				if ( glyph != null ) {
 					
 					verticesBuffer.put( x ).put( 0 );
-					verticesBuffer.put( x ).put( height );
-					verticesBuffer.put( x + glyph.width ).put( height );
-					verticesBuffer.put( x + glyph.width ).put( 0 );
+					verticesBuffer.put( x ).put( height * scale );
+					verticesBuffer.put( x + (glyph.width * scale) ).put( height * scale );
+					verticesBuffer.put( x + (glyph.width * scale) ).put( 0 );
 					
 					texCoordsBuffer.put( glyph.textureX ).put( glyph.textureY );
 					texCoordsBuffer.put( glyph.textureX ).put( glyph.textureY + textureHeight );
@@ -104,7 +108,7 @@ public class GuiTextBase extends GuiObject {
 					indicesBuffer.put( idx ).put( idx + 1 ).put( idx + 3 );
 					indicesBuffer.put( idx + 1 ).put( idx + 2 ).put( idx + 3 );
 					
-					x += glyph.width + this.charSpacing;
+					x += (glyph.width + this.charSpacing) * scale;
 					this.charsOffsets[ i ] = x;
 					
 				}
@@ -112,7 +116,7 @@ public class GuiTextBase extends GuiObject {
 			}
 			
 			if ( x > 0 )
-				x -= this.charSpacing;
+				x -= this.charSpacing * scale;
 			
 			verticesBuffer.flip();
 			texCoordsBuffer.flip();
@@ -161,7 +165,7 @@ public class GuiTextBase extends GuiObject {
 		
 		this.renderer.setTextureSampler( this.font );
 			
-			this.model.push().scale( 2f ).translate( this.xOffset, this.yOffset ).apply();
+			this.model.push().translate( this.xOffset, this.yOffset ).apply();
 			
 				this.buffer.drawElements();
 			
@@ -234,7 +238,28 @@ public class GuiTextBase extends GuiObject {
 	 * @param charSpacing The space
 	 */
 	public void setCharSpacing(float charSpacing) {
+		
 		this.charSpacing = charSpacing;
+		this.updateBuffer = true;
+		
+	}
+	
+	/**
+	 * @return Text scale (multiplier of default font size), default to 2.
+	 */
+	public float getTextScale() {
+		return this.textScale;
+	}
+	
+	/**
+	 * Set the text scale (multiplier of default font size).
+	 * @param scale Text scale
+	 */
+	public void setTextScale(float scale) {
+		
+		this.textScale = scale;
+		this.updateBuffer = true;
+		
 	}
 	
 	/**
