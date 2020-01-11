@@ -59,6 +59,8 @@ public class ShaderUniformBlock implements ShaderUniformHandler {
 			this.binding++;
 		
 		this.ubo = glGenBuffers();
+		glBindBuffer( GL_UNIFORM_BUFFER, this.ubo );
+		glBindBufferRange( GL_UNIFORM_BUFFER, this.binding, buffer, offset, size);
 		
 		for ( ShaderBlockUniform uniform : this.uniforms ) {
 			
