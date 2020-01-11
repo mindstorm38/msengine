@@ -30,7 +30,6 @@ public class GuiTexture extends GuiObject {
 	protected void init() {
 
 		this.buffer = this.renderer.createDrawBuffer( false, true );
-		
 		this.initBuffers();
 		
 	}
