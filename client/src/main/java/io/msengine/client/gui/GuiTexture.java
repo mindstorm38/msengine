@@ -156,6 +156,12 @@ public class GuiTexture extends GuiObject {
 		
 	}
 	
+	@Override
+	public void setSize(float width, float height) {
+		super.setSize(width, height);
+		this.updateVertices = true;
+	}
+	
 	/**
 	 * Set a {@link TextureObject} to use.
 	 * @param texture The texture object
@@ -169,8 +175,8 @@ public class GuiTexture extends GuiObject {
 	}
 	
 	/**
-	 * 
-	 * @param texture
+	 * Set a {@link TextureObject} to use, and reset coordinates ({@link #resetCoordinates()}).
+	 * @param texture The texture object to set
 	 */
 	public void setTexture(TextureObject texture) {
 		this.setTexture( texture, true );

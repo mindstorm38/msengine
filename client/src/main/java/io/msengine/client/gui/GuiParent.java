@@ -120,10 +120,18 @@ public abstract class GuiParent extends GuiObject {
 		if ( this.hasChild( child ) ) return false;
 		if ( child.hasParent() ) throw new IllegalArgumentException("This GuiObject is already bound to another GuiParent");
 		
-		if ( this.children.add( child ) ) {
+		if (this.children.add( child )) { // TODO : Check if this condition can be removed
 			
-			child.setParent( this );
-			this.initChild( child );
+			try {
+				child.setParent(this);
+			} catch (Exception e) {
+				
+				this.children.remove(child);
+				throw e;
+				
+			}
+			
+			this.initChild(child);
 			
 			return true;
 			
@@ -140,8 +148,11 @@ public abstract class GuiParent extends GuiObject {
 		
 		if ( this.children.remove( child ) ) {
 			
-			child.setParent( null );
-			this.stopChild( child );
+			try {
+				child.setParent(null);
+			} catch (Exception ignored) {}
+			
+			this.stopChild(child);
 			
 			return true;
 			
