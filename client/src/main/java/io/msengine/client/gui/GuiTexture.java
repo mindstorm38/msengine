@@ -163,6 +163,16 @@ public class GuiTexture extends GuiObject {
 		this.updateVertices = true;
 	}
 	
+	@Override
+	public float getAutoWidth() {
+		return this.texture == null ? 0 : (this.texture.getWidth() * this.textureWidth);
+	}
+	
+	@Override
+	public float getAutoHeight() {
+		return this.texture == null ? 0 : (this.texture.getHeight() * this.textureHeight);
+	}
+	
 	/**
 	 * Set a {@link TextureObject} to use.
 	 * @param texture The texture object
