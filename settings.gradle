@@ -1,5 +1,0 @@
-
-include ':sutil'
-project(':sutil').projectDir = new File('../sutil')
-
-rootProject.name = 'msengine'

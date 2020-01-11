@@ -13,13 +13,19 @@ import io.sutil.profiler.Profiler;
 
 import static io.msengine.common.util.GameLogger.LOGGER;
 
-public abstract class BaseGame<O extends BaseGameOptions> {
+/**
+ * Base class for all games.
+ *
+ * @param <SELF>You must set this to the extended class.
+ * @param <O> The class used for game options.
+ */
+public abstract class BaseGame<SELF extends BaseGame<SELF, O>, O extends BaseGameOptions> {
 
 	// Static \\
 	
-	protected static BaseGame<?> CURRENT = null;
+	protected static BaseGame<?, ?> CURRENT = null;
 	
-	public static BaseGame<?> getCurrent() {
+	public static BaseGame<?, ?> getCurrent() {
 		if ( CURRENT == null ) throw new GameTypeRequired( BaseGame.class );
 		return CURRENT;
 	}
@@ -48,9 +54,9 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 		
 		this.bootoptions = bootoptions;
 		
-		this.resourceManager = new ResourceManager( bootoptions.getRunningClass(), bootoptions.getResourceBaseFolderPath() );
-		this.options = new Options( bootoptions.getOptionsFile() );
-		this.logger = GameLogger.create( bootoptions.getLoggerName() );
+		this.resourceManager = new ResourceManager(bootoptions.getRunningClass(), bootoptions.getResourceBaseFolderPath(), bootoptions.getResourceNamespace());
+		this.options = new Options(bootoptions.getOptionsFile());
+		this.logger = GameLogger.create(bootoptions.getLoggerName());
 		
 		this.profiler = new Profiler();
 		
@@ -83,12 +89,13 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 	
 	protected void init() {
 		
-		this.appdata.mkdirs();
+		if (!this.appdata.isDirectory() && !this.appdata.mkdirs())
+			throw new RuntimeException("Failed to make appdata directory.");
 		
 		try {
 			I18n.getInstance().init();
 		} catch (Exception e) {
-			LOGGER.log( Level.WARNING, null, e );
+			LOGGER.warning(e.getMessage());
 		}
 		
 	}
@@ -114,6 +121,8 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 			
 			this.setuploop();
 			
+			this.logger.info("Game started");
+			
 			while ( this.running ) {
 				
 				this.profiler.startSection("root");
@@ -123,8 +132,6 @@ public abstract class BaseGame<O extends BaseGameOptions> {
 				this.profiler.endSection();
 				
 			}
-			
-			this.logger.info("Game started");
 			
 		} catch ( Throwable e ) {
 			
