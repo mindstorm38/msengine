@@ -533,17 +533,17 @@ public class Window {
 	 * @param y Cursor y position
 	 */
 	public void setCursorPosition(int x, int y) {
-		glfwSetCursorPos( this.id, (double) ( this.cursorX = x ), (double) ( this.cursorY = y ) );
+		glfwSetCursorPos(this.id, this.cursorX = x, this.cursorY = y);
 	}
 	
-	/**
+	/*
 	 * @return Current window {@link KeyboardType}
 	 */
 	/*public KeyboardType getKeyboardType() {
 		return this.keyboardType;
 	}*/
 	
-	/**
+	/*
 	 * @param newKeyboardType Define new {@link KeyboardType}
 	 */
 	/*public void setKeyboardType(KeyboardType keyboardType) {
