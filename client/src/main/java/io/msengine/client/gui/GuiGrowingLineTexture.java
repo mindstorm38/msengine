@@ -40,7 +40,7 @@ public class GuiGrowingLineTexture extends GuiComponentTexture {
 		buf.put(5).put(6).put(7);
 		verticesCount.set(16);
 		texCoordsCount.set(16);
-		System.out.println("initBuffers");
+		
 		return buf;
 		
 	}
@@ -59,7 +59,7 @@ public class GuiGrowingLineTexture extends GuiComponentTexture {
 		buf.put(growingWidth).put(this.height);
 		buf.put(this.width).put(this.height);
 		buf.put(this.width).put(0);
-		System.out.println("updateVerticesBuffer");
+		
 		return buf;
 		
 	}
@@ -89,7 +89,7 @@ public class GuiGrowingLineTexture extends GuiComponentTexture {
 		buf.put(tile.x + tile.width - fixTileWidth).put(tile.y + tile.height);
 		buf.put(tile.x + tile.width).put(tile.y + tile.height);
 		buf.put(tile.x + tile.width).put(tile.y);
-		System.out.println("updateTexCoordsBuffer");
+		
 		return buf;
 		
 	}
