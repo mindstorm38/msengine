@@ -151,9 +151,7 @@ public class GuiTextBase extends GuiObject {
 	public void render(float alpha) {
 		
 		if ( this.updateBuffer ) {
-			
 			this.updateTextBuffers();
-			
 		}
 		
 		this.renderText( alpha );
