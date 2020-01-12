@@ -1,0 +1,80 @@
+package io.msengine.client.gui;
+
+import io.msengine.client.renderer.texture.TextureMapTile;
+
+/**
+ *
+ * A special texture to make mosaics with a specific tile size.
+ *
+ * @author Theo Rozier
+ *
+ */
+public class GuiTextureMosaic extends GuiTexture {
+
+	protected float tileWidth = 1f;
+	protected float tileHeight = 1f;
+	
+	@Override
+	public float getAutoWidth() {
+		return this.tileWidth;
+	}
+	
+	@Override
+	public float getAutoHeight() {
+		return this.tileHeight;
+	}
+	
+	@Override
+	public void setWidth(float width) {
+		super.setWidth(width);
+		this.updateTexCoordX();
+	}
+	
+	@Override
+	public void setHeight(float height) {
+		super.setHeight(height);
+		this.updateTexCoordY();
+	}
+	
+	@Override
+	public void setTexture(TextureMapTile textureMapTile) {
+		throw new UnsupportedOperationException("Can't use texture map tile in a GuiTextureMosaic.");
+	}
+	
+	@Override
+	public void resetCoordinates() {}
+	
+	public float getTileWidth() {
+		return tileWidth;
+	}
+	
+	public void setTileWidth(float tileWidth) {
+		this.tileWidth = tileWidth;
+		this.updateTexCoordX();
+	}
+	
+	public float getTileHeight() {
+		return tileHeight;
+	}
+	
+	public void setTileHeight(float tileHeight) {
+		this.tileHeight = tileHeight;
+		this.updateTexCoordY();
+	}
+	
+	public void setTileSize(float width, float height) {
+		this.setTileWidth(width);
+		this.setTileHeight(height);
+	}
+	
+	private void updateTexCoordX() {
+		this.textureWidth = this.width / this.tileWidth;
+		this.textureX = this.textureWidth / -2f;
+	}
+	
+	private void updateTexCoordY() {
+		this.textureHeight = this.height / this.tileHeight;
+		this.textureY = this.textureHeight / -2f;
+	}
+	
+}

@@ -127,11 +127,11 @@ public class GuiTexture extends GuiObject {
 		if ( this.texture == null )
 			return;
 		
-		if ( this.updateTexCoords )
-			this.updateTexCoordsBuffer();
-		
 		if ( this.updateVertices )
 			this.updateVerticesBuffer();
+		
+		if ( this.updateTexCoords )
+			this.updateTexCoordsBuffer();
 		
 		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
 			

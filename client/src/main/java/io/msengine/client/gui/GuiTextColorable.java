@@ -110,6 +110,11 @@ public class GuiTextColorable extends GuiTextBase {
 		this.updateShadowReady();
 	}
 	
+	public void setShadowOffset(float xOff, float yOff) {
+		this.setShadowOffsetX(xOff);
+		this.setShadowOffsetY(yOff);
+	}
+	
 	private void updateShadowReady() {
 		this.shadowReady = this.shadowOffsetX != 0 || this.shadowOffsetY != 0;
 	}
