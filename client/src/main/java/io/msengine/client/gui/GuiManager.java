@@ -85,6 +85,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		this.window.removeFramebufferSizeEventListener( this );
 		
 		this.unloadScene();
+		
+		this.instances.values().forEach(GuiScene::_stop);
 		this.instances.clear();
 		
 		this.renderer.stop();
