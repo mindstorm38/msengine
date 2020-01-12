@@ -21,6 +21,7 @@ public abstract class GuiObject {
 	protected float width, height;
 	protected float xAnchor, yAnchor;
 	protected float xOffset, yOffset;
+	protected int xIntOffset, yIntOffset;
 	
 	private boolean initied;
 	private boolean visible;
@@ -46,6 +47,9 @@ public abstract class GuiObject {
 		
 		this.xOffset = 0;
 		this.yOffset = 0;
+		
+		this.xIntOffset = 0;
+		this.yIntOffset = 0;
 		
 		this.initied = false;
 		this.visible = true;
@@ -163,6 +167,8 @@ public abstract class GuiObject {
 		this.xOffset = ( this.xPos + ( this.xAnchor + 1f ) * ( -this.width / 2f ) )/* + 1f*/;
 		if ( this.parent != null ) this.xOffset += this.parent.xOffset;
 		
+		this.xIntOffset = Math.round(this.xOffset);
+		
 	}
 	
 	/**
@@ -172,6 +178,8 @@ public abstract class GuiObject {
 		
 		this.yOffset = ( this.yPos + ( this.yAnchor + 1f ) * ( -this.height / 2f ) )/* + 1f*/;
 		if ( this.parent != null ) this.yOffset += this.parent.yOffset;
+		
+		this.yIntOffset = Math.round(this.yOffset);
 		
 	}
 	

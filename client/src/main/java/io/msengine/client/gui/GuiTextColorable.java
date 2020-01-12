@@ -12,7 +12,12 @@ import io.msengine.common.util.Color;
  */
 public class GuiTextColorable extends GuiTextBase {
 	
-	private final Color textColor = Color.WHITE.copy();
+	protected final Color textColor = Color.WHITE.copy();
+	
+	protected final Color shadowColor = Color.BLACK.copy();
+	protected float shadowOffsetX;
+	protected float shadowOffsetY;
+	protected boolean shadowReady;
 	
 	public GuiTextColorable(FontHandler font, String text) {
 		super(font, text);
@@ -31,11 +36,29 @@ public class GuiTextColorable extends GuiTextBase {
 	}
 	
 	@Override
-	public void render(float alpha) {
+	public void renderText(float alpha) {
+		
+		this.renderer.setTextureSampler(this.font);
+		
+		if (this.shadowReady) {
+			
+			this.renderer.setGlobalColor(this.shadowColor);
+			
+			this.model.push().translate(this.xIntOffset + this.shadowOffsetX, this.yIntOffset + this.shadowOffsetY).apply();
+			this.buffer.drawElements();
+			this.model.pop();
+			
+		}
 		
 		this.renderer.setGlobalColor(this.textColor);
-		super.render(alpha);
+		
+		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
+		this.buffer.drawElements();
+		this.model.pop();
+		
 		this.renderer.resetGlobalColor();
+		
+		this.renderer.resetTextureSampler();
 		
 	}
 	
@@ -50,12 +73,45 @@ public class GuiTextColorable extends GuiTextBase {
 		this.textColor.setAll(color);
 	}
 	
-	public void setTextColor(float r, float g, float b) {
+	public void setTextColor(int r, int g, int b) {
 		this.textColor.setAll(r, g, b);
 	}
 	
-	public void setTextColor(int r, int g, int b) {
-		this.textColor.setAll(r, g, b);
+	/**
+	 * @return Immutable internal shadow color, you can modify its components.
+	 */
+	public Color getShadowColor() {
+		return this.shadowColor;
+	}
+	
+	public void setShadowColor(Color color) {
+		this.shadowColor.setAll(color);
+	}
+	
+	public void setShadowColor(int r, int g, int b) {
+		this.shadowColor.setAll(r, g, b);
+	}
+	
+	public float getShadowOffsetX() {
+		return shadowOffsetX;
+	}
+	
+	public void setShadowOffsetX(float shadowOffsetX) {
+		this.shadowOffsetX = shadowOffsetX;
+		this.updateShadowReady();
+	}
+	
+	public float getShadowOffsetY() {
+		return shadowOffsetY;
+	}
+	
+	public void setShadowOffsetY(float shadowOffsetY) {
+		this.shadowOffsetY = shadowOffsetY;
+		this.updateShadowReady();
+	}
+	
+	private void updateShadowReady() {
+		this.shadowReady = this.shadowOffsetX != 0 || this.shadowOffsetY != 0;
 	}
 	
 }
