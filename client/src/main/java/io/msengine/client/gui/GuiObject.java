@@ -26,6 +26,8 @@ public abstract class GuiObject {
 	private boolean initied;
 	private boolean visible;
 	
+	private boolean sceneActive;
+	
 	private final List<GuiListenerGroup<?>> listeners;
 	
 	private GuiParent parent;
@@ -53,6 +55,8 @@ public abstract class GuiObject {
 		
 		this.initied = false;
 		this.visible = true;
+		
+		this.sceneActive = false;
 		
 		this.listeners = new ArrayList<>();
 		
@@ -214,7 +218,15 @@ public abstract class GuiObject {
 	}
 	
 	public boolean renderable() {
-		return this.initied && this.visible;
+		return this.sceneActive && this.initied && this.visible;
+	}
+	
+	public boolean isSceneActive() {
+		return sceneActive;
+	}
+	
+	void setSceneActive(boolean sceneActive) {
+		this.sceneActive = sceneActive;
 	}
 	
 	public GuiParent getParent() {

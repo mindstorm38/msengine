@@ -109,6 +109,17 @@ public class GuiParent extends GuiObject {
 		
 	}
 	
+	@Override
+	void setSceneActive(boolean sceneActive) {
+		
+		super.setSceneActive(sceneActive);
+		
+		for (GuiObject child : this.children) {
+			child.setSceneActive(sceneActive);
+		}
+		
+	}
+	
 	/**
 	 * Add a child {@link GuiObject} to this parent.<br>
 	 * If the {@link GuiObject} is already added to another parent, an {@link IllegalArgumentException} is thrown.

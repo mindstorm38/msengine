@@ -17,11 +17,17 @@ public abstract class GuiScene extends GuiParent {
 	}
 	
 	protected void loaded(Class<? extends GuiScene> previousScene) {
+		
 		this.previousScene = previousScene;
+		this.setSceneActive(true);
+		
 	}
 	
 	protected void unloaded() {
+		
 		this.previousScene = null;
+		this.setSceneActive(false);
+		
 	}
 	
 	@Override
