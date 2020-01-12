@@ -1,19 +1,13 @@
 package io.msengine.client.gui;
 
-import io.msengine.client.renderer.texture.TextureMapTile;
 import io.msengine.client.renderer.texture.TextureObject;
 import io.msengine.client.renderer.util.BufferUsage;
 import io.msengine.client.renderer.util.BufferUtils;
 import io.msengine.client.renderer.vertex.IndicesDrawBuffer;
-import io.sutil.CollectionUtils;
-import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
 
@@ -26,20 +20,21 @@ import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
  * TODO - Implementer dans cette classe getAutoWidth à la valeur minimal de "2x(taille fixe)" (2 car il faut bien affiché les bords).
  *
  */
-public class GuiComponentTexture extends GuiObject {
+public abstract class GuiComponentTexture extends GuiObject {
 	
-	private final Type type;
+	//private final Type type;
 	
 	protected IndicesDrawBuffer buffer;
 	protected boolean updateVertices;
 	protected boolean updateTexCoords;
 	
-	protected final Map<String, Map<TextureComponent, TextureMapTile>> statesTiles;
-	protected final HashSet<String> statesReady;
+	// protected final Map<String, Map<TextureComponent, TextureMapTile>> statesTiles;
+	// protected final HashSet<String> statesReady;
 	protected TextureObject texture;
 	protected String state;
-	protected float scale;
+	// protected float scale;
 	
+	/*
 	public GuiComponentTexture(Type type) {
 		
 		this.type = Objects.requireNonNull(type);
@@ -48,16 +43,17 @@ public class GuiComponentTexture extends GuiObject {
 		this.statesReady = new HashSet<>();
 		
 	}
+	*/
 	
 	public GuiComponentTexture() {
-		this(Type.TWO_COMPONENT_LINE);
+	
 	}
 	
 	@Override
 	protected void init() {
 		
 		this.buffer = this.renderer.createDrawBuffer( false, true );
-		this.initBuffers();
+		this._initBuffers();
 		
 	}
 	
@@ -69,12 +65,18 @@ public class GuiComponentTexture extends GuiObject {
 		
 	}
 	
-	private void initBuffers() {
+	protected abstract boolean isStateReady();
+	protected abstract IntBuffer initBuffers(AtomicInteger verticesCount, AtomicInteger texCoordsCount);
+	protected abstract FloatBuffer updateVerticesBuffer();
+	protected abstract FloatBuffer updateTexCoordsBuffer();
+	
+	protected void _initBuffers() {
 		
 		IntBuffer indicesBuffer = null;
 		
 		try {
 			
+			/*
 			int posCount, texCount;
 			
 			switch (this.type) {
@@ -89,24 +91,29 @@ public class GuiComponentTexture extends GuiObject {
 					break;
 				default: throw new UnsupportedOperationException();
 			}
+			*/
 			
+			AtomicInteger verticesCount = new AtomicInteger();
+			AtomicInteger texCoordsCount = new AtomicInteger();
+			
+			indicesBuffer = this.initBuffers(verticesCount, texCoordsCount);
 			indicesBuffer.flip();
 			
 			this.buffer.bindVao();
-			this.buffer.allocateVboData(GUI_POSITION, posCount << 2, BufferUsage.DYNAMIC_DRAW);
-			this.buffer.allocateVboData(GUI_TEX_COORD, texCount << 2, BufferUsage.DYNAMIC_DRAW);
+			this.buffer.allocateVboData(GUI_POSITION, verticesCount.get() << 2, BufferUsage.DYNAMIC_DRAW);
+			this.buffer.allocateVboData(GUI_TEX_COORD, texCoordsCount.get() << 2, BufferUsage.DYNAMIC_DRAW);
 			this.buffer.uploadIboData(indicesBuffer, BufferUsage.STATIC_DRAW);
 			
 		} finally {
 			BufferUtils.safeFree(indicesBuffer);
 		}
 		
-		this.updateVerticesBuffer();
-		this.updateTexCoordsBuffer();
+		this._updateVerticesBuffer();
+		this._updateTexCoordsBuffer();
 		
 	}
 	
-	private void updateVerticesBuffer() {
+	protected void _updateVerticesBuffer() {
 		
 		if (this.isStateReady()) {
 			
@@ -114,6 +121,7 @@ public class GuiComponentTexture extends GuiObject {
 			
 			try {
 				
+				/*
 				switch (this.type) {
 					case TWO_COMPONENT_LINE:
 						
@@ -138,7 +146,9 @@ public class GuiComponentTexture extends GuiObject {
 					default:
 						throw new UnsupportedOperationException();
 				}
+				*/
 				
+				verticesBuffer = this.updateVerticesBuffer();
 				verticesBuffer.flip();
 				
 				this.buffer.bindVao();
@@ -148,13 +158,13 @@ public class GuiComponentTexture extends GuiObject {
 				BufferUtils.safeFree(verticesBuffer);
 			}
 			
+			this.updateVertices = false;
+			
 		}
-		
-		this.updateVertices = false;
 		
 	}
 	
-	private void updateTexCoordsBuffer() {
+	protected void _updateTexCoordsBuffer() {
 		
 		if (this.isStateReady()) {
 			
@@ -162,6 +172,7 @@ public class GuiComponentTexture extends GuiObject {
 			
 			try {
 				
+				/*
 				switch (this.type) {
 					case TWO_COMPONENT_LINE:
 						
@@ -187,7 +198,9 @@ public class GuiComponentTexture extends GuiObject {
 					default:
 						throw new UnsupportedOperationException();
 				}
+				*/
 				
+				texCoordsBuffer = this.updateTexCoordsBuffer();
 				texCoordsBuffer.flip();
 				
 				this.buffer.bindVao();
@@ -197,9 +210,9 @@ public class GuiComponentTexture extends GuiObject {
 				BufferUtils.safeFree(texCoordsBuffer);
 			}
 			
+			this.updateTexCoords = false;
+			
 		}
-		
-		this.updateTexCoords = false;
 		
 	}
 	
@@ -210,10 +223,10 @@ public class GuiComponentTexture extends GuiObject {
 			return;
 		
 		if (this.updateVertices)
-			this.updateVerticesBuffer();
+			this._updateVerticesBuffer();
 		
 		if (this.updateTexCoords)
-			this.updateTexCoordsBuffer();
+			this._updateTexCoordsBuffer();
 		
 		this.model.push().translate(this.xOffset, this.yOffset).apply();
 			this.renderer.setTextureSampler(this.texture);
@@ -228,20 +241,15 @@ public class GuiComponentTexture extends GuiObject {
 	
 	}
 	
-	@Override
-	public void setWidth(float width) {
-		super.setWidth(width);
-		this.updateVertices = true;
-		this.updateTexCoords = true;
+	public String getState() {
+		return this.state;
 	}
 	
-	@Override
-	public void setHeight(float height) {
-		super.setHeight(height);
-		this.updateVertices = true;
-		this.updateTexCoords = true;
+	public void setState(String state) {
+		this.state = state;
 	}
 	
+	/*
 	public void setComponentTexture(String state, TextureComponent component, TextureMapTile tile) {
 		
 		if (!this.type.hasComponent(component))
@@ -265,12 +273,14 @@ public class GuiComponentTexture extends GuiObject {
 		}
 		
 	}
+	*/
 	
-	/**
+	/*
 	 * Internal method to get a component texture map tile for the current state.
 	 * @param component The component to get.
 	 * @return Map tile corresponding to this component.
 	 */
+	/*
 	private TextureMapTile getComponentTile(TextureComponent component) {
 		
 		if (this.statesTiles.containsKey(this.state)) {
@@ -280,24 +290,17 @@ public class GuiComponentTexture extends GuiObject {
 		}
 		
 	}
+	*/
 	
-	/**
+	/*
 	 * Check if the current state is ready for displaying (all textures components are set).
 	 * @return True if the state is ready
 	 */
-	public boolean isStateReady() {
+	/*public boolean isStateReady() {
 		return this.state != null && this.statesReady.contains(this.state);
-	}
+	}*/
 	
-	public String getState() {
-		return this.state;
-	}
-	
-	public void setState(String state) {
-		this.state = state;
-		this.updateTexCoords = true;
-	}
-	
+	/*
 	public float getScale() {
 		return this.scale;
 	}
@@ -328,5 +331,6 @@ public class GuiComponentTexture extends GuiObject {
 		}
 		
 	}
+	*/
 	
 }
