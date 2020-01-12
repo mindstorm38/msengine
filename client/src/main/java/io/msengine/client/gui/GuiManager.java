@@ -181,6 +181,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 			
 		}
 		
+		final Class<? extends GuiScene> previousScene = this.currentScene == null ? null : this.currentScene.getClass();
+		
 		this.currentScene = inst;
 		
 		if ( inst != null ) {
@@ -189,7 +191,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 				inst._init();
 			}
 			
-			inst.loaded();
+			inst.loaded(previousScene);
 			inst.fireEvent(new GuiSceneResizedEvent(this.window));
 			
 		}

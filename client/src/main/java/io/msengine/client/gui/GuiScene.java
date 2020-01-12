@@ -14,8 +14,13 @@ public abstract class GuiScene extends GuiParent {
 		
 	}
 	
-	protected void loaded() {}
-	protected void unloaded() {}
+	protected void loaded(Class<? extends GuiScene> previousScene) {
+	
+	}
+	
+	protected void unloaded() {
+	
+	}
 	
 	@Override
 	public void setAnchor(float xAnchor, float yAnchor) {
