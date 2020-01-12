@@ -4,6 +4,8 @@ import io.msengine.client.gui.event.GuiSceneResizedEvent;
 
 public abstract class GuiScene extends GuiParent {
 
+	protected Class<? extends GuiScene> previousScene;
+	
 	public GuiScene() {
 		
 		super();
@@ -15,11 +17,11 @@ public abstract class GuiScene extends GuiParent {
 	}
 	
 	protected void loaded(Class<? extends GuiScene> previousScene) {
-	
+		this.previousScene = previousScene;
 	}
 	
 	protected void unloaded() {
-	
+		this.previousScene = null;
 	}
 	
 	@Override
