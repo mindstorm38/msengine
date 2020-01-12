@@ -131,7 +131,7 @@ public abstract class GuiComponentTexture extends GuiObject {
 		if (this.updateTexCoords)
 			this._updateTexCoordsBuffer();
 		
-		this.model.push().translate(this.xOffset, this.yOffset).apply();
+		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
 			this.renderer.setTextureSampler(this.texture);
 				this.buffer.drawElements();
 			this.renderer.resetTextureSampler();

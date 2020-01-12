@@ -133,7 +133,7 @@ public class GuiTexture extends GuiObject {
 		if ( this.updateVertices )
 			this.updateVerticesBuffer();
 		
-		this.model.push().translate( this.xOffset, this.yOffset ).apply();
+		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
 			
 			this.renderer.setTextureSampler( this.texture );
 			
