@@ -70,14 +70,13 @@ public class GuiGrowingLineTexture extends GuiComponentTexture {
 		TextureMapTile tile = this.statesTiles.get(this.state);
 		
 		float textureWidth = (float) this.texture.getWidth();
-		float nonScaledGrowingWidth = this.width / this.scale - this.bordersWidth;
+		float nonScaledGrowingWidth = (this.width / this.scale) - this.bordersWidth;
 		
 		if (nonScaledGrowingWidth < 0)
 			nonScaledGrowingWidth = 0;
 		
 		float fixTileWidth = this.bordersWidth / textureWidth;
-		float growingTileWidth = (tile.width - fixTileWidth) - (nonScaledGrowingWidth / textureWidth);
-		
+		float growingTileWidth = nonScaledGrowingWidth / textureWidth;
 		
 		FloatBuffer buf = MemoryUtil.memAllocFloat(16);
 		
