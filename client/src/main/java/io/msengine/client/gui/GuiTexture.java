@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import io.msengine.client.renderer.util.BufferUtils;
+import io.msengine.common.util.Color;
 import org.lwjgl.system.MemoryUtil;
 
 import io.msengine.client.renderer.texture.Texture;
@@ -25,6 +26,9 @@ public class GuiTexture extends GuiObject {
 	protected float textureY;
 	protected float textureWidth;
 	protected float textureHeight;
+	
+	protected final Color color = Color.WHITE.copy();
+	protected boolean colorEnabled;
 	
 	@Override
 	protected void init() {
@@ -134,13 +138,19 @@ public class GuiTexture extends GuiObject {
 			this.updateTexCoordsBuffer();
 		
 		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
-			
-			this.renderer.setTextureSampler( this.texture );
-			
-				this.buffer.drawElements();
-			
-			this.renderer.resetTextureSampler();
-			
+		
+		this.renderer.setTextureSampler(this.texture);
+		
+		if (this.colorEnabled)
+			this.renderer.setGlobalColor(this.color);
+		
+		this.buffer.drawElements();
+		
+		if (this.colorEnabled)
+			this.renderer.resetGlobalColor();
+		
+		this.renderer.resetTextureSampler();
+		
 		this.model.pop();
 
 	}
@@ -257,6 +267,36 @@ public class GuiTexture extends GuiObject {
 		
 		this.updateTexCoords = true;
 		
+	}
+	
+	/**
+	 * @return True if the color for whole texture is enabled.
+	 */
+	public boolean isColorEnabled() {
+		return colorEnabled;
+	}
+	
+	/**
+	 * Set if the internal color wil be used to color the whole texture.
+	 * @param colorEnabled True to enable texture coloration.
+	 */
+	public void setColorEnabled(boolean colorEnabled) {
+		this.colorEnabled = colorEnabled;
+	}
+	
+	/**
+	 * @return Immutable internal texture color. This color will be applied on whole texture.
+	 */
+	public Color getColor() {
+		return this.color;
+	}
+	
+	public void setColor(Color color) {
+		this.color.setAll(color);
+	}
+	
+	public void setColor(int r, int g, int b) {
+		this.color.setAll(r, g, b);
 	}
 
 }

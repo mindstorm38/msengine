@@ -70,11 +70,13 @@ public class GuiTextureMosaic extends GuiTexture {
 	private void updateTexCoordX() {
 		this.textureWidth = this.width / this.tileWidth;
 		this.textureX = this.textureWidth / -2f;
+		this.updateTexCoords = true;
 	}
 	
 	private void updateTexCoordY() {
 		this.textureHeight = this.height / this.tileHeight;
 		this.textureY = this.textureHeight / -2f;
+		this.updateTexCoords = true;
 	}
 	
 }
