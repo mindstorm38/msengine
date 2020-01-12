@@ -14,6 +14,9 @@ public abstract class GuiScene extends GuiParent {
 		
 	}
 	
+	protected void loaded() {}
+	protected void unloaded() {}
+	
 	@Override
 	public void setAnchor(float xAnchor, float yAnchor) {
 		throw new UnsupportedOperationException("Can't set scene position anchor.");

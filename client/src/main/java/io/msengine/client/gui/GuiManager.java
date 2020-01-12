@@ -21,6 +21,8 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * 
  * @author Théo Rozier (Mindstorm38)
  *
+ * TODO Add automatic scene uncaching after a while.
+ *
  */
 public class GuiManager implements WindowFramebufferSizeEventListener {
 	
@@ -135,8 +137,10 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		
 		if ( sceneClass == null ) return null;
 		
-		GuiScene scene = this.instances.get( sceneClass );
-		if ( scene != null ) return scene;
+		GuiScene scene = this.instances.get(sceneClass);
+		
+		if (scene != null)
+			return scene;
 		
 		try {
 			
@@ -168,7 +172,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		
 		if (this.currentScene != null) {
 			
-			this.currentScene._stop();
+			this.currentScene.unloaded();
 			
 			if (oncePreviousStoped != null)
 				oncePreviousStoped.accept(this.currentScene);
@@ -179,7 +183,11 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		
 		if ( inst != null ) {
 			
-			inst._init();
+			if (!inst.usable()) {
+				inst._init();
+			}
+			
+			inst.loaded();
 			inst.fireEvent(new GuiSceneResizedEvent(this.window));
 			
 		}
@@ -237,7 +245,13 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 * @param sceneClass The scene class to uncache
 	 */
 	public void uncacheScene(Class<? extends GuiScene> sceneClass) {
-		this.instances.remove( sceneClass );
+		
+		GuiScene oldScene = this.instances.remove(sceneClass);
+		
+		if (oldScene != null && oldScene.usable()) {
+			oldScene._stop();
+		}
+		
 	}
 	
 	/**
