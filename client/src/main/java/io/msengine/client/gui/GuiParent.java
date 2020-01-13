@@ -27,16 +27,12 @@ public class GuiParent extends GuiObject {
 	
 	@Override
 	public void init() {
-		
-		this.children.forEach( this::initChild );
-		
+		this.children.forEach(this::initChild);
 	}
 	
 	@Override
 	public void stop() {
-		
-		this.children.forEach( this::stopChild );
-		
+		this.children.forEach(this::stopChild);
 	}
 	
 	@Override
@@ -89,15 +85,27 @@ public class GuiParent extends GuiObject {
 		
 	}
 	
+	/**
+	 * Get if a child owned by this parent.
+	 * @param child This child to test.
+	 * @return True if this child is owned by this parent.
+	 */
 	public boolean hasChild(GuiObject child) {
 		return this.children.contains( child );
+	}
+	
+	public void checkHasChild(GuiObject child) {
+		
+		if (!this.hasChild(child))
+			throw new IllegalArgumentException("This child is not owned by this parent.");
+		
 	}
 	
 	@Override
 	public void updateXOffset() {
 		
 		super.updateXOffset();
-		this.children.forEach( GuiObject::updateXOffset );
+		this.children.forEach(GuiObject::updateXOffset);
 		
 	}
 	
@@ -105,8 +113,16 @@ public class GuiParent extends GuiObject {
 	public void updateYOffset() {
 		
 		super.updateYOffset();
-		this.children.forEach( GuiObject::updateYOffset );
+		this.children.forEach(GuiObject::updateYOffset);
 		
+	}
+	
+	public void childXOffsetUpdated(GuiObject child) {
+		this.checkHasChild(child);
+	}
+	
+	public void childYOffsetUpdated(GuiObject child) {
+		this.checkHasChild(child);
 	}
 	
 	@Override

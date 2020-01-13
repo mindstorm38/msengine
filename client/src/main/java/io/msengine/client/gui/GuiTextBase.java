@@ -108,7 +108,7 @@ public class GuiTextBase extends GuiObject {
 					indicesBuffer.put( idx + 1 ).put( idx + 2 ).put( idx + 3 );
 					
 					x += (glyph.width + this.charSpacing) * scale;
-					this.charsOffsets[ i ] = x;
+					this.charsOffsets[i] = x;
 					
 				}
 				
@@ -136,25 +136,27 @@ public class GuiTextBase extends GuiObject {
 		
 		this.updateBuffer = false;
 		
-		this.width = x;
-		this.updateXOffset();
+		super.setWidth(x);
 		
 	}
 	
 	@Override
-	public void setWidth(float width) {}
+	public void setWidth(float width) {
+		// Can't set width for text : the width is set from text size
+	}
 	
 	@Override
-	public void setHeight(float height) {}
+	public void setHeight(float height) {
+		// Can't set height for text : the height is set from font height
+	}
 	
 	@Override
 	public void render(float alpha) {
 		
-		if ( this.updateBuffer ) {
+		if (this.updateBuffer)
 			this.updateTextBuffers();
-		}
 		
-		this.renderText( alpha );
+		this.renderText(alpha);
 		
 	}
 
@@ -195,8 +197,6 @@ public class GuiTextBase extends GuiObject {
 		this.updateBuffer = true;
 		
 		this.updateTextHeight();
-		this.updateYOffset();
-		
 		return true;
 		
 	}
@@ -262,7 +262,7 @@ public class GuiTextBase extends GuiObject {
 	 * Update text height, using font height and text scale.
 	 */
 	public void updateTextHeight() {
-		this.height = this.font.getHeight() * this.textScale;
+		super.setHeight(this.font.getHeight() * this.textScale);
 	}
 	
 	/**

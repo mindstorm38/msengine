@@ -64,13 +64,14 @@ public abstract class GuiObject {
 		
 	}
 	
+	// Position //
 	public void setXPos(float xPos) {
 		
 		if ( this.xPos == xPos )
 			return;
 		
 		this.xPos = xPos;
-		this.updateXOffset();
+		this.internalUpdateXOffset();
 		
 	}
 	
@@ -80,7 +81,7 @@ public abstract class GuiObject {
 			return;
 		
 		this.yPos = yPos;
-		this.updateYOffset();
+		this.internalUpdateYOffset();
 		
 	}
 	
@@ -94,6 +95,7 @@ public abstract class GuiObject {
 	public float getXPos() { return this.xPos; }
 	public float getYPos() { return this.yPos; }
 	
+	// Size //
 	public void setWidth(float width) {
 		
 		if ( this.width == width )
@@ -106,7 +108,7 @@ public abstract class GuiObject {
 			throw new IllegalArgumentException( "Invalid width given : " + width );
 		
 		this.width = width;
-		this.updateXOffset();
+		this.internalUpdateXOffset();
 		
 	}
 	
@@ -122,7 +124,7 @@ public abstract class GuiObject {
 			throw new IllegalArgumentException( "Invalid height given : " + height );
 		
 		this.height = height;
-		this.updateYOffset();
+		this.internalUpdateYOffset();
 		
 	}
 	
@@ -139,17 +141,18 @@ public abstract class GuiObject {
 	public float getAutoWidth() { return 0f; }
 	public float getAutoHeight() { return 0f; }
 	
+	// Anchor //
 	public void setXAnchor(float xAnchor) {
 		
 		this.xAnchor = xAnchor;
-		this.updateXOffset();
+		this.internalUpdateXOffset();
 		
 	}
 	
 	public void setYAnchor(float yAnchor) {
 		
 		this.yAnchor = yAnchor;
-		this.updateYOffset();
+		this.internalUpdateYOffset();
 		
 	}
 	
@@ -164,13 +167,36 @@ public abstract class GuiObject {
 	public float getYAnchor() { return this.yAnchor; }
 	
 	/**
+	 * Internal method to update X offset and trigger parent child offset update.
+	 */
+	protected void internalUpdateXOffset() {
+		
+		this.updateXOffset();
+		
+		if (this.parent != null)
+			this.parent.childXOffsetUpdated(this);
+		
+	}
+	
+	/**
+	 * Internal method to update Y offset and trigger parent child offset update.
+	 */
+	protected void internalUpdateYOffset() {
+		
+		this.updateYOffset();
+		
+		if (this.parent != null)
+			this.parent.childYOffsetUpdated(this);
+		
+	}
+	
+	/**
 	 * Update the X offset used to render at the right position.
 	 */
 	public void updateXOffset() {
 		
-		this.xOffset = ( this.xPos + ( this.xAnchor + 1f ) * ( -this.width / 2f ) )/* + 1f*/;
-		if ( this.parent != null ) this.xOffset += this.parent.xOffset;
-		
+		this.xOffset = (this.xPos + (this.xAnchor + 1f) * (this.width / -2f));
+		if (this.parent != null) this.xOffset += this.parent.xOffset;
 		this.xIntOffset = Math.round(this.xOffset);
 		
 	}
@@ -180,19 +206,10 @@ public abstract class GuiObject {
 	 */
 	public void updateYOffset() {
 		
-		this.yOffset = ( this.yPos + ( this.yAnchor + 1f ) * ( -this.height / 2f ) )/* + 1f*/;
-		if ( this.parent != null ) this.yOffset += this.parent.yOffset;
-		
+		this.yOffset = (this.yPos + (this.yAnchor + 1f) * (this.height / -2f));
+		if (this.parent != null) this.yOffset += this.parent.yOffset;
 		this.yIntOffset = Math.round(this.yOffset);
 		
-	}
-	
-	public float getXOffset() {
-		return this.xOffset;
-	}
-	
-	public float getYOffset() {
-		return this.yOffset;
 	}
 	
 	/**
@@ -203,6 +220,34 @@ public abstract class GuiObject {
 		this.updateXOffset();
 		this.updateYOffset();
 		
+	}
+	
+	/**
+	 * @return The X offset for render and interactions.
+	 */
+	public float getXOffset() {
+		return this.xOffset;
+	}
+	
+	/**
+	 * @return The Y offset for render and interactions.
+	 */
+	public float getYOffset() {
+		return this.yOffset;
+	}
+	
+	/**
+	 * @return The inverted X offset (xOffset + width).
+	 */
+	public float getOpositeOffsetX() {
+		return this.xOffset + this.width;
+	}
+	
+	/**
+	 * @return The inverted Y offset (yOffset + height).
+	 */
+	public float getOpositeOffsetY() {
+		return this.yOffset + this.height;
 	}
 	
 	public void setVisible(boolean visible) {
@@ -221,6 +266,9 @@ public abstract class GuiObject {
 		return this.sceneActive && this.initied && this.visible;
 	}
 	
+	/**
+	 * @return True if this object is contained in the ({@link GuiManager}'s current scene.
+	 */
 	public boolean isSceneActive() {
 		return sceneActive;
 	}
@@ -229,11 +277,11 @@ public abstract class GuiObject {
 		this.sceneActive = sceneActive;
 	}
 	
-	public GuiParent getParent() {
+	public final GuiParent getParent() {
 		return this.parent;
 	}
 	
-	public boolean hasParent() {
+	public final boolean hasParent() {
 		return this.parent != null;
 	}
 	

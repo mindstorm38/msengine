@@ -18,16 +18,11 @@ public abstract class GuiMask {
 	}
 	
 	public void init() {
-		
 		this.buffer = this.renderer.createDrawBuffer( false, false );
-		
 	}
 	
 	public void draw() {
-		
-		this.renderer.resetTextureSampler();
 		this.buffer.drawElements();
-		
 	}
 	
 	public void stop() {
