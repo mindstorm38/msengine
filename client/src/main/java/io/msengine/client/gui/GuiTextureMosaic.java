@@ -14,8 +14,8 @@ public class GuiTextureMosaic extends GuiTexture {
 	protected float tileWidth = 1f;
 	protected float tileHeight = 1f;
 	
-	protected float mosaicXOffset;
-	protected float mosaicYOffset;
+	protected float mosaicXOffset = 0f;
+	protected float mosaicYOffset = 0f;
 	
 	@Override
 	public float getAutoWidth() {
