@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import org.lwjgl.opengl.GL11;
 
 import io.msengine.client.renderer.shader.ShaderAttribute;
