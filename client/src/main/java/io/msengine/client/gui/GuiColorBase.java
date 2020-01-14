@@ -138,6 +138,25 @@ public abstract class GuiColorBase extends GuiObject {
 	@Override
 	public void update() {}
 	
+	@Override
+	public void setWidth(float width) {
+		super.setWidth(width);
+		this.updateVertices = true;
+	}
+	
+	@Override
+	public void setHeight(float height) {
+		super.setHeight(height);
+		this.updateVertices = true;
+	}
+	
+	/**
+	 * Tel this color square to update.
+	 */
+	public void updateColors() {
+		this.updateColors = true;
+	}
+	
 	/**
 	 * Internal method to get corner color and put it in a float buffer.
 	 * @param buffer The float buffer containing colors.
