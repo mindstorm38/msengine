@@ -129,6 +129,14 @@ public class GuiScrollableContainer extends GuiParent {
 		return this.internal;
 	}
 	
+	public boolean addInternalChild(GuiObject child) {
+		return this.internal.addChild(child);
+	}
+	
+	public boolean removeInternalChild(GuiObject child) {
+		return this.internal.removeChild(child);
+	}
+	
 	private class InternalContainer extends GuiParent {
 		
 		@Override

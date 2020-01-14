@@ -20,4 +20,8 @@ public class GuiEvent {
 		return this.origin;
 	}
 	
+	public boolean isOrigin(GuiObject obj) {
+		return this.origin == obj;
+	}
+	
 }
