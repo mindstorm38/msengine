@@ -9,8 +9,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static io.msengine.client.renderer.vertex.type.GuiFormat.GUI_POSITION;
-import static io.msengine.client.renderer.vertex.type.GuiFormat.GUI_TEX_COORD;
+import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
 
 /**
  *
@@ -56,7 +55,7 @@ public abstract class GuiColorBase extends GuiObject {
 			
 			this.buffer.bindVao();
 			this.buffer.allocateVboData(GUI_POSITION, 8 << 2, BufferUsage.DYNAMIC_DRAW);
-			this.buffer.allocateVboData(GUI_TEX_COORD, 16 << 2, BufferUsage.DYNAMIC_DRAW);
+			this.buffer.allocateVboData(GUI_COLOR, 16 << 2, BufferUsage.DYNAMIC_DRAW);
 			this.buffer.uploadIboData(indicesBuffer, BufferUsage.STATIC_DRAW);
 			
 		} finally {
@@ -110,7 +109,7 @@ public abstract class GuiColorBase extends GuiObject {
 			colorsBuffer.flip();
 			
 			this.buffer.bindVao();
-			this.buffer.uploadVboSubData(GUI_TEX_COORD, 0, colorsBuffer);
+			this.buffer.uploadVboSubData(GUI_COLOR, 0, colorsBuffer);
 			
 		} finally {
 			BufferUtils.safeFree(colorsBuffer);
