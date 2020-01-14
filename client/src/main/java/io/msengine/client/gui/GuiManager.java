@@ -195,7 +195,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 			}
 			
 			inst.loaded(previousScene);
-			inst.fireEvent(new GuiSceneResizedEvent(this.window));
+			inst.setSceneSize(this.window.getWidth(), this.window.getHeight());
 			
 		}
 		
@@ -271,7 +271,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		this.renderer.updateRenderSize( width, height );
 		
 		if ( this.currentScene != null ) {
-			this.currentScene.fireEvent(new GuiSceneResizedEvent(width, height));
+			this.currentScene.setSceneSize(width, height);
 		}
 		
 	}

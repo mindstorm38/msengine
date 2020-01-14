@@ -87,6 +87,14 @@ public class GuiScrollableContainer extends GuiParent {
 		return this.yMaxScroll;
 	}
 	
+	public boolean canScrollOnX() {
+		return this.xMaxScroll != 0;
+	}
+	
+	public boolean canScrollOnY() {
+		return this.yMaxScroll != 0;
+	}
+	
 	// Update ratio //
 	private void updateXInfo() {
 		

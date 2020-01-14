@@ -12,8 +12,6 @@ public abstract class GuiScene extends GuiParent {
 		
 		super.setAnchor(-1f, -1f);
 		
-		this.addEventListener(GuiSceneResizedEvent.class, this::onSceneResized);
-		
 	}
 	
 	protected void loaded(Class<? extends GuiScene> previousScene) {
@@ -50,8 +48,8 @@ public abstract class GuiScene extends GuiParent {
 		throw new UnsupportedOperationException("Can't add scene to a parent object.");
 	}
 	
-	private void onSceneResized(GuiSceneResizedEvent event) {
-		super.setSize(event.getWidth(), event.getHeight());
+	void setSceneSize(int width, int height) {
+		super.setSize(width, height);
 	}
 	
 }
