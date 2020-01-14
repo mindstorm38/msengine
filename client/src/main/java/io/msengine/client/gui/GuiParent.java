@@ -139,30 +139,63 @@ public class GuiParent extends GuiObject {
 	/**
 	 * Add a child {@link GuiObject} to this parent.<br>
 	 * If the {@link GuiObject} is already added to another parent, an {@link IllegalArgumentException} is thrown.
-	 * @param child The child object to add
-	 * @return <code>true</code> if the internal children list was modified
+	 * @param child The child object to add.
+	 * @param index The index to insert the child at.
+	 * @return <code>true</code> if the internal children list was modified.
+	 */
+	public boolean addChild(GuiObject child, int index) {
+		
+		if (this.hasChild(child))
+			return false;
+		
+		if (child.hasParent())
+			throw new IllegalArgumentException("This GuiObject is already bound to another GuiParent");
+		
+		this.children.add(index, child);
+		
+		try {
+			child.setParent(this);
+		} catch (Exception e) {
+			
+			this.children.remove(child);
+			throw e;
+			
+		}
+		
+		this.initChild(child);
+		
+		return true;
+		
+	}
+	
+	/**
+	 * Add a child to this parent <b>at the last position</b>.<br>
+	 * @param child The child object to add.
+	 * @return <code>true</code> if the internal children list was modified.
+	 * @see #addChild(GuiObject, int)
 	 */
 	public boolean addChild(GuiObject child) {
+		return this.addChild(child, this.children.size());
+	}
+	
+	/**
+	 * Add a child to this parent before another object.
+	 * @param child The child object to add.
+	 * @param beforeIt The other child that is already in this parent.
+	 * @return <code>true</code> if the internal children list was modified.
+	 * @see #addChild(GuiObject, int)
+	 */
+	public boolean addChild(GuiObject child, GuiObject beforeIt) {
 		
-		if ( this.hasChild( child ) ) return false;
-		if ( child.hasParent() ) throw new IllegalArgumentException("This GuiObject is already bound to another GuiParent");
+		if (child == beforeIt)
+			return false;
 		
-		if (this.children.add( child )) { // TODO : Check if this condition can be removed
-			
-			try {
-				child.setParent(this);
-			} catch (Exception e) {
-				
-				this.children.remove(child);
-				throw e;
-				
-			}
-			
-			this.initChild(child);
-			
-			return true;
-			
-		} else return false;
+		int index = this.children.indexOf(beforeIt);
+		
+		if (index == -1)
+			return false;
+		
+		return this.addChild(child, index);
 		
 	}
 	
