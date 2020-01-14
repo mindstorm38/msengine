@@ -267,6 +267,21 @@ public abstract class GuiObject {
 	}
 	
 	/**
+	 * Utility method to compute if a point is over this object, mostly used to mouse over detection.
+	 * @param x The point X.
+	 * @param y The point Y.
+	 * @return True if this point is over this object.
+	 */
+	public boolean isPointOver(int x, int y) {
+		
+		float xOff = this.xOffset;
+		float yOff = this.yOffset;
+		
+		return x >= xOff && y >= yOff && x < (xOff + this.width) && y < (yOff + this.height);
+		
+	}
+	
+	/**
 	 * @return True if this object is contained in the ({@link GuiManager}'s current scene.
 	 */
 	public boolean isSceneActive() {
