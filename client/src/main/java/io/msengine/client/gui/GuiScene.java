@@ -50,6 +50,7 @@ public abstract class GuiScene extends GuiParent {
 	
 	void setSceneSize(int width, int height) {
 		super.setSize(width, height);
+		this.fireEvent(new GuiSceneResizedEvent(width, height));
 	}
 	
 }
