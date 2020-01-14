@@ -14,8 +14,8 @@ public class GuiTextureMosaic extends GuiTexture {
 	protected float tileWidth = 1f;
 	protected float tileHeight = 1f;
 	
-	protected float mosaicXOffset = 0f;
-	protected float mosaicYOffset = 0f;
+	protected float mosaicOffsetX = 0f;
+	protected float mosaicOffsetY = 0f;
 	
 	@Override
 	public float getAutoWidth() {
@@ -72,34 +72,34 @@ public class GuiTextureMosaic extends GuiTexture {
 	}
 	
 	// Mosaic offset //
-	public float getMosaicXOffset() {
-		return mosaicXOffset;
+	public float getMosaicOffsetX() {
+		return mosaicOffsetX;
 	}
 	
-	public void setMosaicXOffset(float mosaicXOffset) {
-		this.mosaicXOffset = mosaicXOffset;
+	public void setMosaicOffsetX(float mosaicOffsetX) {
+		this.mosaicOffsetX = mosaicOffsetX;
 		this.updateTexCoordX();
 	}
 	
-	public float getMosaicYOffset() {
-		return mosaicYOffset;
+	public float getMosaicOffsetY() {
+		return mosaicOffsetY;
 	}
 	
-	public void setMosaicYOffset(float mosaicYOffset) {
-		this.mosaicYOffset = mosaicYOffset;
+	public void setMosaicOffsetY(float mosaicOffsetY) {
+		this.mosaicOffsetY = mosaicOffsetY;
 		this.updateTexCoordY();
 	}
 	
 	public void setMoasicOffset(float xOffset, float yOffset) {
-		this.setMosaicXOffset(xOffset);
-		this.setMosaicYOffset(yOffset);
+		this.setMosaicOffsetX(xOffset);
+		this.setMosaicOffsetY(yOffset);
 	}
 	
 	// Update coords //
 	private void updateTexCoordX() {
 		
 		this.textureWidth = this.width / this.tileWidth;
-		this.textureX = (this.textureWidth / -2f) + this.xOffset;
+		this.textureX = (this.textureWidth / -2f) + this.mosaicOffsetX;
 		this.updateTexCoords = true;
 		
 	}
@@ -107,7 +107,7 @@ public class GuiTextureMosaic extends GuiTexture {
 	private void updateTexCoordY() {
 		
 		this.textureHeight = this.height / this.tileHeight;
-		this.textureY = (this.textureHeight / -2f) + this.yOffset;
+		this.textureY = (this.textureHeight / -2f) + this.mosaicOffsetY;
 		this.updateTexCoords = true;
 		
 	}
