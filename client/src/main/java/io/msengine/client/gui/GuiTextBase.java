@@ -73,6 +73,7 @@ public class GuiTextBase extends GuiObject {
 		
 		float textureHeight = this.font.getTextureHeight();
 		float scale = this.textScale;
+		float scaledCharSpacing = this.charSpacing * scale;
 		
 		float x = 0f;
 		
@@ -107,8 +108,10 @@ public class GuiTextBase extends GuiObject {
 					indicesBuffer.put( idx ).put( idx + 1 ).put( idx + 3 );
 					indicesBuffer.put( idx + 1 ).put( idx + 2 ).put( idx + 3 );
 					
-					x += (glyph.width + this.charSpacing) * scale;
+					x += glyph.width * scale;
 					this.charsOffsets[i] = x;
+					
+					x += scaledCharSpacing;
 					
 				}
 				
@@ -222,6 +225,13 @@ public class GuiTextBase extends GuiObject {
 	}
 	
 	/**
+	 * @return The current of this object.
+	 */
+	public String getText() {
+		return this.text;
+	}
+	
+	/**
 	 * @return Space between consecutive characters.
 	 */
 	public float getCharSpacing() {
@@ -233,6 +243,9 @@ public class GuiTextBase extends GuiObject {
 	 * @param charSpacing The space
 	 */
 	public void setCharSpacing(float charSpacing) {
+		
+		if (this.charSpacing == charSpacing)
+			return;
 		
 		this.charSpacing = charSpacing;
 		this.updateBuffer = true;
@@ -251,6 +264,9 @@ public class GuiTextBase extends GuiObject {
 	 * @param scale Text scale
 	 */
 	public void setTextScale(float scale) {
+		
+		if (this.textScale == scale)
+			return;
 		
 		this.textScale = scale;
 		this.updateTextHeight();
@@ -274,7 +290,7 @@ public class GuiTextBase extends GuiObject {
 		
 		if ( this.charsOffsets.length == 0 || index < 0 )
 			return 0f;
-		else if ( index >= this.textChars.length - 1 )
+		else if ( index >= this.textChars.length )
 			index = this.textChars.length - 1;
 		
 		return this.charsOffsets[ index ];

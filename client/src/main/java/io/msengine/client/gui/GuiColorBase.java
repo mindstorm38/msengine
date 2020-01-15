@@ -152,7 +152,7 @@ public abstract class GuiColorBase extends GuiObject {
 	/**
 	 * Tel this color square to update.
 	 */
-	public void updateColors() {
+	protected void updateColors() {
 		this.updateColors = true;
 	}
 	

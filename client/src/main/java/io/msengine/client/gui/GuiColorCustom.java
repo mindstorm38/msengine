@@ -18,4 +18,9 @@ public class GuiColorCustom extends GuiColorBase {
 		return this.cornerColorSupplier.apply(corner);
 	}
 	
+	@Override
+	public void updateColors() {
+		super.updateColors();
+	}
+	
 }

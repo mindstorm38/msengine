@@ -184,7 +184,9 @@ public class GuiRenderer implements ModelApplyListener {
 		glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
 		glColorMask( false, false, false, false );
 		
-		for ( GuiMask mask : masks ) mask.draw();
+		for (GuiMask mask : masks) {
+			mask.draw();
+		}
 		
 		glStencilMask( 1 );
 		glStencilFunc( GL_EQUAL, 1, 1 );

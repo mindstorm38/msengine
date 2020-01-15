@@ -140,7 +140,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 */
 	private GuiScene getSceneInstance(Class<? extends GuiScene> sceneClass) {
 		
-		if ( sceneClass == null ) return null;
+		if (sceneClass == null)
+			return null;
 		
 		GuiScene scene = this.instances.get(sceneClass);
 		
@@ -148,10 +149,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 			return scene;
 		
 		try {
-			
 			scene = sceneClass.newInstance();
-			
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (Exception e) {
 			
 			LOGGER.log( Level.SEVERE, "Failed to instantiate the scene " + sceneClass.getSimpleName(), e );
 			return null;
@@ -170,9 +169,9 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 */
 	public void loadScene(Class<? extends GuiScene> sceneClass, Consumer<GuiScene> oncePreviousStoped) {
 		
-		GuiScene inst = this.getSceneInstance( sceneClass );
+		GuiScene inst = this.getSceneInstance(sceneClass);
 		
-		if (this.currentScene == inst)
+		if (inst == null || this.currentScene == inst)
 			return;
 		
 		if (this.currentScene != null) {
