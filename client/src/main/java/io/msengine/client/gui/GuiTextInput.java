@@ -40,6 +40,7 @@ public class GuiTextInput extends GuiParent implements
 		
 		this.text = new InputText();
 		this.text.setAnchor(-1, 0);
+		this.text.setIgnoreUnderline(true);
 		this.addChild(this.text);
 		
 		this.cursor = new GuiColorSolid(DEFAULT_CURSOR_COLOR);
@@ -198,16 +199,20 @@ public class GuiTextInput extends GuiParent implements
 		return this.selection;
 	}
 	
+	public float getCursorWidth() {
+		return this.text.getTextScale();
+	}
+	
 	// Private utility methods //
 	private void textScaleUpdated() {
 		
 		if (this.cursor != null) {
 			
-			float textScale = this.text.getTextScale();
+			float cursorWidth = this.getCursorWidth();
 			
-			this.cursor.setSize(textScale, this.text.getHeight());
+			this.cursor.setSize(cursorWidth, this.text.getHeight());
 			this.selection.setHeight(this.text.getHeight());
-			this.text.setXPos(textScale);
+			// this.text.setXPos(cursorWidth);
 			
 		}
 		
@@ -217,7 +222,7 @@ public class GuiTextInput extends GuiParent implements
 		
 		float scrollPadding = this.scrollPadding;
 		float charOffset = this.text.getCharOffset(this.cursorIndex - 1);
-		float textScale = this.text.getTextScale();
+		float cursorWidth = this.getCursorWidth();
 		
 		if (this.text.getWidth() <= (this.width - scrollPadding * 2)) {
 			this.text.setXPos(scrollPadding);
@@ -227,8 +232,8 @@ public class GuiTextInput extends GuiParent implements
 			
 			if (realOffset < scrollPadding) {
 				this.text.setXPos(scrollPadding - charOffset);
-			} else if (realOffset > (this.width - scrollPadding - textScale)) {
-				this.text.setXPos(this.width - scrollPadding - charOffset - textScale);
+			} else if (realOffset > (this.width - scrollPadding - cursorWidth)) {
+				this.text.setXPos(this.width - scrollPadding - charOffset - cursorWidth);
 			}
 			
 		}
@@ -243,7 +248,7 @@ public class GuiTextInput extends GuiParent implements
 			
 			float selectionCharOffset = this.text.getCharOffset(this.selectionIndex - 1);
 			float beginOffset = Math.min(charOffset, selectionCharOffset);
-			float selectionWidth = Math.abs(charOffset - selectionCharOffset) + textScale;
+			float selectionWidth = Math.abs(charOffset - selectionCharOffset) + cursorWidth;
 			
 			this.selection.setXPos(beginOffset + this.text.getXPos());
 			this.selection.setWidth(selectionWidth);
@@ -463,6 +468,12 @@ public class GuiTextInput extends GuiParent implements
 	}
 	
 	private class InputText extends GuiTextColorable {
+		
+		@Override
+		public void setHeight(float height) {
+			super.setHeight(height);
+			GuiTextInput.this.textScaleUpdated();
+		}
 		
 		@Override
 		protected void updateTextBuffers() {
