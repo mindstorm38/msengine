@@ -1,17 +1,20 @@
 package io.msengine.client.gui;
 
+import io.msengine.client.gui.event.GuiTextInputChangedEvent;
 import io.msengine.client.renderer.gui.GUIMaskRectangle;
 import io.msengine.client.renderer.gui.GuiMask;
 import io.msengine.client.renderer.window.Window;
 import io.msengine.client.renderer.window.listener.WindowCharEventListener;
 import io.msengine.client.renderer.window.listener.WindowKeyEventListener;
+import io.msengine.client.renderer.window.listener.WindowMouseButtonEventListener;
 import io.msengine.common.util.Color;
 import io.sutil.ClipboardUtils;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiTextInput extends GuiParent implements
 		WindowCharEventListener,
-		WindowKeyEventListener {
+		WindowKeyEventListener,
+		WindowMouseButtonEventListener {
 	
 	public static final Color DEFAULT_CURSOR_COLOR = new Color(230, 230, 230, 0.8f);
 	public static final Color DEFAULT_SELECTION_COLOR = new Color(105, 162, 255, 0.4f);
@@ -31,6 +34,8 @@ public class GuiTextInput extends GuiParent implements
 	private float scrollPadding = 10;
 	private int cursorAnimation = 10;
 	
+	private boolean active;
+	
 	public GuiTextInput() {
 		
 		this.text = new InputText();
@@ -39,10 +44,12 @@ public class GuiTextInput extends GuiParent implements
 		
 		this.cursor = new GuiColorSolid(DEFAULT_CURSOR_COLOR);
 		this.cursor.setAnchor(-1, 0);
+		this.cursor.setVisible(false);
 		this.addChild(this.cursor);
 		
 		this.selection = new GuiColorSolid(DEFAULT_SELECTION_COLOR);
 		this.selection.setAnchor(-1, 0);
+		this.selection.setVisible(false);
 		this.addChild(this.selection);
 		
 		this.mask = new GUIMaskRectangle();
@@ -64,6 +71,7 @@ public class GuiTextInput extends GuiParent implements
 		
 		Window.getInstance().addCharEventListener(this);
 		Window.getInstance().addKeyEventListener(this);
+		Window.getInstance().addMouseButtonEventListener(this);
 		
 	}
 	
@@ -72,6 +80,7 @@ public class GuiTextInput extends GuiParent implements
 		
 		Window.getInstance().removeCharEventListener(this);
 		Window.getInstance().removeKeyEventListener(this);
+		Window.getInstance().removeMouseButtonEventListener(this);
 		
 		this.mask.stop();
 		
@@ -81,19 +90,23 @@ public class GuiTextInput extends GuiParent implements
 	
 	@Override
 	public void render(float alpha) {
+		
 		this.renderer.mask(this.maskArray);
 		super.render(alpha);
 		this.renderer.unmask();
+		
 	}
 	
 	@Override
 	public void update() {
 		
-		if (this.cursorTick++ > this.cursorAnimation) {
-			
-			this.cursorTick = 0;
-			this.cursor.setVisible(!this.cursor.isVisible());
-			
+		if (this.active) {
+			if (this.cursorTick++ > this.cursorAnimation) {
+				
+				this.cursorTick = 0;
+				this.cursor.setVisible(!this.cursor.isVisible());
+				
+			}
 		}
 		
 		super.update();
@@ -125,6 +138,7 @@ public class GuiTextInput extends GuiParent implements
 		
 	}
 	
+	// Scroll padding //
 	public float getScrollPadding() {
 		return scrollPadding;
 	}
@@ -134,6 +148,7 @@ public class GuiTextInput extends GuiParent implements
 		this.updateCursor();
 	}
 	
+	// Cursor animation //
 	public int getCursorAnimation() {
 		return cursorAnimation;
 	}
@@ -142,6 +157,35 @@ public class GuiTextInput extends GuiParent implements
 		this.cursorAnimation = cursorAnimation;
 	}
 	
+	// Active //
+	public boolean isActive() {
+		return active;
+	}
+	
+	public void setActive(boolean active) {
+		
+		if (this.active != active) {
+			
+			this.active = active;
+			
+			if (this.active) {
+				
+				this.cursorTick = 0;
+				this.cursor.setVisible(true);
+				this.setCursorPosition(0, true, false);
+				
+			} else {
+				
+				this.cursor.setVisible(false);
+				this.selection.setVisible(false);
+				
+			}
+			
+		}
+		
+	}
+	
+	// Objects //
 	public GuiTextColorable getText() {
 		return this.text;
 	}
@@ -150,6 +194,11 @@ public class GuiTextInput extends GuiParent implements
 		return this.cursor;
 	}
 	
+	public GuiColorSolid getSelection() {
+		return this.selection;
+	}
+	
+	// Private utility methods //
 	private void textScaleUpdated() {
 		
 		if (this.cursor != null) {
@@ -204,7 +253,11 @@ public class GuiTextInput extends GuiParent implements
 	}
 	
 	private void updateText() {
-		this.text.setText(this.builder.toString());
+		
+		String str = this.builder.toString();
+		this.text.setText(str);
+		this.fireEvent(new GuiTextInputChangedEvent(str));
+		
 	}
 	
 	private void setCursorPosition(int index, boolean updateCursor, boolean updateSelection) {
@@ -285,7 +338,7 @@ public class GuiTextInput extends GuiParent implements
 	@Override
 	public void windowCharEvent(char codepoint) {
 	
-		if (this.renderable()) {
+		if (this.renderable() && this.active) {
 			
 			this.deleteSelection();
 			
@@ -300,97 +353,113 @@ public class GuiTextInput extends GuiParent implements
 	@Override
 	public void windowKeyEvent(int key, int scancode, int action, int mods) {
 	
-		if (action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT) {
+		if (this.active) {
 			
-			boolean shifting = Window.isModActive(mods, GLFW.GLFW_MOD_SHIFT);
-			
-			if (key == GLFW.GLFW_KEY_LEFT) { // Move Cursor Left
+			if (action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT) {
 				
-				if (this.cursorIndex > 0) {
-					this.setCursorPosition(this.cursorIndex - 1, true, shifting);
-				} else if (!shifting) {
-					this.resetSelectionToCursor(true);
-				}
+				boolean shifting = Window.isModActive(mods, GLFW.GLFW_MOD_SHIFT);
 				
-			} else if (key == GLFW.GLFW_KEY_RIGHT) { // Move Cursor Right
-				
-				if (this.cursorIndex < this.builder.length()) {
-					this.setCursorPosition(this.cursorIndex + 1, true, shifting);
-				} else if (!shifting) {
-					this.resetSelectionToCursor(true);
-				}
-			
-			} else if (key == GLFW.GLFW_KEY_HOME) { // Move Cursor at Start
-				
-				if (this.cursorIndex != 0) {
-					this.setCursorPosition(0, true, shifting);
-				} else if (!shifting) {
-					this.resetSelectionToCursor(true);
-				}
-				
-			} else if (key == GLFW.GLFW_KEY_END) { // Move Cursor at End
-				
-				int end = this.builder.length();
-				
-				if (this.cursorIndex != end) {
-					this.setCursorPosition(end, true, shifting);
-				} else if (!shifting) {
-					this.resetSelectionToCursor(true);
-				}
-				
-			} else if (key == GLFW.GLFW_KEY_BACKSPACE) { // Remove on left
-				
-				if (!this.deleteSelection()) {
+				if (key == GLFW.GLFW_KEY_LEFT) { // Move Cursor Left
 					
 					if (this.cursorIndex > 0) {
-						
-						this.builder.deleteCharAt(this.cursorIndex - 1);
-						this.setCursorPosition(this.cursorIndex - 1, false, false);
-						this.updateText();
-						
-					} else {
+						this.setCursorPosition(this.cursorIndex - 1, true, shifting);
+					} else if (!shifting) {
 						this.resetSelectionToCursor(true);
 					}
 					
-				}
-				
-			} else if (key == GLFW.GLFW_KEY_DELETE) { // Delete on right
-				
-				if (!this.deleteSelection()) {
+				} else if (key == GLFW.GLFW_KEY_RIGHT) { // Move Cursor Right
 					
-					if (this.cursorIndex != this.builder.length()) {
+					if (this.cursorIndex < this.builder.length()) {
+						this.setCursorPosition(this.cursorIndex + 1, true, shifting);
+					} else if (!shifting) {
+						this.resetSelectionToCursor(true);
+					}
+					
+				} else if (key == GLFW.GLFW_KEY_HOME) { // Move Cursor at Start
+					
+					if (this.cursorIndex != 0) {
+						this.setCursorPosition(0, true, shifting);
+					} else if (!shifting) {
+						this.resetSelectionToCursor(true);
+					}
+					
+				} else if (key == GLFW.GLFW_KEY_END) { // Move Cursor at End
+					
+					int end = this.builder.length();
+					
+					if (this.cursorIndex != end) {
+						this.setCursorPosition(end, true, shifting);
+					} else if (!shifting) {
+						this.resetSelectionToCursor(true);
+					}
+					
+				} else if (key == GLFW.GLFW_KEY_BACKSPACE) { // Remove on left
+					
+					if (!this.deleteSelection()) {
 						
-						this.builder.deleteCharAt(this.cursorIndex);
-						this.updateText();
+						if (this.cursorIndex > 0) {
+							
+							this.builder.deleteCharAt(this.cursorIndex - 1);
+							this.setCursorPosition(this.cursorIndex - 1, false, false);
+							this.updateText();
+							
+						} else {
+							this.resetSelectionToCursor(true);
+						}
 						
 					}
 					
-					this.resetSelectionToCursor(true);
+				} else if (key == GLFW.GLFW_KEY_DELETE) { // Delete on right
 					
+					if (!this.deleteSelection()) {
+						
+						if (this.cursorIndex != this.builder.length()) {
+							
+							this.builder.deleteCharAt(this.cursorIndex);
+							this.updateText();
+							
+						}
+						
+						this.resetSelectionToCursor(true);
+						
+					}
+					
+				} else if (key == GLFW.GLFW_KEY_V && Window.isModActive(mods, GLFW.GLFW_MOD_CONTROL)) { // Paste from clipboard
+					
+					this.deleteSelection();
+					
+					String clipboard = ClipboardUtils.getClipboardString();
+					this.builder.insert(this.cursorIndex, clipboard);
+					
+					this.setCursorPosition(this.cursorIndex + clipboard.length(), false, false);
+					this.updateText();
+					
+				} else if (key == GLFW.GLFW_KEY_Q && Window.isModActive(mods, GLFW.GLFW_MOD_CONTROL)) { // Selection whole input
+					
+					this.selectAll();
+					
+				} else if (key == GLFW.GLFW_KEY_C && Window.isModActive(mods, GLFW.GLFW_MOD_CONTROL)) { // Copy to clipboard
+					
+					this.selectionToClipboard();
+					
+				} else if (key == GLFW.GLFW_KEY_ESCAPE) {
+					this.setActive(false);
 				}
 				
-			} else if (key == GLFW.GLFW_KEY_V && Window.isModActive(mods, GLFW.GLFW_MOD_CONTROL)) { // Paste from clipboard
-				
-				this.deleteSelection();
-				
-				String clipboard = ClipboardUtils.getClipboardString();
-				this.builder.insert(this.cursorIndex, clipboard);
-				
-				this.setCursorPosition(this.cursorIndex + clipboard.length(), false, false);
-				this.updateText();
-			
-			} else if (key == GLFW.GLFW_KEY_Q && Window.isModActive(mods, GLFW.GLFW_MOD_CONTROL)) { // Selection whole input
-				
-				this.selectAll();
-			
-			} else if (key == GLFW.GLFW_KEY_C && Window.isModActive(mods, GLFW.GLFW_MOD_CONTROL)) { // Copy to clipboard
-			
-				this.selectionToClipboard();
-			
 			}
 			
 		}
 	
+	}
+	
+	@Override
+	public void windowMouseButtonEvent(int button, int action, int mods) {
+	
+		Window win = Window.getInstance();
+		if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS) {
+			this.setActive(this.isPointOver(win.getCursorPosX(), win.getCursorPosY()));
+		}
+		
 	}
 	
 	private class InputText extends GuiTextColorable {
