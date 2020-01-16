@@ -620,6 +620,12 @@ public class Window {
 		return glfwGetTime();
 	}
 	
+	// Static utils //
+	
+	public static boolean isModActive(int mods, int modbit) {
+		return (mods & modbit) == modbit;
+	}
+	
 	// - Listeners
 	
 	public MethodEventManager getEventManager() {

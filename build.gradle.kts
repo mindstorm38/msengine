@@ -78,8 +78,11 @@ subprojects {
             register<MavenPublication>("mavenJar") {
 
                 from(components["java"])
-                artifact(tasks.named<Jar>("sourcesJar").get())
-                artifact(tasks.named<Jar>("javadocJar").get())
+
+                if (!snapshot) {
+                    artifact(tasks.named<Jar>("sourcesJar").get())
+                    artifact(tasks.named<Jar>("javadocJar").get())
+                }
 
                 pom {
 

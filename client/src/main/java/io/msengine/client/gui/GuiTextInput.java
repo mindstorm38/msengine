@@ -5,6 +5,8 @@ import io.msengine.client.renderer.gui.GuiMask;
 import io.msengine.client.renderer.window.Window;
 import io.msengine.client.renderer.window.listener.WindowCharEventListener;
 import io.msengine.client.renderer.window.listener.WindowKeyEventListener;
+import io.msengine.common.util.Color;
+import io.sutil.ClipboardUtils;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiTextInput extends GuiParent implements
@@ -17,25 +19,35 @@ public class GuiTextInput extends GuiParent implements
 	private final GUIMaskRectangle mask;
 	private final GuiMask[] maskArray;
 	
+	private final GuiColorSolid debug;
+	
 	private final StringBuilder builder;
 	private int cursorIndex = 0;
+	
+	private float scrollPadding = 10;
+	private int cursorAnimation = 10;
+	private int cursorTick = 0;
 	
 	public GuiTextInput() {
 		
 		this.text = new InputText();
-		this.text.setAnchor(-1, -1);
+		this.text.setAnchor(-1, 0);
 		this.addChild(this.text);
 		
 		this.cursor = new GuiColorSolid();
-		this.cursor.setAnchor(0, -1);
+		this.cursor.setAnchor(-1, 0);
 		this.addChild(this.cursor);
 		
 		this.mask = new GUIMaskRectangle();
 		this.maskArray = new GuiMask[] { this.mask };
 		
+		this.debug = new GuiColorSolid(Color.BLACK);
+		this.debug.setAnchor(-1, -1);
+		this.addChild(this.debug, 0);
+		
 		this.builder = new StringBuilder();
 		
-		this.updateCursorPosition();
+		this.updateCursor();
 		this.textScaleUpdated();
 		
 	}
@@ -65,6 +77,27 @@ public class GuiTextInput extends GuiParent implements
 	}
 	
 	@Override
+	public void render(float alpha) {
+		this.renderer.mask(this.maskArray);
+		super.render(alpha);
+		this.renderer.unmask();
+	}
+	
+	@Override
+	public void update() {
+		
+		if (this.cursorTick++ > this.cursorAnimation) {
+			
+			this.cursorTick = 0;
+			this.cursor.setVisible(!this.cursor.isVisible());
+			
+		}
+		
+		super.update();
+		
+	}
+	
+	@Override
 	public void updateXOffset() {
 		super.updateXOffset();
 		this.mask.setX(this.xOffset);
@@ -81,11 +114,17 @@ public class GuiTextInput extends GuiParent implements
 	@Override
 	public void setWidth(float width) {
 		super.setWidth(width);
+		this.debug.setWidth(width);
 	}
 	
 	@Override
 	public void setHeight(float height) {
+		
 		super.setHeight(height);
+		this.debug.setHeight(height);
+		this.text.setYPos(height / 2f);
+		this.cursor.setYPos(height / 2f);
+		
 	}
 	
 	public GuiTextColorable getText() {
@@ -99,17 +138,56 @@ public class GuiTextInput extends GuiParent implements
 	private void textScaleUpdated() {
 		
 		if (this.cursor != null) {
-			this.cursor.setSize(this.text.getTextScale(), this.text.getHeight());
+			
+			float textScale = this.text.getTextScale();
+			
+			this.cursor.setSize(textScale, this.text.getHeight());
+			this.text.setXPos(textScale);
+			
 		}
 		
 	}
 	
-	private void updateCursorPosition() {
-		this.cursor.setXPos(this.text.getCharOffset(this.cursorIndex - 1) + (this.text.getCharSpacing() / 2f));
+	private void updateCursor() {
+		
+		float scrollPadding = this.scrollPadding;
+		float charOffset = this.text.getCharOffset(this.cursorIndex - 1);
+		float textScale = this.text.getTextScale();
+		
+		if (charOffset == 0)
+			charOffset = -textScale;
+		
+		float realOffset = charOffset + this.text.getXPos();
+		
+		if (realOffset < scrollPadding) {
+			this.text.setXPos(scrollPadding - charOffset);
+		} else if (realOffset > (this.width - scrollPadding)) {
+			this.text.setXPos(this.width - scrollPadding - charOffset);
+		}
+		
+		this.cursor.setXPos(charOffset + this.text.getXPos());
+		
 	}
 	
 	private void updateText() {
 		this.text.setText(this.builder.toString());
+	}
+	
+	private void setCursorPosition(int index, boolean updateCursor) {
+		
+		if (this.cursorIndex != index) {
+			
+			this.cursorIndex = index;
+			this.cursorTick = 0;
+			
+			if (updateCursor)
+				this.updateCursor();
+			
+			if (!this.cursor.isVisible())
+				this.cursor.setVisible(true);
+			
+		}
+		
 	}
 	
 	@Override
@@ -117,9 +195,8 @@ public class GuiTextInput extends GuiParent implements
 	
 		if (this.renderable()) {
 			
-			this.builder.append(codepoint);
-			this.cursorIndex++;
-			
+			this.builder.insert(this.cursorIndex, codepoint);
+			this.setCursorPosition(this.cursorIndex + 1, false);
 			this.updateText();
 			
 		}
@@ -134,53 +211,40 @@ public class GuiTextInput extends GuiParent implements
 			if (key == GLFW.GLFW_KEY_LEFT) { // Move Cursor Left
 				
 				if (this.cursorIndex > 0) {
-					
-					this.cursorIndex--;
-					this.updateCursorPosition();
-					
+					this.setCursorPosition(this.cursorIndex - 1, true);
 				}
 				
 			} else if (key == GLFW.GLFW_KEY_RIGHT) { // Move Cursor Right
 				
 				if (this.cursorIndex < this.builder.length()) {
-					
-					this.cursorIndex++;
-					this.updateCursorPosition();
-					
+					this.setCursorPosition(this.cursorIndex + 1, true);
 				}
 			
-			}else if (key == GLFW.GLFW_KEY_HOME) {
+			} else if (key == GLFW.GLFW_KEY_HOME) { // Move Cursor at Start
 				
 				if (this.cursorIndex != 0) {
-					
-					this.cursorIndex = 0;
-					this.updateCursorPosition();
-					
+					this.setCursorPosition(0, true);
 				}
 				
-			} else if (key == GLFW.GLFW_KEY_END) {
+			} else if (key == GLFW.GLFW_KEY_END) { // Move Cursor at End
 				
 				int end = this.builder.length();
 				
 				if (this.cursorIndex != end) {
-					
-					this.cursorIndex = end;
-					this.updateCursorPosition();
-					
+					this.setCursorPosition(end, true);
 				}
 				
-			}  else if (key == GLFW.GLFW_KEY_BACKSPACE) {
+			}  else if (key == GLFW.GLFW_KEY_BACKSPACE) { // Remove on left
 				
 				if (this.cursorIndex > 0) {
 					
 					this.builder.deleteCharAt(this.cursorIndex - 1);
-					this.cursorIndex--;
-					
+					this.setCursorPosition(this.cursorIndex - 1, false);
 					this.updateText();
 					
 				}
 				
-			} else if (key == GLFW.GLFW_KEY_DELETE) {
+			} else if (key == GLFW.GLFW_KEY_DELETE) { // Delete on right
 				
 				if (this.cursorIndex != this.builder.length()) {
 					
@@ -189,6 +253,14 @@ public class GuiTextInput extends GuiParent implements
 					
 				}
 				
+			} else if (key == GLFW.GLFW_KEY_V && Window.isModActive(mods, GLFW.GLFW_MOD_CONTROL)) { // Paste from clipboard
+				
+				String clipboard = ClipboardUtils.getClipboardString();
+				this.builder.insert(this.cursorIndex, clipboard);
+				
+				this.setCursorPosition(this.cursorIndex + clipboard.length(), false);
+				this.updateText();
+			
 			}
 			
 		}
@@ -200,7 +272,7 @@ public class GuiTextInput extends GuiParent implements
 		@Override
 		protected void updateTextBuffers() {
 			super.updateTextBuffers();
-			GuiTextInput.this.updateCursorPosition();
+			GuiTextInput.this.updateCursor();
 		}
 		
 		@Override
