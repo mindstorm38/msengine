@@ -2,6 +2,7 @@
 	"font": {
 		"height": 10,
 		"space_width": 5,
+		"underline_offset": 2,
 		"glyphs": [
 			{
 				"char": "A",

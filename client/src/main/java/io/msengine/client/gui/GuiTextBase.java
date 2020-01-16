@@ -26,6 +26,7 @@ public class GuiTextBase extends GuiObject {
 	protected float[] charsOffsets;
 	protected float charSpacing;
 	protected float textScale;
+	protected boolean ignoreUnderline;
 	
 	public GuiTextBase(FontHandler font, String text) {
 
@@ -33,7 +34,7 @@ public class GuiTextBase extends GuiObject {
 		this.setText(text);
 		
 		this.setCharSpacing(1f);
-		this.setTextScale(2f);
+		this.setTextScale(1f);
 		
 	}
 	
@@ -69,11 +70,15 @@ public class GuiTextBase extends GuiObject {
 	protected void updateTextBuffers() {
 		
 		int length = this.textChars.length;
-		int height = this.font.getHeight();
 		
 		float textureHeight = this.font.getTextureHeight();
 		float scale = this.textScale;
 		float scaledCharSpacing = this.charSpacing * scale;
+		
+		float height = this.height;
+		
+		if (this.ignoreUnderline)
+			height += scale * this.font.getUnderlineOffset();
 		
 		float x = 0f;
 		
@@ -83,19 +88,19 @@ public class GuiTextBase extends GuiObject {
 		
 		try {
 			
-			verticesBuffer = MemoryUtil.memAllocFloat( length * 12 );
-			texCoordsBuffer = MemoryUtil.memAllocFloat( length * 8 );
-			indicesBuffer = MemoryUtil.memAllocInt( this.buffer.setIndicesCount( length * 6 ) );
+			verticesBuffer = MemoryUtil.memAllocFloat(length * 12);
+			texCoordsBuffer = MemoryUtil.memAllocFloat(length * 8);
+			indicesBuffer = MemoryUtil.memAllocInt(this.buffer.setIndicesCount(length * 6));
 			
-			for ( int i = 0; i < length; i++ ) {
+			for (int i = 0; i < length; ++i) {
 				
-				FontHandlerGlyph glyph = this.font.getCharacterGlyph( this.textChars[i] );
+				FontHandlerGlyph glyph = this.font.getCharacterGlyph(this.textChars[i]);
 				
-				if ( glyph != null ) {
+				if (glyph != null) {
 					
 					verticesBuffer.put( x ).put( 0 );
-					verticesBuffer.put( x ).put( height * scale );
-					verticesBuffer.put( x + (glyph.width * scale) ).put( height * scale );
+					verticesBuffer.put( x ).put( height );
+					verticesBuffer.put( x + (glyph.width * scale) ).put( height );
 					verticesBuffer.put( x + (glyph.width * scale) ).put( 0 );
 					
 					texCoordsBuffer.put( glyph.textureX ).put( glyph.textureY );
@@ -118,7 +123,7 @@ public class GuiTextBase extends GuiObject {
 			}
 			
 			if ( x > 0 )
-				x -= this.charSpacing * scale;
+				x -= scaledCharSpacing;
 			
 			verticesBuffer.flip();
 			texCoordsBuffer.flip();
@@ -146,11 +151,26 @@ public class GuiTextBase extends GuiObject {
 	@Override
 	public void setWidth(float width) {
 		// Can't set width for text : the width is set from text size
+		throw new UnsupportedOperationException("Can't set width for GuiTextBase objects.");
 	}
 	
 	@Override
 	public void setHeight(float height) {
-		// Can't set height for text : the height is set from font height
+		
+		// Set height of GuiTextBase cause automatic calculation of text scale
+		
+		if (this.height == height)
+			return;
+		
+		float fontHeight = this.font.getHeight();
+		
+		if (this.ignoreUnderline)
+			fontHeight -= this.font.getUnderlineOffset();
+		
+		this.textScale = height / fontHeight;
+		super.setHeight(height);
+		this.updateBuffer = true;
+		
 	}
 	
 	@Override
@@ -274,11 +294,40 @@ public class GuiTextBase extends GuiObject {
 		
 	}
 	
+	public boolean isIgnoreUnderline() {
+		return ignoreUnderline;
+	}
+	
+	public void setIgnoreUnderline(boolean ignoreUnderline) {
+		
+		if (this.ignoreUnderline == ignoreUnderline)
+			return;
+		
+		this.ignoreUnderline = ignoreUnderline;
+		this.updateTextHeight();
+		this.updateBuffer = true;
+		
+	}
+	
 	/**
 	 * Update text height, using font height and text scale.
 	 */
 	public void updateTextHeight() {
-		super.setHeight(this.font.getHeight() * this.textScale);
+		
+		float height = this.font.getHeight();
+		
+		if (this.ignoreUnderline)
+			height -= this.font.getUnderlineOffset();
+		
+		super.setHeight(height * this.textScale);
+		
+	}
+	
+	/**
+	 * @return The underline offset scaled.
+	 */
+	public float getScaledUnderlineOffset() {
+		return this.textScale * this.font.getUnderlineOffset();
 	}
 	
 	/**
