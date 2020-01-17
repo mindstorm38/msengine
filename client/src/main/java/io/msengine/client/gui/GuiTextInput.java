@@ -224,16 +224,26 @@ public class GuiTextInput extends GuiParent implements
 		float charOffset = this.text.getCharOffset(this.cursorIndex - 1);
 		float cursorWidth = this.getCursorWidth();
 		
-		if (this.text.getWidth() <= (this.width - scrollPadding * 2)) {
-			this.text.setXPos(scrollPadding);
+		if (this.text.getWidth() <= (this.width - cursorWidth * 2)) {
+			this.text.setXPos(cursorWidth);
 		} else {
 			
 			float realOffset = charOffset + this.text.getXPos();
 			
 			if (realOffset < scrollPadding) {
-				this.text.setXPos(scrollPadding - charOffset);
+				
+				float newPos = 0 - charOffset + scrollPadding;
+				
+				if (this.text.getXPos() < newPos)
+					this.text.setXPos(Math.min(newPos, cursorWidth));
+				
 			} else if (realOffset > (this.width - scrollPadding - cursorWidth)) {
-				this.text.setXPos(this.width - scrollPadding - charOffset - cursorWidth);
+				
+				float newPos = this.width - charOffset - cursorWidth - scrollPadding;
+				
+				if (this.text.getXPos() > newPos)
+					this.text.setXPos(Math.max(newPos, this.width - this.text.getWidth() - cursorWidth));
+				
 			}
 			
 		}

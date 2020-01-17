@@ -338,7 +338,7 @@ public class GuiTextBase extends GuiObject {
 	public float getCharOffset(int index) {
 		
 		if ( this.charsOffsets.length == 0 || index < 0 )
-			return -this.charSpacing; // Act like if there is a character at -1
+			return -this.charSpacing * this.textScale; // Act like if there is a character at -1
 		else if ( index >= this.textChars.length )
 			index = this.textChars.length - 1;
 		
