@@ -284,7 +284,7 @@ public abstract class GuiObject {
 	/**
 	 * @return True if this object is contained in the ({@link GuiManager}'s current scene.
 	 */
-	public boolean isSceneActive() {
+	public final boolean isSceneActive() {
 		return sceneActive;
 	}
 	

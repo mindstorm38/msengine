@@ -163,6 +163,7 @@ public class GuiParent extends GuiObject {
 		}
 		
 		this.initChild(child);
+		child.setSceneActive(this.isSceneActive());
 		
 		return true;
 		
