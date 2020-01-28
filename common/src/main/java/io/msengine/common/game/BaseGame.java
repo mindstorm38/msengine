@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import io.msengine.common.resource.I18n;
 import io.msengine.common.resource.ResourceManager;
 import io.msengine.common.util.GameLogger;
+import io.msengine.common.util.GameProfiler;
 import io.msengine.common.util.GameTypeRequired;
 import io.sutil.profiler.Profiler;
 
@@ -55,7 +56,7 @@ public abstract class BaseGame<SELF extends BaseGame<SELF, O>, O extends BaseGam
 		this.resourceManager = new ResourceManager(bootoptions.getRunningClass(), bootoptions.getResourceBaseFolderPath(), bootoptions.getResourceNamespace());
 		this.logger = GameLogger.create(bootoptions.getLoggerName());
 		
-		this.profiler = new Profiler();
+		this.profiler = GameProfiler.getInstance();
 		
 		this.appdata = bootoptions.getAppdataDir();
 		
@@ -74,6 +75,10 @@ public abstract class BaseGame<SELF extends BaseGame<SELF, O>, O extends BaseGam
 
 	public Logger getLogger() {
 		return this.logger;
+	}
+	
+	public Profiler getProfiler() {
+		return this.profiler;
 	}
 	
 	public File getAppdata() {
