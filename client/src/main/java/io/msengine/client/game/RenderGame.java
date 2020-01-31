@@ -227,18 +227,15 @@ public abstract class RenderGame<SELF extends RenderGame<SELF, E>, E extends Ren
 	
 	protected void winrender(float alpha) {
 		
-		this.profiler.startSection("window_render");
-		
+		this.profiler.startSection("win_poll_events");
 		this.window.pollEvents();
 		
-		this.profiler.startSection("render");
-		
+		this.profiler.endStartSection("render");
 		this.render( alpha );
-		
 		this.profiler.endSection();
 		
+		this.profiler.endStartSection("win_swap");
 		this.window.swapBuffers();
-		
 		this.profiler.endSection();
 		
 	}
