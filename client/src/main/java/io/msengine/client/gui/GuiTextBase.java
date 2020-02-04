@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
 
+import io.msengine.client.renderer.util.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
 import io.msengine.client.game.RenderGame;
@@ -24,13 +25,16 @@ public class GuiTextBase extends GuiObject {
 	protected char[] textChars;
 	protected float[] charsOffsets;
 	protected float charSpacing;
+	protected float textScale;
+	protected boolean ignoreUnderline;
 	
 	public GuiTextBase(FontHandler font, String text) {
 
-		this.setFont( font );
-		this.setText( text );
+		this.setFont(font);
+		this.setText(text);
 		
-		this.charSpacing = 1f;
+		this.setCharSpacing(1f);
+		this.setTextScale(1f);
 		
 	}
 	
@@ -66,9 +70,15 @@ public class GuiTextBase extends GuiObject {
 	protected void updateTextBuffers() {
 		
 		int length = this.textChars.length;
-		int height = this.font.getHeight();
 		
 		float textureHeight = this.font.getTextureHeight();
+		float scale = this.textScale;
+		float scaledCharSpacing = this.charSpacing * scale;
+		
+		float height = this.height;
+		
+		if (this.ignoreUnderline)
+			height += scale * this.font.getUnderlineOffset();
 		
 		float x = 0f;
 		
@@ -78,20 +88,20 @@ public class GuiTextBase extends GuiObject {
 		
 		try {
 			
-			verticesBuffer = MemoryUtil.memAllocFloat( length * 12 );
-			texCoordsBuffer = MemoryUtil.memAllocFloat( length * 8 );
-			indicesBuffer = MemoryUtil.memAllocInt( this.buffer.setIndicesCount( length * 6 ) );
+			verticesBuffer = MemoryUtil.memAllocFloat(length * 12);
+			texCoordsBuffer = MemoryUtil.memAllocFloat(length * 8);
+			indicesBuffer = MemoryUtil.memAllocInt(this.buffer.setIndicesCount(length * 6));
 			
-			for ( int i = 0; i < length; i++ ) {
+			for (int i = 0; i < length; ++i) {
 				
-				FontHandlerGlyph glyph = this.font.getCharacterGlyph( this.textChars[i] );
+				FontHandlerGlyph glyph = this.font.getCharacterGlyph(this.textChars[i]);
 				
-				if ( glyph != null ) {
+				if (glyph != null) {
 					
 					verticesBuffer.put( x ).put( 0 );
 					verticesBuffer.put( x ).put( height );
-					verticesBuffer.put( x + glyph.width ).put( height );
-					verticesBuffer.put( x + glyph.width ).put( 0 );
+					verticesBuffer.put( x + (glyph.width * scale) ).put( height );
+					verticesBuffer.put( x + (glyph.width * scale) ).put( 0 );
 					
 					texCoordsBuffer.put( glyph.textureX ).put( glyph.textureY );
 					texCoordsBuffer.put( glyph.textureX ).put( glyph.textureY + textureHeight );
@@ -103,15 +113,17 @@ public class GuiTextBase extends GuiObject {
 					indicesBuffer.put( idx ).put( idx + 1 ).put( idx + 3 );
 					indicesBuffer.put( idx + 1 ).put( idx + 2 ).put( idx + 3 );
 					
-					x += glyph.width + this.charSpacing;
-					this.charsOffsets[ i ] = x;
+					x += glyph.width * scale;
+					this.charsOffsets[i] = x;
+					
+					x += scaledCharSpacing;
 					
 				}
 				
 			}
 			
 			if ( x > 0 )
-				x -= this.charSpacing;
+				x -= scaledCharSpacing;
 			
 			verticesBuffer.flip();
 			texCoordsBuffer.flip();
@@ -124,48 +136,61 @@ public class GuiTextBase extends GuiObject {
 			
 		} finally {
 			
-			if ( verticesBuffer != null ) MemoryUtil.memFree( verticesBuffer );
-			if ( texCoordsBuffer != null ) MemoryUtil.memFree( texCoordsBuffer );
-			if ( indicesBuffer != null ) MemoryUtil.memFree( indicesBuffer );
+			BufferUtils.safeFree(verticesBuffer);
+			BufferUtils.safeFree(texCoordsBuffer);
+			BufferUtils.safeFree(indicesBuffer);
 			
 		}
 		
 		this.updateBuffer = false;
 		
-		this.width = x;
-		this.updateXOffset();
+		super.setWidth(x);
 		
 	}
 	
 	@Override
-	public void setWidth(float width) {}
+	public void setWidth(float width) {
+		// Can't set width for text : the width is set from text size
+		throw new UnsupportedOperationException("Can't set width for GuiTextBase objects.");
+	}
 	
 	@Override
-	public void setHeight(float height) {}
+	public void setHeight(float height) {
+		
+		// Set height of GuiTextBase cause automatic calculation of text scale
+		
+		if (this.height == height)
+			return;
+		
+		float fontHeight = this.font.getHeight();
+		
+		if (this.ignoreUnderline)
+			fontHeight -= this.font.getUnderlineOffset();
+		
+		this.textScale = height / fontHeight;
+		super.setHeight(height);
+		this.updateBuffer = true;
+		
+	}
 	
 	@Override
 	public void render(float alpha) {
 		
-		if ( this.updateBuffer ) {
-			
+		if (this.updateBuffer)
 			this.updateTextBuffers();
-			
-		}
 		
-		this.renderText( alpha );
+		this.renderText(alpha);
 		
 	}
 
 	public void renderText(float alpha) {
 		
-		this.renderer.setTextureSampler( this.font );
-			
-			this.model.push().scale( 2f ).translate( this.xOffset, this.yOffset ).apply();
-			
-				this.buffer.drawElements();
-			
-			this.model.pop();
-			
+		this.renderer.setTextureSampler(this.font);
+		
+		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
+		this.buffer.drawElements();
+		this.model.pop();
+		
 		this.renderer.resetTextureSampler();
 		
 	}
@@ -194,9 +219,7 @@ public class GuiTextBase extends GuiObject {
 		this.font = font;
 		this.updateBuffer = true;
 		
-		this.height = font.getHeight();
-		this.updateYOffset();
-		
+		this.updateTextHeight();
 		return true;
 		
 	}
@@ -222,6 +245,13 @@ public class GuiTextBase extends GuiObject {
 	}
 	
 	/**
+	 * @return The current of this object.
+	 */
+	public String getText() {
+		return this.text;
+	}
+	
+	/**
 	 * @return Space between consecutive characters.
 	 */
 	public float getCharSpacing() {
@@ -233,7 +263,71 @@ public class GuiTextBase extends GuiObject {
 	 * @param charSpacing The space
 	 */
 	public void setCharSpacing(float charSpacing) {
+		
+		if (this.charSpacing == charSpacing)
+			return;
+		
 		this.charSpacing = charSpacing;
+		this.updateBuffer = true;
+		
+	}
+	
+	/**
+	 * @return Text scale (multiplier of default font size), default to 2.
+	 */
+	public float getTextScale() {
+		return this.textScale;
+	}
+	
+	/**
+	 * Set the text scale (multiplier of default font size).
+	 * @param scale Text scale
+	 */
+	public void setTextScale(float scale) {
+		
+		if (this.textScale == scale)
+			return;
+		
+		this.textScale = scale;
+		this.updateTextHeight();
+		this.updateBuffer = true;
+		
+	}
+	
+	public boolean isIgnoreUnderline() {
+		return ignoreUnderline;
+	}
+	
+	public void setIgnoreUnderline(boolean ignoreUnderline) {
+		
+		if (this.ignoreUnderline == ignoreUnderline)
+			return;
+		
+		this.ignoreUnderline = ignoreUnderline;
+		this.updateTextHeight();
+		this.updateBuffer = true;
+		
+	}
+	
+	/**
+	 * Update text height, using font height and text scale.
+	 */
+	public void updateTextHeight() {
+		
+		float height = this.font.getHeight();
+		
+		if (this.ignoreUnderline)
+			height -= this.font.getUnderlineOffset();
+		
+		super.setHeight(height * this.textScale);
+		
+	}
+	
+	/**
+	 * @return The underline offset scaled.
+	 */
+	public float getScaledUnderlineOffset() {
+		return this.textScale * this.font.getUnderlineOffset();
 	}
 	
 	/**
@@ -244,8 +338,8 @@ public class GuiTextBase extends GuiObject {
 	public float getCharOffset(int index) {
 		
 		if ( this.charsOffsets.length == 0 || index < 0 )
-			return 0f;
-		else if ( index >= this.textChars.length - 1 )
+			return -this.charSpacing * this.textScale; // Act like if there is a character at -1
+		else if ( index >= this.textChars.length )
 			index = this.textChars.length - 1;
 		
 		return this.charsOffsets[ index ];

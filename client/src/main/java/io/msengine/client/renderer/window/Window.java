@@ -4,12 +4,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
+import io.msengine.common.util.event.MethodEventManager;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
@@ -76,17 +75,28 @@ public class Window {
 	private final EnumMap<WindowCursor, Long> cursors = new EnumMap<>( WindowCursor.class );
 	private WindowCursor cursor = null;
 	
-	private final List<WindowKeyEventListener> keyEventListeners = new ArrayList<>();
+	/*private final List<WindowKeyEventListener> keyEventListeners = new ArrayList<>();
 	private final List<WindowMouseButtonEventListener> mouseButtonEventListeners = new ArrayList<>();
 	private final List<WindowScrollEventListener> scrollEventListeners = new ArrayList<>();
 	private final List<WindowMousePositionEventListener> mousePositionEventListeners = new ArrayList<>();
 	private final List<WindowCharEventListener> charEventListeners = new ArrayList<>();
-	private final List<WindowFramebufferSizeEventListener> framebufferSizeEventListeners = new ArrayList<>();
+	private final List<WindowFramebufferSizeEventListener> framebufferSizeEventListeners = new ArrayList<>();*/
+	
+	private final MethodEventManager eventManager;
 	
 	public Window() {
 		
 		if ( INSTANCE != null ) throw new SingletonAlreadyInstantiatedException( Window.class );
 		INSTANCE = this;
+		
+		this.eventManager = new MethodEventManager(
+				WindowKeyEventListener.class,
+				WindowMouseButtonEventListener.class,
+				WindowScrollEventListener.class,
+				WindowMousePositionEventListener.class,
+				WindowCharEventListener.class,
+				WindowFramebufferSizeEventListener.class
+		);
 		
 	}
 	
@@ -131,25 +141,34 @@ public class Window {
 		
 		glfwSetKeyCallback( this.id, ( long window, int key, int scancode, int action, int mods ) -> {
 			
-			for ( WindowKeyEventListener l : this.keyEventListeners ) {
+			this.eventManager.fireListeners(WindowKeyEventListener.class, l ->
+					l.windowKeyEvent(key, scancode, action, mods));
+			
+			/*for ( WindowKeyEventListener l : this.keyEventListeners ) {
 				l.windowKeyEvent( key, scancode, action, mods );
-			}
+			}*/
 			
 		} );
 		
 		glfwSetMouseButtonCallback( this.id, ( long window, int button, int action, int mods ) -> {
 			
-			for ( WindowMouseButtonEventListener l : this.mouseButtonEventListeners ) {
+			this.eventManager.fireListeners(WindowMouseButtonEventListener.class, l ->
+					l.windowMouseButtonEvent(button, action, mods));
+			
+			/*for ( WindowMouseButtonEventListener l : this.mouseButtonEventListeners ) {
 				l.windowMouseButtonEvent( button, action, mods );
-			}
+			}*/
 			
 		} );
 		
 		glfwSetScrollCallback( this.id, ( long window, double xoffset, double yoffset ) -> {
 			
-			for ( WindowScrollEventListener l : this.scrollEventListeners ) {
+			this.eventManager.fireListeners(WindowScrollEventListener.class, l ->
+					l.windowScrollEvent(xoffset, yoffset));
+			
+			/*for ( WindowScrollEventListener l : this.scrollEventListeners ) {
 				l.windowScrollEvent( xoffset, yoffset );
-			}
+			}*/
 			
 		} );
 		
@@ -158,17 +177,23 @@ public class Window {
 			this.cursorX = (int) xpos;
 			this.cursorY = (int) ypos;
 			
-			for ( WindowMousePositionEventListener l : this.mousePositionEventListeners ) {
+			this.eventManager.fireListeners(WindowMousePositionEventListener.class, l ->
+					l.windowMousePositionEvent(this.cursorX, this.cursorY));
+			
+			/*for ( WindowMousePositionEventListener l : this.mousePositionEventListeners ) {
 				l.windowMousePositionEvent( this.cursorX, this.cursorY );
-			}
+			}*/
 			
 		} );
 		
 		glfwSetCharCallback( this.id, ( long window, int codepoint ) -> {
 			
-			for ( WindowCharEventListener l : this.charEventListeners ) {
+			this.eventManager.fireListeners(WindowCharEventListener.class, l ->
+					l.windowCharEvent((char) codepoint));
+			
+			/*for ( WindowCharEventListener l : this.charEventListeners ) {
 				l.windowCharEvent( (char) codepoint );
-			}
+			}*/
 			
 		} );
 		
@@ -333,9 +358,12 @@ public class Window {
 		
 		if ( width < 1 || height < 1 ) return;
 		
-		for ( WindowFramebufferSizeEventListener l : this.framebufferSizeEventListeners ) {
+		/*for ( WindowFramebufferSizeEventListener l : this.framebufferSizeEventListeners ) {
 			l.windowFramebufferSizeChangedEvent( width, height );
-		}
+		}*/
+		
+		this.eventManager.fireListeners(WindowFramebufferSizeEventListener.class, l ->
+				l.windowFramebufferSizeChangedEvent(width, height));
 		
 		this.framebufferWidth = width;
 		this.framebufferHeight = height;
@@ -505,17 +533,17 @@ public class Window {
 	 * @param y Cursor y position
 	 */
 	public void setCursorPosition(int x, int y) {
-		glfwSetCursorPos( this.id, (double) ( this.cursorX = x ), (double) ( this.cursorY = y ) );
+		glfwSetCursorPos(this.id, this.cursorX = x, this.cursorY = y);
 	}
 	
-	/**
+	/*
 	 * @return Current window {@link KeyboardType}
 	 */
 	/*public KeyboardType getKeyboardType() {
 		return this.keyboardType;
 	}*/
 	
-	/**
+	/*
 	 * @param newKeyboardType Define new {@link KeyboardType}
 	 */
 	/*public void setKeyboardType(KeyboardType keyboardType) {
@@ -592,24 +620,70 @@ public class Window {
 		return glfwGetTime();
 	}
 	
+	// Static utils //
+	
+	public static boolean isModActive(int mods, int modbit) {
+		return (mods & modbit) == modbit;
+	}
+	
 	// - Listeners
 	
-	public void addKeyEventListener(WindowKeyEventListener l) { this.keyEventListeners.add( l ); }
-	public void removeKeyEventListener(WindowKeyEventListener l) { this.keyEventListeners.remove( l ); }
+	public MethodEventManager getEventManager() {
+		return this.eventManager;
+	}
 	
-	public void addMouseButtonEventListener(WindowMouseButtonEventListener l) { this.mouseButtonEventListeners.add( l ); }
-	public void removeMouseButtonEventListener(WindowMouseButtonEventListener l) { this.mouseButtonEventListeners.remove( l ); }
+	public void addKeyEventListener(WindowKeyEventListener l) {
+		//this.keyEventListeners.add( l );
+		this.eventManager.addEventListener(WindowKeyEventListener.class, l);
+	}
+	public void removeKeyEventListener(WindowKeyEventListener l) {
+		//this.keyEventListeners.remove( l );
+		this.eventManager.removeEventListener(WindowKeyEventListener.class, l);
+	}
 	
-	public void addScrollEventListener(WindowScrollEventListener l) { this.scrollEventListeners.add( l ); }
-	public void removeScrollEventListener(WindowScrollEventListener l) { this.scrollEventListeners.remove( l ); }
+	public void addMouseButtonEventListener(WindowMouseButtonEventListener l) {
+		//this.mouseButtonEventListeners.add( l );
+		this.eventManager.addEventListener(WindowMouseButtonEventListener.class, l);
+	}
+	public void removeMouseButtonEventListener(WindowMouseButtonEventListener l) {
+		//this.mouseButtonEventListeners.remove( l );
+		this.eventManager.removeEventListener(WindowMouseButtonEventListener.class, l);
+	}
 	
-	public void addMousePositionEventListener(WindowMousePositionEventListener l) { this.mousePositionEventListeners.add( l ); }
-	public void removeMousePositionEventListener(WindowMousePositionEventListener l) { this.mousePositionEventListeners.remove( l ); }
+	public void addScrollEventListener(WindowScrollEventListener l) {
+		//this.scrollEventListeners.add( l );
+		this.eventManager.addEventListener(WindowScrollEventListener.class, l);
+	}
+	public void removeScrollEventListener(WindowScrollEventListener l) {
+		//this.scrollEventListeners.remove( l );
+		this.eventManager.removeEventListener(WindowScrollEventListener.class, l);
+	}
 	
-	public void addCharEventListener(WindowCharEventListener l) { this.charEventListeners.add( l ); }
-	public void removeCharEventListener(WindowCharEventListener l) { this.charEventListeners.remove( l ); }
+	public void addMousePositionEventListener(WindowMousePositionEventListener l) {
+		//this.mousePositionEventListeners.add( l );
+		this.eventManager.addEventListener(WindowMousePositionEventListener.class, l);
+	}
+	public void removeMousePositionEventListener(WindowMousePositionEventListener l) {
+		//this.mousePositionEventListeners.remove( l );
+		this.eventManager.removeEventListener(WindowMousePositionEventListener.class, l);
+	}
 	
-	public void addFramebufferSizeEventListener(WindowFramebufferSizeEventListener l) { this.framebufferSizeEventListeners.add( l ); }
-	public void removeFramebufferSizeEventListener(WindowFramebufferSizeEventListener l) { this.framebufferSizeEventListeners.remove( l ); }
+	public void addCharEventListener(WindowCharEventListener l) {
+		//this.charEventListeners.add( l );
+		this.eventManager.addEventListener(WindowCharEventListener.class, l);
+	}
+	public void removeCharEventListener(WindowCharEventListener l) {
+		//this.charEventListeners.remove( l );
+		this.eventManager.removeEventListener(WindowCharEventListener.class, l);
+	}
+	
+	public void addFramebufferSizeEventListener(WindowFramebufferSizeEventListener l) {
+		//this.framebufferSizeEventListeners.add( l );
+		this.eventManager.addEventListener(WindowFramebufferSizeEventListener.class, l);
+	}
+	public void removeFramebufferSizeEventListener(WindowFramebufferSizeEventListener l) {
+		//this.framebufferSizeEventListeners.remove( l );
+		this.eventManager.removeEventListener(WindowFramebufferSizeEventListener.class, l);
+	}
 	
 }

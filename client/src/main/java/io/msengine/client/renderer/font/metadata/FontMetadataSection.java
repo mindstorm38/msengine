@@ -19,17 +19,23 @@ import io.msengine.common.util.JsonUtils;
 public class FontMetadataSection implements MetadataSection {
 	
 	private final int height;
+	private final int underlineOffset;
 	private final Map<Character, FontMetadataGlyph> glyphs;
 	
-	public FontMetadataSection(int height, Map<Character, FontMetadataGlyph> glyphs) {
+	public FontMetadataSection(int height, int underlineOffset, Map<Character, FontMetadataGlyph> glyphs) {
 		
 		this.height = height;
+		this.underlineOffset = underlineOffset;
 		this.glyphs = glyphs;
 		
 	}
 	
 	public int getHeight() {
 		return this.height;
+	}
+	
+	public int getUnderlineOffset() {
+		return underlineOffset;
 	}
 	
 	public Map<Character, FontMetadataGlyph> getGlyphs() {
@@ -48,7 +54,8 @@ public class FontMetadataSection implements MetadataSection {
 			
 			JsonObject json = jsonRaw.getAsJsonObject();
 			
-			int height = JsonUtils.getIntRequired( json, "height", "Missing font height" );
+			int height = JsonUtils.getIntRequired(json, "height", "Missing font height");
+			int underlineOffset = JsonUtils.getIntRequired(json, "underline_offset", "Missing font underlineOffset");
 			
 			Map<Character, FontMetadataGlyph> glyphs = new HashMap<>();
 			JsonArray glyphsArr = json.get("glyphs") != null && json.get("glyphs").isJsonArray() ? json.get("glyphs").getAsJsonArray() : new JsonArray();
@@ -82,7 +89,7 @@ public class FontMetadataSection implements MetadataSection {
 				
 			}
 			
-			return new FontMetadataSection( height, glyphs );
+			return new FontMetadataSection(height, underlineOffset, glyphs);
 			
 		}
 
@@ -91,7 +98,8 @@ public class FontMetadataSection implements MetadataSection {
 			
 			JsonObject json = new JsonObject();
 			
-			json.addProperty( "height", src.height );
+			json.addProperty("height", src.height);
+			json.addProperty("underline_offset", src.underlineOffset);
 			
 			JsonArray glyphs = new JsonArray();
 			json.add( "glyphs", glyphs );

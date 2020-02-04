@@ -13,7 +13,6 @@ import javax.imageio.ImageIO;
 import io.msengine.client.renderer.shader.ShaderSamplerObject;
 import io.msengine.client.renderer.texture.DynamicTexture;
 import io.msengine.client.renderer.texture.TextureManager;
-import io.msengine.client.renderer.texture.metadata.AnimationMetadataSection;
 import io.msengine.common.resource.DetailledResource;
 import io.msengine.common.resource.ResourceManager;
 import io.msengine.client.renderer.font.metadata.FontMetadataGlyph;
@@ -37,6 +36,7 @@ public class FontHandler implements ShaderSamplerObject {
 	private FontMetadataSection resourceMetadataSection;
 	private DynamicTexture texture;
 	private int height;
+	private int underlineOffset;
 	private float textureHeight;
 	private FontHandlerGlyph unknownGlyph;
 	
@@ -76,6 +76,7 @@ public class FontHandler implements ShaderSamplerObject {
 			int imageHeight = image.getHeight();
 			
 			this.height = this.resourceMetadataSection.getHeight();
+			this.underlineOffset = this.resourceMetadataSection.getUnderlineOffset();
 			this.textureHeight = (float) this.height / imageHeight;
 			
 			for ( Entry<Character, FontMetadataGlyph> glyphEntry : this.resourceMetadataSection.getGlyphs().entrySet() ) {
@@ -109,6 +110,10 @@ public class FontHandler implements ShaderSamplerObject {
 	
 	public int getHeight() {
 		return this.height;
+	}
+	
+	public int getUnderlineOffset() {
+		return underlineOffset;
 	}
 	
 	public float getTextureHeight() {

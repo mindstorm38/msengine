@@ -21,6 +21,8 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * 
  * @author Théo Rozier (Mindstorm38)
  *
+ * TODO Add automatic scene uncaching after a while.
+ *
  */
 public class GuiManager implements WindowFramebufferSizeEventListener {
 	
@@ -83,6 +85,11 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		this.window.removeFramebufferSizeEventListener( this );
 		
 		this.unloadScene();
+		
+		this.instances.values().forEach((s) -> {
+			if (s.usable()) s._stop();
+		});
+		
 		this.instances.clear();
 		
 		this.renderer.stop();
@@ -133,16 +140,17 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 */
 	private GuiScene getSceneInstance(Class<? extends GuiScene> sceneClass) {
 		
-		if ( sceneClass == null ) return null;
+		if (sceneClass == null)
+			return null;
 		
-		GuiScene scene = this.instances.get( sceneClass );
-		if ( scene != null ) return scene;
+		GuiScene scene = this.instances.get(sceneClass);
+		
+		if (scene != null)
+			return scene;
 		
 		try {
-			
 			scene = sceneClass.newInstance();
-			
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (Exception e) {
 			
 			LOGGER.log( Level.SEVERE, "Failed to instantiate the scene " + sceneClass.getSimpleName(), e );
 			return null;
@@ -161,23 +169,32 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 */
 	public void loadScene(Class<? extends GuiScene> sceneClass, Consumer<GuiScene> oncePreviousStoped) {
 		
-		GuiScene inst = this.getSceneInstance( sceneClass );
-		if ( this.currentScene == inst ) return;
+		GuiScene inst = this.getSceneInstance(sceneClass);
 		
-		if ( this.currentScene != null ) {
+		if (inst == null || this.currentScene == inst)
+			return;
+		
+		if (this.currentScene != null) {
 			
-			this.currentScene._stop();
+			this.currentScene.unloaded();
 			
-			if ( oncePreviousStoped != null )
-				oncePreviousStoped.accept( this.currentScene );
+			if (oncePreviousStoped != null)
+				oncePreviousStoped.accept(this.currentScene);
 			
 		}
+		
+		final Class<? extends GuiScene> previousScene = this.currentScene == null ? null : this.currentScene.getClass();
 		
 		this.currentScene = inst;
 		
 		if ( inst != null ) {
 			
-			inst._init();
+			if (!inst.usable()) {
+				inst._init();
+			}
+			
+			inst.loaded(previousScene);
+			inst.setSceneSize(this.window.getWidth(), this.window.getHeight());
 			
 		}
 		
@@ -234,7 +251,13 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 * @param sceneClass The scene class to uncache
 	 */
 	public void uncacheScene(Class<? extends GuiScene> sceneClass) {
-		this.instances.remove( sceneClass );
+		
+		GuiScene oldScene = this.instances.remove(sceneClass);
+		
+		if (oldScene != null && oldScene.usable()) {
+			oldScene._stop();
+		}
+		
 	}
 	
 	/**
@@ -247,9 +270,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		this.renderer.updateRenderSize( width, height );
 		
 		if ( this.currentScene != null ) {
-			
-			this.currentScene.fireEvent( new GuiSceneResizedEvent( width, height ) );
-			
+			this.currentScene.setSceneSize(width, height);
 		}
 		
 	}

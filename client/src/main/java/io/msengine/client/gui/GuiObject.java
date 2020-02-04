@@ -21,9 +21,12 @@ public abstract class GuiObject {
 	protected float width, height;
 	protected float xAnchor, yAnchor;
 	protected float xOffset, yOffset;
+	protected int xIntOffset, yIntOffset;
 	
 	private boolean initied;
 	private boolean visible;
+	
+	private boolean sceneActive;
 	
 	private final List<GuiListenerGroup<?>> listeners;
 	
@@ -47,8 +50,13 @@ public abstract class GuiObject {
 		this.xOffset = 0;
 		this.yOffset = 0;
 		
+		this.xIntOffset = 0;
+		this.yIntOffset = 0;
+		
 		this.initied = false;
 		this.visible = true;
+		
+		this.sceneActive = false;
 		
 		this.listeners = new ArrayList<>();
 		
@@ -56,13 +64,14 @@ public abstract class GuiObject {
 		
 	}
 	
+	// Position //
 	public void setXPos(float xPos) {
 		
 		if ( this.xPos == xPos )
 			return;
 		
 		this.xPos = xPos;
-		this.updateXOffset();
+		this.internalUpdateXOffset();
 		
 	}
 	
@@ -72,7 +81,7 @@ public abstract class GuiObject {
 			return;
 		
 		this.yPos = yPos;
-		this.updateYOffset();
+		this.internalUpdateYOffset();
 		
 	}
 	
@@ -86,6 +95,7 @@ public abstract class GuiObject {
 	public float getXPos() { return this.xPos; }
 	public float getYPos() { return this.yPos; }
 	
+	// Size //
 	public void setWidth(float width) {
 		
 		if ( this.width == width )
@@ -98,7 +108,7 @@ public abstract class GuiObject {
 			throw new IllegalArgumentException( "Invalid width given : " + width );
 		
 		this.width = width;
-		this.updateXOffset();
+		this.internalUpdateXOffset();
 		
 	}
 	
@@ -114,7 +124,7 @@ public abstract class GuiObject {
 			throw new IllegalArgumentException( "Invalid height given : " + height );
 		
 		this.height = height;
-		this.updateYOffset();
+		this.internalUpdateYOffset();
 		
 	}
 	
@@ -131,17 +141,18 @@ public abstract class GuiObject {
 	public float getAutoWidth() { return 0f; }
 	public float getAutoHeight() { return 0f; }
 	
+	// Anchor //
 	public void setXAnchor(float xAnchor) {
 		
 		this.xAnchor = xAnchor;
-		this.updateXOffset();
+		this.internalUpdateXOffset();
 		
 	}
 	
 	public void setYAnchor(float yAnchor) {
 		
 		this.yAnchor = yAnchor;
-		this.updateYOffset();
+		this.internalUpdateYOffset();
 		
 	}
 	
@@ -156,12 +167,37 @@ public abstract class GuiObject {
 	public float getYAnchor() { return this.yAnchor; }
 	
 	/**
+	 * Internal method to update X offset and trigger parent child offset update.
+	 */
+	protected void internalUpdateXOffset() {
+		
+		this.updateXOffset();
+		
+		if (this.parent != null)
+			this.parent.childXOffsetUpdated(this);
+		
+	}
+	
+	/**
+	 * Internal method to update Y offset and trigger parent child offset update.
+	 */
+	protected void internalUpdateYOffset() {
+		
+		this.updateYOffset();
+		
+		if (this.parent != null)
+			this.parent.childYOffsetUpdated(this);
+		
+	}
+	
+	/**
 	 * Update the X offset used to render at the right position.
 	 */
 	public void updateXOffset() {
 		
-		this.xOffset = ( this.xPos + ( this.xAnchor + 1f ) * ( -this.width / 2f ) ) + 1f;
-		if ( this.parent != null ) this.xOffset += this.parent.xOffset;
+		this.xOffset = (this.xPos + (this.xAnchor + 1f) * (this.width / -2f));
+		if (this.parent != null) this.xOffset += this.parent.xOffset;
+		this.xIntOffset = Math.round(this.xOffset);
 		
 	}
 	
@@ -170,17 +206,10 @@ public abstract class GuiObject {
 	 */
 	public void updateYOffset() {
 		
-		this.yOffset = ( this.yPos + ( this.yAnchor + 1f ) * ( -this.height / 2f ) ) + 1f;
-		if ( this.parent != null ) this.yOffset += this.parent.yOffset;
+		this.yOffset = (this.yPos + (this.yAnchor + 1f) * (this.height / -2f));
+		if (this.parent != null) this.yOffset += this.parent.yOffset;
+		this.yIntOffset = Math.round(this.yOffset);
 		
-	}
-	
-	public float getXOffset() {
-		return this.xOffset;
-	}
-	
-	public float getYOffset() {
-		return this.yOffset;
 	}
 	
 	/**
@@ -191,6 +220,34 @@ public abstract class GuiObject {
 		this.updateXOffset();
 		this.updateYOffset();
 		
+	}
+	
+	/**
+	 * @return The X offset for render and interactions.
+	 */
+	public float getXOffset() {
+		return this.xOffset;
+	}
+	
+	/**
+	 * @return The Y offset for render and interactions.
+	 */
+	public float getYOffset() {
+		return this.yOffset;
+	}
+	
+	/**
+	 * @return The inverted X offset (xOffset + width).
+	 */
+	public float getOpositeOffsetX() {
+		return this.xOffset + this.width;
+	}
+	
+	/**
+	 * @return The inverted Y offset (yOffset + height).
+	 */
+	public float getOpositeOffsetY() {
+		return this.yOffset + this.height;
 	}
 	
 	public void setVisible(boolean visible) {
@@ -206,14 +263,40 @@ public abstract class GuiObject {
 	}
 	
 	public boolean renderable() {
-		return this.initied && this.visible;
+		return this.sceneActive && this.initied && this.visible;
 	}
 	
-	public GuiParent getParent() {
+	/**
+	 * Utility method to compute if a point is over this object, mostly used to mouse over detection.
+	 * @param x The point X.
+	 * @param y The point Y.
+	 * @return True if this point is over this object.
+	 */
+	public boolean isPointOver(int x, int y) {
+		
+		float xOff = this.xOffset;
+		float yOff = this.yOffset;
+		
+		return x >= xOff && y >= yOff && x < (xOff + this.width) && y < (yOff + this.height);
+		
+	}
+	
+	/**
+	 * @return True if this object is contained in the ({@link GuiManager}'s current scene.
+	 */
+	public final boolean isSceneActive() {
+		return sceneActive;
+	}
+	
+	void setSceneActive(boolean sceneActive) {
+		this.sceneActive = sceneActive;
+	}
+	
+	public final GuiParent getParent() {
 		return this.parent;
 	}
 	
-	public boolean hasParent() {
+	public final boolean hasParent() {
 		return this.parent != null;
 	}
 	
@@ -253,7 +336,7 @@ public abstract class GuiObject {
 	@SuppressWarnings("unchecked")
 	public <E extends GuiEvent> GuiListenerGroup<E> getListenerGroup(Class<E> eventClass) {
 		for ( GuiListenerGroup<?> group : this.listeners )
-			if ( eventClass.equals( group.getClass() ) )
+			if ( eventClass.equals( group.getEventClass() ) )
 				return (GuiListenerGroup<E>) group;
 		return null;
 	}
@@ -264,7 +347,7 @@ public abstract class GuiObject {
 		
 		if ( group == null ) {
 			
-			group = new GuiListenerGroup<E>( eventClass );
+			group = new GuiListenerGroup<>( eventClass );
 			this.listeners.add( group );
 			
 		}
@@ -280,7 +363,7 @@ public abstract class GuiObject {
 		
 		for ( GuiListenerGroup<?> group : this.listeners ) {
 			
-			if ( group.getClass().isAssignableFrom( event.getClass() ) ) {
+			if ( group.getEventClass().isAssignableFrom( event.getClass() ) ) {
 				
 				GuiListenerGroup<E> grp = (GuiListenerGroup<E>) group;
 				

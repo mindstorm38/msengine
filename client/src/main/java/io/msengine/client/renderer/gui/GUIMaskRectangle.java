@@ -3,6 +3,7 @@ package io.msengine.client.renderer.gui;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import io.msengine.client.renderer.util.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
 import io.msengine.client.renderer.util.BufferUsage;
@@ -58,9 +59,7 @@ public class GUIMaskRectangle extends GuiMask {
 			this.buffer.uploadIboData( indicesBuffer, BufferUsage.STATIC_DRAW );
 			
 		} finally {
-			
-			if ( indicesBuffer != null ) MemoryUtil.memFree( indicesBuffer );
-			
+			BufferUtils.safeFree(indicesBuffer);
 		}
 		
 		this.updateVerticesBuffer();
@@ -86,9 +85,7 @@ public class GUIMaskRectangle extends GuiMask {
 			this.buffer.uploadVboSubData( GUI_POSITION, 0, verticesBuffer );
 			
 		} finally {
-			
-			if ( verticesBuffer != null ) MemoryUtil.memFree( verticesBuffer );
-			
+			BufferUtils.safeFree(verticesBuffer);
 		}
 		
 		this.updateVerticesBuffer = false;
@@ -98,60 +95,81 @@ public class GUIMaskRectangle extends GuiMask {
 	@Override
 	public void draw() {
 		
-		if ( this.updateVerticesBuffer ) {
-			
+		if ( this.updateVerticesBuffer )
 			this.updateVerticesBuffer();
-			
-		}
 		
-		this.model.push().translate( this.x, this.y ).apply();
-			
-			super.draw();
-			
+		this.model.push().translate(this.x, this.y).apply();
+		super.draw();
 		this.model.pop();
 		
 	}
 	
-	public float getX() { return this.x; }
-	public float getY() { return this.y; }
+	public float getX() {
+		return this.x;
+	}
 	
-	public void setX(float x) { this.x = x; }
-	public void setY(float y) { this.y = y; }
+	public float getY() {
+		return this.y;
+	}
 	
-	public void setPosition(float x, float y) {
+	public void setX(float x) {
 		this.x = x;
+	}
+	
+	public void setY(float y) {
 		this.y = y;
 	}
 	
-	public float getWidth() { return this.width; }
-	public float getHeight() { return this.height; }
+	public void setPosition(float x, float y) {
+		this.setX(x);
+		this.setY(y);
+	}
+	
+	public float getWidth() {
+		return this.width;
+	}
+	
+	public float getHeight() {
+		return this.height;
+	}
 	
 	public void setWidth(float width) {
-		if ( width == this.width ) return;
+		
+		if ( width == this.width )
+			return;
+		
 		this.width = width;
 		this.updateVerticesBuffer = true;
+		
 	}
 	
 	public void setHeight(float height) {
-		if ( height == this.height ) return;
+		
+		if ( height == this.height )
+			return;
+		
 		this.height = height;
 		this.updateVerticesBuffer = true;
+		
 	}
 	
 	public void setSize(float width, float height) {
-		if ( width == this.width && height == this.height ) return;
-		this.width = width;
-		this.height = height;
-		this.updateVerticesBuffer = true;
+		this.setWidth(width);
+		this.setHeight(height);
 	}
 	
 	public void setPositionSize(float x, float y, float width, float height) {
+		
 		this.x = x;
 		this.y = y;
-		if ( width == this.width && height == this.height ) return;
+		
+		if ( width == this.width && height == this.height )
+			return;
+		
 		this.width = width;
 		this.height = height;
 		this.updateVerticesBuffer = true;
+		
 	}
 	
 }

@@ -13,7 +13,7 @@ val ossrhPassword: String by project
 
 allprojects {
 
-    version = "1.0.7"
+    version = "1.0.8-SNAPSHOT"
     group = "fr.theorozier"
 
     ext {
@@ -78,8 +78,11 @@ subprojects {
             register<MavenPublication>("mavenJar") {
 
                 from(components["java"])
-                artifact(tasks.named<Jar>("sourcesJar").get())
-                artifact(tasks.named<Jar>("javadocJar").get())
+
+                if (!snapshot) {
+                    artifact(tasks.named<Jar>("sourcesJar").get())
+                    artifact(tasks.named<Jar>("javadocJar").get())
+                }
 
                 pom {
 

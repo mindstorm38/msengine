@@ -11,11 +11,19 @@ import io.msengine.common.resource.ResourceManager;
 import io.msengine.common.util.GameNotCreatedException;
 import io.sutil.SingletonAlreadyInstantiatedException;
 
+/**
+ *
+ * Common registry for all textures, it save all loaded texture,
+ * for {@link TextureLoadable} you can retreive them using their path.
+ *
+ * @author Theo Rozier
+ *
+ */
 public class TextureManager {
 	
 	// Constants \\
 	
-	public static final float TEXTURE_EDGES = 0.02f; // In pixel
+	public static final float TEXTURE_EDGES = 0.02f; // In pixel TODO : What is this ?
 	
 	// Singleton \\
 	
@@ -45,22 +53,26 @@ public class TextureManager {
 	
 	public void loadTexture(Texture texture) {
 		
-		boolean loadable = isLoadable( texture );
-		
 		try {
-			
-			texture.loadTexture( this.resourceManager );
-			
+			texture.loadTexture(this.resourceManager);
 		} catch (IOException e) {
-			
 			texture = RenderConstantFields.getInstance().getMissingTexture();
-			
 		}
 		
-		if ( loadable ) {
-			this.loadableTextures.put( ( (TextureLoadable) texture ).path, texture );
+		if (isLoadable(texture)) {
+			this.loadableTextures.put(((TextureLoadable) texture).path, texture);
 		} else {
-			this.textures.add( texture );
+			this.textures.add(texture);
+		}
+		
+	}
+	
+	public boolean isTextureLoaded(Texture texture) {
+		
+		if (isLoadable(texture)) {
+			return this.loadableTextures.containsKey(((TextureLoadable) texture).path);
+		} else {
+			return this.textures.contains(texture);
 		}
 		
 	}

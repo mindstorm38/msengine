@@ -29,9 +29,7 @@ public class BufferType<E extends Buffer> {
 			consumer.accept(buf);
 			
 		} finally {
-			
-			if (buf != null) MemoryUtil.memFree(buf);
-			
+			BufferUtils.safeFree(buf);
 		}
 		
 	}

@@ -6,8 +6,11 @@ import java.util.function.Consumer;
 @SuppressWarnings({"unchecked"})
 public class MethodEventManager {
 	
-	private final Map<Class<?>, List<?>> eventListeners = new HashMap<>();
-	private final Set<Class<?>> allowedClass = new HashSet<>();
+	private final HashMap<Class<?>, List<?>> eventListeners = new HashMap<>();
+	private final HashSet<Class<?>> allowedClass = new HashSet<>();
+	private final HashSet<Class<?>> firingListeners = new HashSet<>();
+	private final HashMap<Class<?>, List<?>> toAddListeners = new HashMap<>();
+	private final HashMap<Class<?>, List<?>> toRemoveListeners = new HashMap<>();
 	
 	public MethodEventManager(Class<?>...allowedClasses) {
 		this.allowedClass.addAll(Arrays.asList(allowedClasses));
@@ -37,11 +40,19 @@ public class MethodEventManager {
 	}
 	
 	private <A> List<A> getListenerGroup(Class<A> listenerClass) {
-		return (List<A>) this.eventListeners.computeIfAbsent(listenerClass, cl -> new ArrayList<A>());
+		return (List<A>) this.eventListeners.computeIfAbsent(this.checkClassAllowed(listenerClass), cl -> new ArrayList<A>());
 	}
 	
 	public <A> void addEventListener(Class<A> clazz, A listener) {
-		this.getListenerGroup(this.checkClassAllowed(clazz)).add(listener);
+		
+		List<A> group = this.getListenerGroup(clazz);
+		
+		if (this.firingListeners.contains(clazz)) {
+			((List<A>) this.toAddListeners.computeIfAbsent(clazz, cl -> new ArrayList<>())).add(listener);
+		} else {
+			group.add(listener);
+		}
+		
 	}
 	
 	public <A> void addEventListener(A listener) {
@@ -49,7 +60,15 @@ public class MethodEventManager {
 	}
 	
 	public <A> void removeEventListener(Class<A> clazz, A listener) {
-		this.getListenerGroup(this.checkClassAllowed(clazz)).remove(listener);
+		
+		List<A> group = this.getListenerGroup(clazz);
+		
+		if (this.firingListeners.contains(clazz)) {
+			((List<A>) this.toRemoveListeners.computeIfAbsent(clazz, cl -> new ArrayList<>())).add(listener);
+		} else {
+			group.remove(listener);
+		}
+		
 	}
 	
 	public <A> void removeEventListener(A listener) {
@@ -58,13 +77,35 @@ public class MethodEventManager {
 	
 	public <A> void fireListeners(Class<A> listenerClass, Consumer<A> listenerCaller) {
 		
-		this.getListenerGroup(listenerClass).forEach((l) -> {
+		List<A> group = this.getListenerGroup(listenerClass);
+		List<A> toAddList = (List<A>) this.toAddListeners.get(listenerClass);
+		List<A> toRemoveList = (List<A>) this.toRemoveListeners.get(listenerClass);
+		
+		if (toAddList != null && !toAddList.isEmpty()) {
+			
+			group.addAll(toAddList);
+			toAddList.clear();
+			
+		}
+		
+		if (toRemoveList != null && !toRemoveList.isEmpty()) {
+			
+			group.removeAll(toRemoveList);
+			toRemoveList.clear();
+			
+		}
+		
+		this.firingListeners.add(listenerClass);
+		
+		group.forEach((l) -> {
 			
 			try {
 				listenerCaller.accept(l);
 			} catch (RuntimeException ignored) {}
 			
 		});
+		
+		this.firingListeners.remove(listenerClass);
 		
 	}
 	

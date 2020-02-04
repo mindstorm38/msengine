@@ -3,6 +3,8 @@ package io.msengine.client.gui;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import io.msengine.client.renderer.util.BufferUtils;
+import io.msengine.common.util.Color;
 import org.lwjgl.system.MemoryUtil;
 
 import io.msengine.client.renderer.texture.Texture;
@@ -25,11 +27,13 @@ public class GuiTexture extends GuiObject {
 	protected float textureWidth;
 	protected float textureHeight;
 	
+	protected final Color color = Color.WHITE.copy();
+	protected boolean colorEnabled;
+	
 	@Override
 	protected void init() {
 
 		this.buffer = this.renderer.createDrawBuffer( false, true );
-		
 		this.initBuffers();
 		
 	}
@@ -61,9 +65,7 @@ public class GuiTexture extends GuiObject {
 			this.buffer.uploadIboData( indicesBuffer, BufferUsage.STATIC_DRAW );
 			
 		} finally {
-			
-			if ( indicesBuffer != null ) MemoryUtil.memFree( indicesBuffer );
-			
+			BufferUtils.safeFree(indicesBuffer);
 		}
 		
 		this.updateVerticesBuffer();
@@ -90,9 +92,7 @@ public class GuiTexture extends GuiObject {
 			this.buffer.uploadVboSubData( GUI_POSITION, 0, verticesBuffer );
 			
 		} finally {
-			
-			if ( verticesBuffer != null ) MemoryUtil.memFree( verticesBuffer );
-			
+			BufferUtils.safeFree(verticesBuffer);
 		}
 		
 		this.updateVertices = false;
@@ -118,9 +118,7 @@ public class GuiTexture extends GuiObject {
 			this.buffer.uploadVboSubData( GUI_TEX_COORD, 0, texCoordsBuffer );
 			
 		} finally {
-			
-			if ( texCoordsBuffer != null ) MemoryUtil.memFree( texCoordsBuffer );
-			
+			BufferUtils.safeFree(texCoordsBuffer);
 		}
 		
 		this.updateTexCoords = false;
@@ -133,20 +131,26 @@ public class GuiTexture extends GuiObject {
 		if ( this.texture == null )
 			return;
 		
-		if ( this.updateTexCoords )
-			this.updateTexCoordsBuffer();
-		
 		if ( this.updateVertices )
 			this.updateVerticesBuffer();
 		
-		this.model.push().translate( this.xOffset, this.yOffset ).apply();
-			
-			this.renderer.setTextureSampler( this.texture );
-			
-				this.buffer.drawElements();
-			
-			this.renderer.resetTextureSampler();
-			
+		if ( this.updateTexCoords )
+			this.updateTexCoordsBuffer();
+		
+		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
+		
+		this.renderer.setTextureSampler(this.texture);
+		
+		if (this.colorEnabled)
+			this.renderer.setGlobalColor(this.color);
+		
+		this.buffer.drawElements();
+		
+		if (this.colorEnabled)
+			this.renderer.resetGlobalColor();
+		
+		this.renderer.resetTextureSampler();
+		
 		this.model.pop();
 
 	}
@@ -154,6 +158,28 @@ public class GuiTexture extends GuiObject {
 	@Override
 	public void update() {
 		
+	}
+	
+	@Override
+	public void setWidth(float width) {
+		super.setWidth(width);
+		this.updateVertices = true;
+	}
+	
+	@Override
+	public void setHeight(float height) {
+		super.setHeight(height);
+		this.updateVertices = true;
+	}
+	
+	@Override
+	public float getAutoWidth() {
+		return this.texture == null ? 0 : (this.texture.getWidth() * this.textureWidth);
+	}
+	
+	@Override
+	public float getAutoHeight() {
+		return this.texture == null ? 0 : (this.texture.getHeight() * this.textureHeight);
 	}
 	
 	/**
@@ -169,8 +195,8 @@ public class GuiTexture extends GuiObject {
 	}
 	
 	/**
-	 * 
-	 * @param texture
+	 * Set a {@link TextureObject} to use, and reset coordinates ({@link #resetCoordinates()}).
+	 * @param texture The texture object to set
 	 */
 	public void setTexture(TextureObject texture) {
 		this.setTexture( texture, true );
@@ -241,6 +267,36 @@ public class GuiTexture extends GuiObject {
 		
 		this.updateTexCoords = true;
 		
+	}
+	
+	/**
+	 * @return True if the color for whole texture is enabled.
+	 */
+	public boolean isColorEnabled() {
+		return colorEnabled;
+	}
+	
+	/**
+	 * Set if the internal color wil be used to color the whole texture.
+	 * @param colorEnabled True to enable texture coloration.
+	 */
+	public void setColorEnabled(boolean colorEnabled) {
+		this.colorEnabled = colorEnabled;
+	}
+	
+	/**
+	 * @return Immutable internal texture color. This color will be applied on whole texture.
+	 */
+	public Color getColor() {
+		return this.color;
+	}
+	
+	public void setColor(Color color) {
+		this.color.setAll(color);
+	}
+	
+	public void setColor(int r, int g, int b) {
+		this.color.setAll(r, g, b);
 	}
 
 }

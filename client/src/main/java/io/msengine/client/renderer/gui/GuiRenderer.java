@@ -175,6 +175,8 @@ public class GuiRenderer implements ModelApplyListener {
 		if ( this.masking ) return;
 		this.masking = true;
 		
+		this.resetTextureSampler();
+		
 		glEnable( GL_STENCIL_TEST );
 		
 		glStencilMask( 1 );
@@ -182,7 +184,9 @@ public class GuiRenderer implements ModelApplyListener {
 		glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
 		glColorMask( false, false, false, false );
 		
-		for ( GuiMask mask : masks ) mask.draw();
+		for (GuiMask mask : masks) {
+			mask.draw();
+		}
 		
 		glStencilMask( 1 );
 		glStencilFunc( GL_EQUAL, 1, 1 );
