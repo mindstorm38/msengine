@@ -203,6 +203,28 @@ public class GuiTextInput extends GuiParent implements
 		return this.text.getTextScale();
 	}
 	
+	// Texts //
+	public String getInputText() {
+		return this.builder.toString();
+	}
+	
+	public void setInputText(String txt) {
+		
+		this.builder.delete(0, this.builder.length());
+		this.builder.append(txt);
+		this.text.setText(txt);
+		this.fireEvent(new GuiTextInputChangedEvent(txt));
+		
+	}
+	
+	private void updateText() {
+		
+		String str = this.builder.toString();
+		this.text.setText(str);
+		this.fireEvent(new GuiTextInputChangedEvent(str));
+		
+	}
+	
 	// Private utility methods //
 	private void textScaleUpdated() {
 		
@@ -264,14 +286,6 @@ public class GuiTextInput extends GuiParent implements
 			this.selection.setWidth(selectionWidth);
 			
 		}
-		
-	}
-	
-	private void updateText() {
-		
-		String str = this.builder.toString();
-		this.text.setText(str);
-		this.fireEvent(new GuiTextInputChangedEvent(str));
 		
 	}
 	
