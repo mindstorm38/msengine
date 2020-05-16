@@ -3,7 +3,7 @@
 	-- MS Engine (MSE) --
 
 	Java   : 1.8
-	Gradle : 6.0
+	Gradle : 6.1.1
 
 */
 
