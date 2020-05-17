@@ -1,5 +1,6 @@
 package io.msengine.client.renderer.shader;
 
+@Deprecated
 public class ShaderBlockUniform extends ShaderUniformBase {
 
 	private final ShaderUniformBlock block;

@@ -16,8 +16,10 @@ import static io.msengine.client.renderer.util.GLUtils.glSetVertexAttribArray;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
@@ -51,7 +53,7 @@ public class DrawBuffer {
 	
 	protected static DrawBuffer currentVBODrawBuffer = null;
 	protected static int currentVBOIndex = -1;
-	protected static int currentVBOLocation = 0;
+	protected static int currentVBOName = 0;
 	
 	// Class \\
 	
@@ -64,7 +66,7 @@ public class DrawBuffer {
 	protected final int vao;
 	
 	protected final int[] vbos;
-	protected final String[] vbosIdentifiers;
+	protected final Map<String, Integer> vbosByIds;
 	
 	protected boolean deleted;
 	
@@ -85,66 +87,64 @@ public class DrawBuffer {
 		
 		// Attributes locations and states
 		
-		final List<ShaderAttribute> attributes = shaderManager.getShaderAttributes();
+		final Collection<ShaderAttribute> attributes = shaderManager.getShaderAttributes();
 		
-		this.attributesLocations = new int[ attributes.size() ];
-		this.attributesStates = new boolean[ attributes.size() ];
+		this.attributesLocations = new int[attributes.size()];
+		this.attributesStates = new boolean[attributes.size()];
 		
 		// Creating Vertex Arrays Objects and Vertex Buffer Object list.
 		
 		this.vao = glGenVertexArrays();
 		
-		this.vbos = new int[ format.buffers.length ];
-		Arrays.fill( this.vbos, -1 );
+		this.vbos = new int[format.buffers.length];
+		this.vbosByIds = new HashMap<>();
 		
-		this.vbosIdentifiers = new String[ this.vbos.length ];
-		for ( int i = 0; i < format.buffers.length; i++ )
-			this.vbosIdentifiers[ i ] = format.buffers[ i ].identifier;
+		for (int i = 0; i < format.buffers.length; i++) {
+			
+			this.vbos[i] = -1;
+			this.vbosByIds.put(format.buffers[i].identifier, i);
+			
+		}
 		
 		this.deleted = false;
 		
 		// Generating buffers and attributes states
 		
-		ShaderAttribute attribute;
 		VertexElement element;
 		VertexBufferFormat bufferFormat;
 		int bufferIndex, attributeLocation;
 		
 		this.bindVao();
 		
-		for ( int i = 0; i < attributes.size(); i++ ) {
+		for (ShaderAttribute attribute : attributes) {
 			
-			attribute = attributes.get( i );
+			attributeLocation = this.attributesLocations[attribute.getIndex()] = attribute.getLocation();
 			
-			attributeLocation = this.attributesLocations[ i ] = attribute.getLocation();
-			
-			if ( attributeLocation == -1 ) {
-				
-				LOGGER.warning("Invalid attribute location for '" + attribute.getIdentifier() + "', can't be enabled in the Draw Buffer. If this is the only attribute in a VBO, the VBO is not created and errors could occur." );
-				
+			if (attributeLocation == -1) {
+				throw new IllegalArgumentException("Invalid attribute location for '" + attribute.getIdentifier() + "', can't be enabled in the Draw Buffer.");
 			} else {
 				
-				if ( this.attributesStates[ i ] = CollectionUtils.arrayContains( enabledVertexAttribsIdentifiers, attribute.getIdentifier() ) ) {
+				if (this.attributesStates[attribute.getIndex()] = CollectionUtils.arrayContains(enabledVertexAttribsIdentifiers, attribute.getIdentifier())) {
 					
-					// If the attribute is enbled, get all informations about it.
+					// If the attribute is enabled, get all information about it.
 					element = attribute.getVertexElement();
 					bufferFormat = format.getBufferForElement( element );
 					bufferIndex = format.getBufferIndex( bufferFormat );
 					
 					// If this attribute's vertex element's buffer is not initialized, generate a GL buffer.
-					if ( this.vbos[ bufferIndex ] == -1 )
-						this.vbos[ bufferIndex ] = glGenBuffers();
+					if (this.vbos[bufferIndex] == -1)
+						this.vbos[bufferIndex] = glGenBuffers();
 					
 					// Bind a VBO at a specific index.
-					this.bindVbo( bufferIndex );
+					this.bindVbo(bufferIndex);
 					
-					// Specifiy the position and type of a vertex attribute in the VBO.
+					// Specify the position and type of a vertex attribute in the VBO.
 					// If the buffer has more than one vertex element definition, it define offsets in the buffer.
 					// For example, if a buffer has 2 elements (in this order) : position (2f), color (4f); offsets are :
 					// - position (offset: 0, stride: 24)
 					// - color (offset: 8, stride: 24)
 					// Example buffer : [<xy0><rgba0><xy1><rgba1>...<xy(n)><rgba(n)>]
-					glVertexAttribPointer( attributeLocation, element.count, element.type.i, false, bufferFormat.size, bufferFormat.getElementOffset( element ) );
+					glVertexAttribPointer(attributeLocation, element.getCount(), element.getType().i, false, bufferFormat.size, bufferFormat.getElementOffset(element));
 					
 				}
 				
@@ -180,7 +180,9 @@ public class DrawBuffer {
 	 * @throws IllegalStateException If the shader manager linked to this buffer is not active.
 	 */
 	protected void checkCurrentShaderManager() {
-		if ( !this.shaderManager.isCurrent() ) throw new IllegalStateException("The linked ShaderManager must be used to use it");
+		if (!this.shaderManager.isCurrent()) {
+			throw new IllegalStateException("The linked ShaderManager must be used to use it");
+		}
 	}
 	
 	// - Deleted
@@ -189,7 +191,9 @@ public class DrawBuffer {
 	 * @throws IllegalStateException If this buffer was deleted.
 	 */
 	protected void checkDeleted() {
-		if ( this.deleted ) throw new IllegalStateException("Unusable because it has been deleted.");
+		if (this.deleted) {
+			throw new IllegalStateException("Unusable because it has been deleted.");
+		}
 	}
 	
 	/**
@@ -201,14 +205,18 @@ public class DrawBuffer {
 		
 		this.deleted = true;
 		
-		glDeleteVertexArrays( this.vao );
-		for ( int vbo : this.vbos ) glDeleteBuffers( vbo );
+		glDeleteVertexArrays(this.vao);
+		for (int vbo : this.vbos) {
+			glDeleteBuffers(vbo);
+		}
 		
 	}
 	
 	@Override
-	protected void finalize() throws Throwable {
-		if ( !this.deleted ) this.delete();
+	protected void finalize() {
+		if (!this.deleted) {
+			this.delete();
+		}
 	}
 	
 	// - Vertex Attributes
@@ -219,8 +227,8 @@ public class DrawBuffer {
 	 * @return Is vertex attribute enabled
 	 */
 	public boolean isVertexAttribEnabled(String identifier) {
-		int index = this.shaderManager.getShaderAttributeIndex( identifier );
-		return index == -1 || this.attributesStates[ index ];
+		int index = this.shaderManager.getShaderAttributeIndex(identifier);
+		return index != -1 && this.attributesStates[index];
 	}
 
 	/**
@@ -229,7 +237,7 @@ public class DrawBuffer {
 	 * @return Vertex Attribute location, or -1 if not linked
 	 */
 	public int getVertexAttribLocation(String identifier) {
-		return this.shaderManager.getShaderAttributeLocation( identifier );
+		return this.shaderManager.getShaderAttributeLocation(identifier);
 	}
 	
 	/**
@@ -258,27 +266,18 @@ public class DrawBuffer {
 		
 		this.checkDeleted();
 		
-		if ( currentVAOLocation != this.vao )
-			glBindVertexArray( currentVAOLocation = this.vao );
+		if (currentVAOLocation != this.vao) {
+			glBindVertexArray(currentVAOLocation = this.vao);
+		}
 		
 	}
 	
 	// - Vertex Buffer Object
 	
 	private void checkVboIndex(int vbo) {
-		if ( vbo < 0 || vbo >= this.vbos.length ) throw new IndexOutOfBoundsException( "Invalid Vertex Buffer index" );
-	}
-	
-	/**
-	 * Get if a VBO is enabled. A VBO can be disabled if none of these attributes is enabled in the constructor {@link #DrawBuffer(ShaderManager, VertexArrayFormat, String...)}
-	 * @param vbo The VBO index
-	 * @return Is VBO enabled
-	 */
-	public boolean isVboEnabled(int vbo) {
-		
-		this.checkVboIndex( vbo );
-		return this.vbos[ vbo ] != -1;
-		
+		if (vbo < 0 || vbo >= this.vbos.length) {
+			throw new IndexOutOfBoundsException( "Invalid Vertex Buffer index" );
+		}
 	}
 	
 	/**
@@ -287,7 +286,26 @@ public class DrawBuffer {
 	 * @return The VBO Index or -1 if the identifier is invalid
 	 */
 	public int getVboIndex(String identifier) {
-		return CollectionUtils.arrayIndexOf( this.vbosIdentifiers, identifier );
+		return this.vbosByIds.get(identifier);
+	}
+	
+	/**
+	 * Get if a VBO is enabled. A VBO can be disabled if none of these attributes is enabled in the constructor {@link #DrawBuffer(ShaderManager, VertexArrayFormat, String...)}.
+	 * @param vbo The VBO index.
+	 * @return Is VBO enabled.
+	 */
+	public boolean isVboEnabled(int vbo) {
+		this.checkVboIndex(vbo);
+		return this.vbos[vbo] != -1;
+	}
+	
+	/**
+	 * Get if a VBO is enabled. A VBO can be disabled if none of these attributes is enabled in the constructor {@link #DrawBuffer(ShaderManager, VertexArrayFormat, String...)}.
+	 * @param identifier The VBO identifier.
+	 * @return Is VBO enabled.
+	 */
+	public boolean isVboEnabled(String identifier) {
+		return this.isVboEnabled(this.getVboIndex(identifier));
 	}
 	
 	/**
@@ -297,30 +315,37 @@ public class DrawBuffer {
 	 */
 	public String getVboIdentifier(int index) {
 		this.checkVboIndex(index);
-		return this.vbosIdentifiers[index];
+		return this.vbosByIds.entrySet()
+				.stream()
+				.filter(entry -> entry.getValue() == index)
+				.map(Map.Entry::getKey)
+				.findFirst()
+				.orElse(null);
 	}
 	
 	/**
 	 * Bind a Vertex Buffer Object (VBO)
-	 * @param vbo The VBO index in this buffer (see {@link #getVboIndex(String)})
+	 * @param vboIndex The VBO index in this buffer (see {@link #getVboIndex(String)})
 	 * @throws IllegalArgumentException If this buffer doesn't exists in the {@link #format}
 	 * @throws IllegalStateException If the Vertex Buffer is disabled (see {@link #isVboEnabled(int)})
 	 */
-	public void bindVbo(int vbo) {
+	public void bindVbo(int vboIndex) {
 		
 		this.checkDeleted();
+		this.checkVboIndex(vboIndex);
 		
-		this.checkVboIndex( vbo );
+		if (currentVBODrawBuffer == this && currentVBOIndex == vboIndex) {
+			return;
+		}
 		
-		if ( currentVBODrawBuffer == this && currentVBOIndex == vbo ) return;
+		if (this.vbos[vboIndex] == -1) {
+			throw new IllegalStateException("Disabled Vertex Buffer " + vboIndex + " : '" + this.getVboIdentifier(vboIndex) + "'");
+		}
 		
-		if ( this.vbos[ vbo ] == -1 )
-			throw new IllegalStateException( "Disabled Vertex Buffer " + vbo + " : '" + this.vbosIdentifiers[vbo] + "'" );
-		
-		glBindBuffer( GL_ARRAY_BUFFER, currentVBOLocation = this.vbos[ vbo ] );
+		glBindBuffer(GL_ARRAY_BUFFER, currentVBOName = this.vbos[vboIndex]);
 		
 		currentVBODrawBuffer = this;
-		currentVBOIndex = vbo;
+		currentVBOIndex = vboIndex;
 		
 	}
 	
@@ -331,7 +356,7 @@ public class DrawBuffer {
 	 * @throws IllegalStateException If the Vertex Buffer is disabled (see {@link #isVboEnabled(int)})
 	 */
 	public void bindVbo(String identifier) {
-		this.bindVbo( this.getVboIndex( identifier ) );
+		this.bindVbo(this.getVboIndex(identifier));
 	}
 	
 	/**
@@ -397,18 +422,10 @@ public class DrawBuffer {
 	protected void preDraw() {
 		
 		this.checkCurrentShaderManager();
-		
 		this.bindVao();
 		
-		int loc;
-		
-		for ( int i = 0; i < this.attributesLocations.length; i++ ) {
-			
-			loc = this.attributesLocations[ i ];
-			if ( loc == -1 ) continue;
-			
-			glSetVertexAttribArray( loc, this.attributesStates[ i ] );
-			
+		for (int i = 0; i < this.attributesLocations.length; ++i) {
+			glSetVertexAttribArray(this.attributesLocations[i], this.attributesStates[i]);
 		}
 		
 	}
@@ -417,9 +434,7 @@ public class DrawBuffer {
 	 * Unbind VAO
 	 */
 	protected void postDraw() {
-		
 		unbindVao();
-		
 	}
 	
 	// - Static buffer unbinding
@@ -428,7 +443,7 @@ public class DrawBuffer {
 	 * Unbind VAO
 	 */
 	public static void unbindVao() {
-		glBindVertexArray( currentVAOLocation = 0 );
+		glBindVertexArray(currentVAOLocation = 0);
 	}
 	
 	/**
@@ -436,7 +451,7 @@ public class DrawBuffer {
 	 */
 	public static void unbindVbo() {
 		
-		glBindBuffer( GL_ARRAY_BUFFER, currentVBOLocation = 0 );
+		glBindBuffer(GL_ARRAY_BUFFER, currentVBOName = 0);
 		
 		currentVBODrawBuffer = null;
 		currentVBOIndex = -1;

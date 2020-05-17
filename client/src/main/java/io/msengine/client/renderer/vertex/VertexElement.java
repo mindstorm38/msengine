@@ -2,6 +2,8 @@ package io.msengine.client.renderer.vertex;
 
 import io.msengine.client.renderer.util.DataType;
 
+import java.util.Objects;
+
 /**
  *
  * A vertex element definition.
@@ -22,19 +24,21 @@ public class VertexElement {
 	
 	// Class \\
 	
-	protected final String identifier;
-	protected final DataType type;
-	protected final int count;
+	private final String identifier;
+	private final DataType type;
+	private final int count;
 	
-	protected final int size;
+	private final int size;
+	private final int hash;
 	
 	public VertexElement(String identifier, DataType type, int count) {
 		
-		this.identifier = identifier;
-		this.type = type;
+		this.identifier = Objects.requireNonNull(identifier);
+		this.type = Objects.requireNonNull(type);
 		this.count = count;
 		
 		this.size = this.type.size * this.count;
+		this.hash = Objects.hash(identifier, type, count);
 		
 	}
 	
@@ -61,6 +65,11 @@ public class VertexElement {
 		if ( !( obj instanceof VertexElement ) ) return false;
 		VertexElement o = (VertexElement) obj;
 		return o.identifier.equals( this.identifier ) && o.type == this.type && o.count == this.count;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.hash;
 	}
 	
 	@Override

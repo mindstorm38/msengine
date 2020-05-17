@@ -29,14 +29,14 @@ public class ShaderLoader {
 	
 	public void attachShader(ShaderManager manager) {
 		
-		glAttachShader( manager.program, this.shader );
+		glAttachShader(manager.program, this.shader);
 		this.useShader();
 		
 	}
 	
 	public void detachShader(ShaderManager manager) {
 		
-		glDetachShader( manager.program, this.shader );
+		glDetachShader(manager.program, this.shader);
 		
 	}
 	
@@ -46,12 +46,10 @@ public class ShaderLoader {
 	
 	public void releaseShader() {
 		
-		this.useCount--;
-		
-		if ( this.useCount <= 0 ) {
+		if (this.useCount-- == 0) {
 			
-			glDeleteShader( this.shader );
-			this.type.shaders.remove( this.filename );
+			glDeleteShader(this.shader);
+			this.type.shaders.remove(this.filename);
 			
 		}
 		

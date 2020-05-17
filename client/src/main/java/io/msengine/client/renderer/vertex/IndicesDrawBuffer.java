@@ -77,8 +77,8 @@ public class IndicesDrawBuffer extends DrawBuffer {
 		
 		this.checkDeleted();
 		
-		if ( currentVBOLocation == this.ibo ) return;
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, currentVBOLocation = this.ibo );
+		if ( currentVBOName == this.ibo ) return;
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, currentVBOName = this.ibo );
 		
 	}
 	
@@ -144,7 +144,7 @@ public class IndicesDrawBuffer extends DrawBuffer {
 	 */
 	public static void unbindIbo() {
 		
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, currentVBOLocation = 0 );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, currentVBOName = 0 );
 		
 		currentVBODrawBuffer = null;
 		currentVBOIndex = -1;

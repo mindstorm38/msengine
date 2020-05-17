@@ -15,8 +15,11 @@ import io.msengine.client.renderer.util.RenderConstantFields;
  * Works only with <code>std140</code> block layout.
  * 
  * @author Mindstorm38
+ *
+ * @deprecated Work In Progress
  * 
  */
+@Deprecated
 public class ShaderUniformBlock implements ShaderUniformHandler {
 	
 	// Static \\
@@ -95,14 +98,6 @@ public class ShaderUniformBlock implements ShaderUniformHandler {
 	
 	public String getIdentifier() {
 		return this.identifier;
-	}
-
-	@Override
-	public ShaderUniformBase getShaderUniformOrDefault(String identifier) {
-		for ( ShaderBlockUniform uniform : this.uniforms )
-			if ( uniform.usable() && identifier.equals( uniform.identifier ) )
-				return uniform;
-		return DEFAULT_UNIFORM;
 	}
 
 	@Override

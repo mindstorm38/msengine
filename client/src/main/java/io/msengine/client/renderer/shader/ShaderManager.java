@@ -1,11 +1,11 @@
 package io.msengine.client.renderer.shader;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import io.msengine.client.renderer.texture.TextureObject;
 import io.msengine.client.renderer.vertex.VertexElement;
 
 import static org.lwjgl.opengl.GL20.*;
@@ -36,13 +36,12 @@ public class ShaderManager implements ShaderUniformHandler {
 	private final String vertexShaderIdentifier;
 	private final String fragmentShaderIdentifier;
 	
-	private final List<ShaderSampler> samplers;
-	private final List<ShaderUniform> uniforms;
-	private final List<ShaderAttribute> attributes;
+	private final Map<String, ShaderSampler> samplers = new HashMap<>();
+	private final Map<String, ShaderUniform> uniforms = new HashMap<>();
+	private final Map<String, ShaderAttribute> attributes = new HashMap<>();
+	private final Map<VertexElement, ShaderAttribute> attributesByElts = new HashMap<>();
 	
-	private final List<ShaderUniformBlock> uniformBlocks;
-	
-	private final List<ShaderAttribute> attributesView;
+	private final Map<String, ShaderUniformBlock> uniformBlocks = new HashMap<>();
 	
 	private boolean built;
 	
@@ -55,14 +54,6 @@ public class ShaderManager implements ShaderUniformHandler {
 		this.identifier = identifier;
 		this.vertexShaderIdentifier = vertexShaderIdentifier;
 		this.fragmentShaderIdentifier = fragmentShaderIdentifier;
-		
-		this.samplers = new ArrayList<>();
-		this.uniforms = new ArrayList<>();
-		this.attributes = new ArrayList<>();
-		
-		this.uniformBlocks = new ArrayList<>();
-		
-		this.attributesView = Collections.unmodifiableList( this.attributes );
 		
 		this.reset();
 		
@@ -119,7 +110,7 @@ public class ShaderManager implements ShaderUniformHandler {
 	public ShaderManager registerSampler(String identifier) {
 		
 		this.checkBuilt();
-		this.samplers.add( new ShaderSampler( identifier ) );
+		this.samplers.put(identifier, new ShaderSampler(identifier));
 		return this;
 		
 	}
@@ -133,7 +124,7 @@ public class ShaderManager implements ShaderUniformHandler {
 	public ShaderManager registerUniform(String identifier, ShaderValueType type) {
 		
 		this.checkBuilt();
-		this.uniforms.add( new ShaderUniform( this, identifier, type ) );
+		this.uniforms.put(identifier, new ShaderUniform(this, identifier, type));
 		return this;
 		
 	}
@@ -149,12 +140,13 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 		this.checkBuilt();
 		
-		ShaderAttribute attrib = this.getShaderAttribute( vertexElement );
+		if (this.attributesByElts.containsKey(vertexElement)) {
+			throw new IllegalArgumentException("This vertex element '" + vertexElement.toString() + " is already used by an attribute");
+		}
 		
-		if ( attrib != null )
-			throw new IllegalArgumentException( "This vertex element '" + vertexElement.toString() + " is already used by an attribute" );
-		
-		this.attributes.add( new ShaderAttribute( vertexElement ) );
+		ShaderAttribute attr = new ShaderAttribute(vertexElement);
+		this.attributes.put(attr.getIdentifier(), attr);
+		this.attributesByElts.put(vertexElement, attr);
 		
 		return this;
 		
@@ -170,10 +162,11 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 		this.checkBuilt();
 		
-		if ( this.uniformBlocks.contains( uniformBlock ) )
-			throw new IllegalArgumentException( "This uniform block '" + uniformBlock.getIdentifier() + "' is already bound to this shader" );
+		if (this.uniformBlocks.containsKey(uniformBlock.identifier)) {
+			throw new IllegalArgumentException("This uniform block '" + uniformBlock.identifier + "' is already bound to this shader.");
+		}
 		
-		this.uniformBlocks.add( uniformBlock );
+		this.uniformBlocks.put(uniformBlock.identifier, uniformBlock);
 		
 		return this;
 		
@@ -242,6 +235,38 @@ public class ShaderManager implements ShaderUniformHandler {
 	 */
 	private void setupUniforms() {
 		
+		AtomicInteger activeTexture = new AtomicInteger(0);
+		
+		this.samplers.values().removeIf(sampler -> {
+			
+			int loc = glGetUniformLocation(this.program, sampler.getIdentifier());
+			
+			if (loc == -1) {
+				LOGGER.warning("Could not find sampler '" + sampler.getIdentifier() + "' in the program '" + this.identifier + "'.");
+				return true;
+			} else {
+				sampler.setActiveTexture(activeTexture.getAndIncrement());
+				return false;
+			}
+			
+		});
+		
+		this.uniforms.values().removeIf(uniform -> {
+			
+			int loc = glGetUniformLocation(this.program, uniform.identifier);
+			
+			if (loc == -1) {
+				LOGGER.warning("Could not find uniform '" + uniform.identifier + "' in the program '" + this.identifier + "'.");
+				return true;
+			} else {
+				uniform.location = loc;
+				uniform.init();
+				return false;
+			}
+			
+		});
+		
+		/*
 		List<ShaderSampler> removedSamplers = new ArrayList<>();
 		
 		for ( ShaderSampler sampler : this.samplers ) {
@@ -279,6 +304,7 @@ public class ShaderManager implements ShaderUniformHandler {
 			}
 			
 		}
+		*/
 		
 	}
 	
@@ -287,6 +313,23 @@ public class ShaderManager implements ShaderUniformHandler {
 	 */
 	private void setupAttributes() {
 		
+		AtomicInteger index = new AtomicInteger(0);
+		
+		this.attributes.values().removeIf(attribute -> {
+			
+			int loc = glGetAttribLocation(this.program, attribute.getIdentifier());
+			
+			if (loc == -1) {
+				LOGGER.warning("Could not find attribute '" + attribute.getIdentifier() + "' in the program '" + this.identifier + "'.");
+				return true;
+			} else {
+				attribute.setIndex(index.getAndIncrement());
+				return false;
+			}
+			
+		});
+		
+		/*
 		for ( ShaderAttribute attribute : this.attributes ) {
 			
 			int location = glGetAttribLocation( this.program, attribute.identifier );
@@ -301,7 +344,7 @@ public class ShaderManager implements ShaderUniformHandler {
 				
 			}
 			
-		}
+		}*/
 		
 	}
 	
@@ -311,7 +354,27 @@ public class ShaderManager implements ShaderUniformHandler {
 	 */
 	private void setupUniformBlocks() {
 		
-		for ( ShaderUniformBlock block : this.uniformBlocks ) {
+		this.uniformBlocks.values().removeIf(block -> {
+			
+			if (!block.usable()) {
+				LOGGER.warning("Could not use uniform block '" + block.identifier + "' in the program '" + this.identifier + "', initialize it first.");
+				return true;
+			}
+			
+			int index = glGetUniformBlockIndex(this.program, block.identifier);
+			
+			if (index == -1) {
+				LOGGER.warning("Could not find uniform block '" + block.identifier + "' in the program '" + this.identifier + "'.");
+				return true;
+			} else {
+				glUniformBlockBinding(this.program, index, block.binding);
+				return false;
+			}
+			
+		});
+		
+		/*
+		for ( ShaderUniformBlock block : this.uniformBlocks.values() ) {
 			
 			if ( !block.usable() ) {
 				
@@ -333,6 +396,7 @@ public class ShaderManager implements ShaderUniformHandler {
 			}
 			
 		}
+		*/
 		
 	}
 	
@@ -352,7 +416,17 @@ public class ShaderManager implements ShaderUniformHandler {
 			
 		}
 		
-		for ( int i = 0; i < this.samplers.size(); i++ ) {
+		for (ShaderSampler sampler : this.samplers.values()) {
+			
+			glUniform1i(sampler.getLocation(), sampler.getActiveTexture());
+			
+			if (sampler.hasSamplerObject()) {
+				sampler.bind();
+			}
+			
+		}
+		
+		/*for ( int i = 0; i < this.samplers.size(); i++ ) {
 			
 			ShaderSampler sampler = this.samplers.get( i );
 			
@@ -363,11 +437,13 @@ public class ShaderManager implements ShaderUniformHandler {
 				
 			}
 			
-		}
+		}*/
 		
-		for ( ShaderUniform uniform : this.uniforms )
-			if ( uniform.usable() )
+		for (ShaderUniform uniform : this.uniforms.values()) {
+			if (uniform.usable()) {
 				uniform.upload();
+			}
+		}
 		
 	}
 	
@@ -389,9 +465,15 @@ public class ShaderManager implements ShaderUniformHandler {
 		currentProgram = -1;
 		currentShaderManager = null;
 		
-		for ( int i = 0; i < this.samplers.size(); i++ )
+		for (ShaderSampler sampler : this.samplers.values()) {
+			if (sampler.hasSamplerObject()) {
+				sampler.bind();
+			}
+		}
+		
+		/*for ( int i = 0; i < this.samplers.size(); i++ )
 			if ( this.samplers.get( i ).object != null )
-				TextureObject.unbind( i );
+				TextureObject.unbind( i );*/
 		
 	}
 	
@@ -407,39 +489,24 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 		glDeleteProgram( this.program );
 		
-		for ( ShaderUniform uniform : this.uniforms )
-			if ( uniform.usable() )
+		for (ShaderUniform uniform : this.uniforms.values()) {
+			if (uniform.usable()) {
 				uniform.delete();
+			}
+		}
 		
 		this.reset();
 		
 	}
 	
 	@Override
-	protected void finalize() throws Throwable {
+	protected void finalize() {
 		this.delete();
 	}
 	
 	@Override
-	public ShaderUniformBase getShaderUniformOrDefault(String identifier) {
-		
-		for ( ShaderUniform uniform : this.uniforms )
-			if ( uniform.usable() && uniform.identifier.equals( identifier ) )
-				return uniform;
-			
-		return DEFAULT_UNIFORM;
-		
-	}
-	
-	@Override
 	public ShaderUniformBase getShaderUniform(String identifier) {
-		
-		for ( ShaderUniform uniform : this.uniforms )
-			if ( uniform.usable() && uniform.identifier.equals( identifier ) )
-				return uniform;
-			
-		return null;
-		
+		return this.uniforms.get(identifier);
 	}
 	
 	/**
@@ -450,9 +517,21 @@ public class ShaderManager implements ShaderUniformHandler {
 	 */
 	public void setSamplerObject(String identifier, ShaderSamplerObject object) {
 		
-		ShaderSampler sampler;
+		ShaderSampler sampler = this.samplers.get(identifier);
 		
-		for ( int i = 0; i < this.samplers.size(); i++ ) {
+		if (sampler == null) {
+			throw new IllegalArgumentException("Can't find sampler named '" + identifier + "' in shader manager '" + this.identifier + "'");
+		} else {
+		
+			sampler.setSamplerObject(object);
+			
+			if (this.isCurrent()) {
+				sampler.bind();
+			}
+		
+		}
+		
+		/*for ( int i = 0; i < this.samplers.size(); i++ ) {
 			
 			sampler = this.samplers.get( i );
 			
@@ -476,7 +555,7 @@ public class ShaderManager implements ShaderUniformHandler {
 			
 		}
 		
-		throw new IllegalArgumentException( "Can't find sampler named '" + identifier + "' in shader manager '" + this.identifier + "'" );
+		throw new IllegalArgumentException( "Can't find sampler named '" + identifier + "' in shader manager '" + this.identifier + "'" );*/
 		
 	}
 	
@@ -486,13 +565,7 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * @return The shader attribute object, or Null if no shader attribute associated with this identifier.
 	 */
 	public ShaderAttribute getShaderAttribute(String identifier) {
-		
-		for ( ShaderAttribute attribute : this.attributes )
-			if ( attribute.identifier.equals( identifier ) )
-				return attribute;
-			
-		return null;
-		
+		return this.attributes.get(identifier);
 	}
 	
 	/**
@@ -501,13 +574,7 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * @return The shader attribute object, or Null if no shader attribute associated with this vertex element definition.
 	 */
 	public ShaderAttribute getShaderAttribute(VertexElement vertexElement) {
-		
-		for ( ShaderAttribute attribute : this.attributes )
-			if ( attribute.vertexElement.equals( vertexElement ) )
-				return attribute;
-			
-		return null;
-		
+		return this.attributesByElts.get(vertexElement);
 	}
 	
 	/**
@@ -517,12 +584,13 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * @return The shader attribute if found at this location, else Null.
 	 * @throws IllegalStateException If the shader isn't built.
 	 */
+	@Deprecated
 	public ShaderAttribute getShaderAttribute(int location) {
 		
 		this.checkNotBuilt();
 		
-		for (ShaderAttribute attr : this.attributes)
-			if (attr.location == location)
+		for (ShaderAttribute attr : this.attributes.values())
+			if (attr.getLocation() == location)
 				return attr;
 			
 		return null;
@@ -535,24 +603,19 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * @return Attribute index, or -1 if not found.
 	 */
 	public int getShaderAttributeIndex(String identifier) {
-		
-		for ( int i = 0; i < this.attributes.size(); i++ )
-			if ( this.attributes.get( i ).identifier.equals( identifier ) )
-				return i;
-			
-		return -1;
-		
+		ShaderAttribute attr = this.attributes.get(identifier);
+		return attr == null ? -1 : attr.getIndex();
 	}
 	
-	/**
+	/*
 	 * Get a shader attribute index in internal registration list.
 	 * @param attribute The attribute instance, can be queried by
 	 * {@link #getShaderAttribute(String)} or {@link #getShaderAttribute(VertexElement)}.
 	 * @return Attribute index, or -1 if not found.
 	 */
-	public int getShaderAttributeIndex(ShaderAttribute attribute) {
+	/*public int getShaderAttributeIndex(ShaderAttribute attribute) {
 		return this.attributes.indexOf( attribute );
-	}
+	}*/
 	
 	/**
 	 * Get a shader attribute location (in GL program) from its vertex element definition.
@@ -560,13 +623,8 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * @return Attribute GL program location, or -1 if not found.
 	 */
 	public int getShaderAttributeLocation(VertexElement vertexElement) {
-		
-		for ( ShaderAttribute attribute : this.attributes )
-			if ( attribute.vertexElement.equals( vertexElement ) )
-				return attribute.location;
-			
-		return -1;
-		
+		ShaderAttribute attr = this.attributesByElts.get(vertexElement);
+		return attr == null ? -1 : attr.getLocation();
 	}
 	
 	/**
@@ -575,13 +633,8 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * @return Attribute GL program location, or -1 if not found.
 	 */
 	public int getShaderAttributeLocation(String identifier) {
-		
-		for ( ShaderAttribute attribute : this.attributes )
-			if ( attribute.identifier.equals( identifier ) )
-				return attribute.location;
-			
-		return -1;
-		
+		ShaderAttribute attr = this.attributes.get(identifier);
+		return attr == null ? -1 : attr.getLocation();
 	}
 	
 	/**
@@ -590,17 +643,15 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * @param locationConsumer The consumer to execute if the attribute was found.
 	 */
 	public void getShaderAttributeLocationSafe(VertexElement vertexElement, Consumer<Integer> locationConsumer) {
-		
-		int location = this.getShaderAttributeLocation( vertexElement );
-		if ( location != -1 )  locationConsumer.accept( location );
-		
+		int location = this.getShaderAttributeLocation(vertexElement);
+		if (location != -1) locationConsumer.accept(location);
 	}
 	
 	/**
 	 * @return An immutable list of current shader attributes.
 	 */
-	public List<ShaderAttribute> getShaderAttributes() {
-		return this.attributesView;
+	public Collection<ShaderAttribute> getShaderAttributes() {
+		return this.attributes.values();
 	}
 	
 	/**
@@ -617,13 +668,7 @@ public class ShaderManager implements ShaderUniformHandler {
 	 * @return Found uniform block, or Null if not found.
 	 */
 	public ShaderUniformBlock getUniformBlock(String identifier) {
-		
-		for ( ShaderUniformBlock block : this.uniformBlocks )
-			if ( identifier.equals( block.getIdentifier() ) )
-				return block;
-			
-		return null;
-		
+		return this.uniformBlocks.get(identifier);
 	}
 	
 	/**

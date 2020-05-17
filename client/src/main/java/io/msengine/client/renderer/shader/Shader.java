@@ -9,6 +9,7 @@ import org.joml.Matrix4f;
 import io.msengine.client.renderer.framebuffer.Framebuffer;
 import io.msengine.client.renderer.window.Window;
 
+@Deprecated
 public class Shader {
 	
 	private final ShaderManager manager;
