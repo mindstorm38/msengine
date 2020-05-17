@@ -41,10 +41,13 @@ subprojects {
 
     repositories {
         mavenCentral()
+        maven {
+            url = uri("https://oss.sonatype.org/content/groups/public/")
+        }
     }
 
     dependencies {
-        "api"("fr.theorozier", "sutil", "1.1.0")
+        "api"("fr.theorozier", "sutil", "1.1.1-SNAPSHOT")
     }
 
     configure<JavaPluginConvention> {

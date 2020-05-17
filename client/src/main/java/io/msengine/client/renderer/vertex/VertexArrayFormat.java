@@ -55,7 +55,7 @@ public class VertexArrayFormat {
 	public VertexBufferFormat getBuffer(String identifier) {
 		
 		for ( VertexBufferFormat buffer : this.buffers )
-			if ( buffer.identifier.equals( identifier ) )
+			if ( buffer.getIdentifier().equals( identifier ) )
 				return buffer;
 			
 		return null;
@@ -70,7 +70,7 @@ public class VertexArrayFormat {
 	public int getBufferIndex(String identifier) {
 		
 		for ( int i = 0; i < this.buffers.length; i++ )
-			if ( this.buffers[ i ].identifier.equals( identifier ) )
+			if ( this.buffers[ i ].getIdentifier().equals( identifier ) )
 				return i;
 			
 		return -1;
@@ -124,7 +124,7 @@ public class VertexArrayFormat {
 	private void validate() {
 		
 		for ( VertexBufferFormat buffer : this.buffers )
-			for ( VertexElement element : buffer.elements )
+			for ( VertexElement element : buffer.getElements() )
 				for ( VertexBufferFormat _buffer : this.buffers )
 					if ( _buffer != buffer && _buffer.hasElement( element ) )
 						throw new IllegalBufferFormatException( "Element " + element.toString() + " present in multiple buffers" );

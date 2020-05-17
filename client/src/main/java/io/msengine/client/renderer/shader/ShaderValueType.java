@@ -20,8 +20,8 @@ public enum ShaderValueType {
 	VEC2  (MemoryUtil::memAllocFloat, GL20::glUniform2fv, DataType.FLOAT, 2),
 	VEC3  (MemoryUtil::memAllocFloat, GL20::glUniform3fv, DataType.FLOAT, 3),
 	VEC4  (MemoryUtil::memAllocFloat, GL20::glUniform4fv, DataType.FLOAT, 4),
-	MAT3  (MemoryUtil::memAllocFloat, GL20::glUniformMatrix3fv, DataType.FLOAT, 9),
-	MAT4  (MemoryUtil::memAllocFloat, GL20::glUniformMatrix4fv, DataType.FLOAT, 16);
+	MAT3  (MemoryUtil::memAllocFloat, GlUniformUpload.fromMatrix(GL20::glUniformMatrix3fv), DataType.FLOAT, 9),
+	MAT4  (MemoryUtil::memAllocFloat, GlUniformUpload.fromMatrix(GL20::glUniformMatrix4fv), DataType.FLOAT, 16);
 	
 	public final Function<Integer, Buffer> createBufferFunction;
 	public final GlUniformUpload<Buffer> glUniformUpload;
@@ -44,14 +44,6 @@ public enum ShaderValueType {
 		this(createBufferFunction, glUniformMethod, type, size, size);
 	}
 	
-	<B extends Buffer> ShaderValueType(Function<Integer, B> createBufferFunction, GlUniformMatrixUpload<B> glUniformMatrixMethod, DataType type, int size, int uboSize) {
-		this(createBufferFunction, glUniformMatrixMethod.toStandard(), type, size, uboSize);
-	}
-	
-	<B extends Buffer> ShaderValueType(Function<Integer, B> createBufferFunction, GlUniformMatrixUpload<B> glUniformMatrixMethod, DataType type, int size) {
-		this(createBufferFunction, glUniformMatrixMethod.toStandard(), type, size);
-	}
-	
 	/**
 	 * Upload a uniform to a GL program at a specific location from a buffer.
 	 * @param location The location, required
@@ -63,18 +55,18 @@ public enum ShaderValueType {
 	
 	@FunctionalInterface
 	private interface GlUniformUpload<B extends Buffer> {
+		
 		void upload(int loc, B buf);
+		
+		static <T extends Buffer> GlUniformUpload<T> fromMatrix(GlUniformMatrixUpload<T> matrixUpload) {
+			return (loc, buf) -> matrixUpload.upload(loc, false, buf);
+		}
+		
 	}
 	
 	@FunctionalInterface
 	private interface GlUniformMatrixUpload<B extends Buffer> {
-		
 		void upload(int loc, boolean transpose, B buf);
-		
-		default GlUniformUpload<B> toStandard() {
-			return (loc, buf) -> this.upload(loc, false, buf);
-		}
-		
 	}
 	
 }

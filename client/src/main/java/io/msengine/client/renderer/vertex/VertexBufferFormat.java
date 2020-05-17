@@ -13,11 +13,11 @@ public class VertexBufferFormat {
 	
 	// Class \\
 	
-	protected final String identifier;
+	private final String identifier;
 	
-	protected final VertexElement[] elements;
-	protected final int[] offsets;
-	protected final int size;
+	private final VertexElement[] elements;
+	private final int[] offsets;
+	private final int size;
 	
 	/**
 	 * Construct a VBO format with a single vertex element definition.<br>
@@ -26,11 +26,11 @@ public class VertexBufferFormat {
 	 */
 	public VertexBufferFormat(VertexElement element) {
 		
-		this.identifier = element.identifier;
+		this.identifier = element.getIdentifier();
 		
 		this.elements = new VertexElement[] { element };
 		this.offsets = new int[] { 0 };
-		this.size = element.size;
+		this.size = element.getSize();
 		
 	}
 	
@@ -54,7 +54,7 @@ public class VertexBufferFormat {
 			element = this.elements[ i ] = elements[ i ];
 			this.offsets[ i ] = nextOffset;
 			
-			nextOffset += element.size;
+			nextOffset += element.getSize();
 			
 		}
 		
@@ -62,6 +62,18 @@ public class VertexBufferFormat {
 		
 		this.validate();
 		
+	}
+	
+	public String getIdentifier() {
+		return this.identifier;
+	}
+	
+	public VertexElement[] getElements() {
+		return this.elements;
+	}
+	
+	public int getSize() {
+		return this.size;
 	}
 	
 	/**

@@ -28,8 +28,6 @@ import io.msengine.client.renderer.shader.ShaderManager;
 import io.msengine.client.renderer.util.BufferUsage;
 import io.sutil.CollectionUtils;
 
-import static io.msengine.common.util.GameLogger.LOGGER;
-
 /**
  *
  * Draw buffers are an high level abstraction way to upload java buffers that contains vertices data to OpenGL context.<br>
@@ -102,7 +100,7 @@ public class DrawBuffer {
 		for (int i = 0; i < format.buffers.length; i++) {
 			
 			this.vbos[i] = -1;
-			this.vbosByIds.put(format.buffers[i].identifier, i);
+			this.vbosByIds.put(format.buffers[i].getIdentifier(), i);
 			
 		}
 		
@@ -144,7 +142,7 @@ public class DrawBuffer {
 					// - position (offset: 0, stride: 24)
 					// - color (offset: 8, stride: 24)
 					// Example buffer : [<xy0><rgba0><xy1><rgba1>...<xy(n)><rgba(n)>]
-					glVertexAttribPointer(attributeLocation, element.getCount(), element.getType().i, false, bufferFormat.size, bufferFormat.getElementOffset(element));
+					glVertexAttribPointer(attributeLocation, element.getCount(), element.getType().i, false, bufferFormat.getSize(), bufferFormat.getElementOffset(element));
 					
 				}
 				
