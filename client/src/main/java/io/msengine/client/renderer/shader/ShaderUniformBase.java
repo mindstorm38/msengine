@@ -19,13 +19,13 @@ import io.sutil.ReflectUtils;
 
 public abstract class ShaderUniformBase {
 
-	protected final String identifier;
-	protected final ShaderValueType type;
-	protected int location;
+	private final String identifier;
+	private final ShaderValueType type;
+	private int location;
 	
-	protected Buffer buffer;
-	protected IntBuffer intBuffer;
-	protected FloatBuffer floatBuffer;
+	private Buffer buffer;
+	private IntBuffer intBuffer;
+	private FloatBuffer floatBuffer;
 	
 	public ShaderUniformBase(String identifier, ShaderValueType type) {
 		
@@ -37,8 +37,30 @@ public abstract class ShaderUniformBase {
 		
 	}
 	
+	public String getIdentifier() {
+		return this.identifier;
+	}
+	
+	public ShaderValueType getType() {
+		return this.type;
+	}
+	
+	public int getLocation() {
+		return this.location;
+	}
+	
+	void setLocation(int location) {
+		this.location = location;
+	}
+	
+	protected Buffer getBuffer() {
+		return this.buffer;
+	}
+	
 	protected void checkUsable() {
-		if ( this.buffer == null ) throw new IllegalStateException("This uniform is not usable, you must initialize the shader manager first. If persisting, check if uniform successfuly found in shader program.");
+		if (this.buffer == null) {
+			throw new IllegalStateException("This uniform is not usable, you must initialize the shader manager first. If persisting, check if uniform successfuly found in shader program.");
+		}
 	}
 	
 	public boolean usable() {
@@ -47,18 +69,16 @@ public abstract class ShaderUniformBase {
 	
 	protected void init() {
 		
-		this.buffer = this.type.createBufferFunction.apply( this.type.size );
-		this.intBuffer = ReflectUtils.safecast( this.buffer, IntBuffer.class );
-		this.floatBuffer = ReflectUtils.safecast( this.buffer, FloatBuffer.class );
+		this.buffer = this.type.createBufferFunction.apply(this.type.size);
+		this.intBuffer = ReflectUtils.safecast(this.buffer, IntBuffer.class);
+		this.floatBuffer = ReflectUtils.safecast(this.buffer, FloatBuffer.class);
 		
 	}
 	
 	protected void delete() {
 		
 		this.checkUsable();
-		
-		MemoryUtil.memFree( this.buffer );
-		
+		MemoryUtil.memFree(this.buffer);
 		this.reset();
 		
 	}
@@ -83,7 +103,7 @@ public abstract class ShaderUniformBase {
 	public abstract void tryUpload();
 	
 	public void set(boolean b) {
-		this.set( b ? 1 : 0 );
+		this.set(b ? 1 : 0);
 	}
 	
 	public void set(int i) {

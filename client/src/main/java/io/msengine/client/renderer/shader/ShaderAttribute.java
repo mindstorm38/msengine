@@ -14,6 +14,7 @@ public class ShaderAttribute {
 		this.vertexElement = vertexElement;
 		this.identifier = vertexElement.getIdentifier();
 		this.location = -1;
+		this.index = -1;
 		
 	}
 	

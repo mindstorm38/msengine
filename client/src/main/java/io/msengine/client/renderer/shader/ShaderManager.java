@@ -203,23 +203,23 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 		try {
 			
-			this.vertexShaderLoader = ShaderLoader.load( ShaderType.VERTEX, this.vertexShaderIdentifier );
-			this.fragmentShaderLoader = ShaderLoader.load( ShaderType.FRAGMENT, this.fragmentShaderIdentifier );
+			this.vertexShaderLoader = ShaderLoader.load(ShaderType.VERTEX, this.vertexShaderIdentifier);
+			this.fragmentShaderLoader = ShaderLoader.load(ShaderType.FRAGMENT, this.fragmentShaderIdentifier);
 			
 		} catch (Exception e) {
-			throw new ShaderBuildException( "Failed to build shader manager, one of shader loader failed", e );
+			throw new ShaderBuildException("Failed to build shader manager, one of shader loader failed", e);
 		}
 		
-		this.vertexShaderLoader.attachShader( this );
-		this.fragmentShaderLoader.attachShader( this );
+		this.vertexShaderLoader.attachShader(this);
+		this.fragmentShaderLoader.attachShader(this);
 		
 		glLinkProgram( this.program );
 		this.checkLinkStatus();
 		
-		this.vertexShaderLoader.detachShader( this );
-		this.fragmentShaderLoader.detachShader( this );
+		this.vertexShaderLoader.detachShader(this);
+		this.fragmentShaderLoader.detachShader(this);
 		
-		glValidateProgram( this.program );
+		glValidateProgram(this.program);
 		this.checkValidateStatus();
 		
 		this.setupUniforms();
@@ -245,6 +245,7 @@ public class ShaderManager implements ShaderUniformHandler {
 				LOGGER.warning("Could not find sampler '" + sampler.getIdentifier() + "' in the program '" + this.identifier + "'.");
 				return true;
 			} else {
+				sampler.setLocation(loc);
 				sampler.setActiveTexture(activeTexture.getAndIncrement());
 				return false;
 			}
@@ -253,13 +254,13 @@ public class ShaderManager implements ShaderUniformHandler {
 		
 		this.uniforms.values().removeIf(uniform -> {
 			
-			int loc = glGetUniformLocation(this.program, uniform.identifier);
+			int loc = glGetUniformLocation(this.program, uniform.getIdentifier());
 			
 			if (loc == -1) {
-				LOGGER.warning("Could not find uniform '" + uniform.identifier + "' in the program '" + this.identifier + "'.");
+				LOGGER.warning("Could not find uniform '" + uniform.getIdentifier() + "' in the program '" + this.identifier + "'.");
 				return true;
 			} else {
-				uniform.location = loc;
+				uniform.setLocation(loc);
 				uniform.init();
 				return false;
 			}
@@ -321,8 +322,10 @@ public class ShaderManager implements ShaderUniformHandler {
 			
 			if (loc == -1) {
 				LOGGER.warning("Could not find attribute '" + attribute.getIdentifier() + "' in the program '" + this.identifier + "'.");
+				this.attributesByElts.remove(attribute.getVertexElement());
 				return true;
 			} else {
+				attribute.setLocation(loc);
 				attribute.setIndex(index.getAndIncrement());
 				return false;
 			}
@@ -426,6 +429,12 @@ public class ShaderManager implements ShaderUniformHandler {
 			
 		}
 		
+		for (ShaderUniform uniform : this.uniforms.values()) {
+			if (uniform.usable()) {
+				uniform.upload();
+			}
+		}
+		
 		/*for ( int i = 0; i < this.samplers.size(); i++ ) {
 			
 			ShaderSampler sampler = this.samplers.get( i );
@@ -438,12 +447,6 @@ public class ShaderManager implements ShaderUniformHandler {
 			}
 			
 		}*/
-		
-		for (ShaderUniform uniform : this.uniforms.values()) {
-			if (uniform.usable()) {
-				uniform.upload();
-			}
-		}
 		
 	}
 	

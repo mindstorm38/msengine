@@ -102,8 +102,8 @@ public class ShaderUniformBlock implements ShaderUniformHandler {
 
 	@Override
 	public ShaderUniformBase getShaderUniform(String identifier) {
-		for ( ShaderBlockUniform uniform : this.uniforms )
-			if ( uniform.usable() && identifier.equals( uniform.identifier ) )
+		for (ShaderBlockUniform uniform : this.uniforms)
+			if (uniform.usable() && identifier.equals(uniform.getIdentifier()))
 				return uniform;
 		return null;
 	}
