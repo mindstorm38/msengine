@@ -1,12 +1,10 @@
 package io.msengine.client.renderer.shader;
 
 import java.nio.Buffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.function.Function;
 
-import static org.lwjgl.opengl.GL20.*;
-
+import io.msengine.client.renderer.util.DataType;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
 
 /**
@@ -14,92 +12,44 @@ import org.lwjgl.system.MemoryUtil;
  */
 public enum ShaderValueType {
 	
-	INT		( MemoryUtil::memAllocInt, 1 ) {
-		
-		@Override
-		public void upload(int location, Buffer buffer) {
-			glUniform1iv( location, (IntBuffer) buffer );
-		}
-		
-	},
-	IVEC2	( MemoryUtil::memAllocInt, 2 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniform2iv( location, (IntBuffer) buffer );
-		}
-		
-	},
-	IVEC3	( MemoryUtil::memAllocInt, 3 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniform3iv( location, (IntBuffer) buffer );
-		}
-		
-	},
-	IVEC4	( MemoryUtil::memAllocInt, 4 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniform4iv( location, (IntBuffer) buffer );
-		}
-		
-	},
-	FLOAT	( MemoryUtil::memAllocFloat, 1 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniform1fv( location, (FloatBuffer) buffer );
-		}
-		
-	},
-	VEC2	( MemoryUtil::memAllocFloat, 2 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniform2fv( location, (FloatBuffer) buffer );
-		}
-		
-	},
-	VEC3	( MemoryUtil::memAllocFloat, 3 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniform3fv( location, (FloatBuffer) buffer );
-		}
-		
-	},
-	VEC4	( MemoryUtil::memAllocFloat, 4 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniform4fv( location, (FloatBuffer) buffer );
-		}
-		
-	},
-	MAT3	( MemoryUtil::memAllocFloat, 3 * 3 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniformMatrix3fv( location, false, (FloatBuffer) buffer );
-		}
-		
-	},
-	MAT4	( MemoryUtil::memAllocFloat, 4 * 4 ) {
-		
-		public void upload(int location, Buffer buffer) {
-			glUniformMatrix4fv( location, false, (FloatBuffer) buffer );
-		}
-		
-	};
+	INT   (MemoryUtil::memAllocInt, GL20::glUniform1iv, DataType.INT, 1),
+	IVEC2 (MemoryUtil::memAllocInt, GL20::glUniform2iv, DataType.INT, 2),
+	IVEC3 (MemoryUtil::memAllocInt, GL20::glUniform3iv, DataType.INT, 3),
+	IVEC4 (MemoryUtil::memAllocInt, GL20::glUniform4iv, DataType.INT, 4),
+	FLOAT (MemoryUtil::memAllocFloat, GL20::glUniform1fv, DataType.FLOAT, 1),
+	VEC2  (MemoryUtil::memAllocFloat, GL20::glUniform2fv, DataType.FLOAT, 2),
+	VEC3  (MemoryUtil::memAllocFloat, GL20::glUniform3fv, DataType.FLOAT, 3),
+	VEC4  (MemoryUtil::memAllocFloat, GL20::glUniform4fv, DataType.FLOAT, 4),
+	MAT3  (MemoryUtil::memAllocFloat, GL20::glUniformMatrix3fv, DataType.FLOAT, 9),
+	MAT4  (MemoryUtil::memAllocFloat, GL20::glUniformMatrix4fv, DataType.FLOAT, 16);
 	
 	public final Function<Integer, Buffer> createBufferFunction;
+	public final GlUniformUpload<Buffer> glUniformUpload;
+	public final DataType type;
 	public final int size;
 	public final int uboSize;
 	
-	ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size, int uboSize) {
+	@SuppressWarnings("unchecked")
+	<B extends Buffer> ShaderValueType(Function<Integer, B> createBufferFunction, GlUniformUpload<B> glUniformMethod, DataType type, int size, int uboSize) {
 		
-		this.createBufferFunction = createBufferFunction;
+		this.createBufferFunction = (Function<Integer, Buffer>) createBufferFunction;
+		this.glUniformUpload = (GlUniformUpload<Buffer>) glUniformMethod;
+		this.type = type;
 		this.size = size;
 		this.uboSize = uboSize;
 		
 	}
 	
-	ShaderValueType(Function<Integer, Buffer> createBufferFunction, int size) {
-		this( createBufferFunction, size, size );
+	<B extends Buffer> ShaderValueType(Function<Integer, B> createBufferFunction, GlUniformUpload<B> glUniformMethod, DataType type, int size) {
+		this(createBufferFunction, glUniformMethod, type, size, size);
+	}
+	
+	<B extends Buffer> ShaderValueType(Function<Integer, B> createBufferFunction, GlUniformMatrixUpload<B> glUniformMatrixMethod, DataType type, int size, int uboSize) {
+		this(createBufferFunction, glUniformMatrixMethod.toStandard(), type, size, uboSize);
+	}
+	
+	<B extends Buffer> ShaderValueType(Function<Integer, B> createBufferFunction, GlUniformMatrixUpload<B> glUniformMatrixMethod, DataType type, int size) {
+		this(createBufferFunction, glUniformMatrixMethod.toStandard(), type, size);
 	}
 	
 	/**
@@ -107,6 +57,24 @@ public enum ShaderValueType {
 	 * @param location The location, required
 	 * @param buffer The buffer containing the data to be uploaded.
 	 */
-	public abstract void upload(int location, Buffer buffer);
+	public void upload(int location, Buffer buffer) {
+		this.glUniformUpload.upload(location, buffer);
+	}
+	
+	@FunctionalInterface
+	private interface GlUniformUpload<B extends Buffer> {
+		void upload(int loc, B buf);
+	}
+	
+	@FunctionalInterface
+	private interface GlUniformMatrixUpload<B extends Buffer> {
+		
+		void upload(int loc, boolean transpose, B buf);
+		
+		default GlUniformUpload<B> toStandard() {
+			return (loc, buf) -> this.upload(loc, false, buf);
+		}
+		
+	}
 	
 }

@@ -23,7 +23,7 @@ public enum DataType {
 	public final int size;
 	public final String suffix;
 	
-	private DataType(int i, int size, String suffix) {
+	DataType(int i, int size, String suffix) {
 		
 		this.i = i;
 		this.size = size;
