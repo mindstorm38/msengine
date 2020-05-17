@@ -8,6 +8,9 @@ public class OctaveSimplexNoise {
 	
 	public OctaveSimplexNoise(long seed, int octavesCount, float persistance, float lacunarity) {
 		
+		if (octavesCount < 1)
+			throw new IllegalArgumentException("Invalid octaves count, must be at least 1.");
+		
 		this.noises = new SeedSimplexNoise[octavesCount];
 		this.persistance = persistance;
 		this.lacunarity = lacunarity;
@@ -23,20 +26,42 @@ public class OctaveSimplexNoise {
 		float freq = scale;
 		float ampl = 1f;
 		
-		float totalAmpl = 1f;
+		float totalAmpl = 0f;
 		
 		for (SeedSimplexNoise simplex : this.noises) {
 		
 			noise += simplex.noise(x * freq, y * freq) * ampl;
+			totalAmpl += ampl;
+			
 			ampl *= this.persistance;
 			freq *= this.lacunarity;
-			
-			totalAmpl += ampl;
 			
 		}
 		
 		return noise / totalAmpl;
 	
+	}
+	
+	public float noise(float x, float y, float z, float scale) {
+		
+		float noise = 0f;
+		float freq = scale;
+		float ampl = 1f;
+		
+		float totalAmpl = 0f;
+		
+		for (SeedSimplexNoise simplex : this.noises) {
+			
+			noise += simplex.noise(x * freq, y * freq, z * freq) * ampl;
+			totalAmpl += ampl;
+			
+			ampl *= this.persistance;
+			freq *= this.lacunarity;
+			
+		}
+		
+		return noise / totalAmpl;
+		
 	}
 
 }

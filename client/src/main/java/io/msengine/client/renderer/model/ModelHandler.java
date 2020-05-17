@@ -6,7 +6,8 @@ import org.lwjgl.opengl.GL11;
 /**
  * 
  * Used to replace deprecated {@link GL11#glPushMatrix()} and {@link GL11#glPopMatrix()}
- * and the old render pipeline. You can now use this to update shader's model matrices.
+ * and the old render pipeline. You can now use this to update shader's model matrices.<br>
+ * <b>Not Thread-Safe</b>
  * 
  * @author Théo Rozier (Mindstorm38)
  * 
@@ -402,7 +403,7 @@ public class ModelHandler {
 	 */
 	public void reset() {
 		
-		// this.modelsMatrices = new Matrix4f[0];
+		this.matrix.identity();
 		this.step = 0;
 		this.models = new float[INITIAL_MODELS_CAPACITY << 4];
 		
