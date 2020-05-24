@@ -280,11 +280,22 @@ public class DrawBuffer {
 	
 	/**
 	 * Get A VBO index, the index can be used with {@link #bindVbo(int)}
-	 * @param identifier Identifier corresponding to water VBO index
-	 * @return The VBO Index or -1 if the identifier is invalid
+	 * @param identifier Identifier corresponding to VBO index.
+	 * @return The VBO Index or -1 if the identifier is invalid.
 	 */
 	public int getVboIndex(String identifier) {
-		return this.vbosByIds.get(identifier);
+		Integer i = this.vbosByIds.get(identifier);
+		return i == null ? -1 : i;
+	}
+	
+	/**
+	 * Get a VBO pointer (also called "name" by OpenGL specification),
+	 * can be used with raw buffers GL functions.
+	 * @param identifier Identifier of the VBO.
+	 * @return The VBO pointer, or -1 if the buffer is disabled.
+	 */
+	public int getVboPointer(String identifier) {
+		return this.vbos[this.getVboIndex(identifier)];
 	}
 	
 	/**
