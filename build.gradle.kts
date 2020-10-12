@@ -12,21 +12,8 @@ val ossrhUsername: String by project
 val ossrhPassword: String by project
 
 allprojects {
-
     version = "1.0.8-SNAPSHOT"
     group = "fr.theorozier"
-
-    ext {
-
-        set("lwjglVersion", "3.1.6")
-        set("lwjglNatives", listOf("natives-windows", "natives-linux", "natives-macos"))
-        set("jomlVersion", "1.9.6")
-        set("guavaVersion", "23.2-jre")
-        set("gsonVersion", "2.8.2")
-        set("nettyVersion", "4.1.17.Final")
-
-    }
-
 }
 
 description = "A Java 3D engine on top of LWJGL 3, using OpenGL, GLFW and JOML"

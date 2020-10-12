@@ -1,8 +1,8 @@
 
 dependencies {
 
-    val lwjglVersion = project.ext["lwjglVersion"] as String
-    val lwjglNatives: List<String> = project.ext["lwjglNatives"] as List<String>
+    val lwjglVersion = "3.1.6"
+    val lwjglNatives = listOf("natives-windows", "natives-linux", "natives-macos")
 
     "compileOnly"(project(":common"))
 
