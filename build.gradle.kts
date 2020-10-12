@@ -93,7 +93,7 @@ subprojects {
 
                     name.set("${groupId}-${artifactId}")
                     description.set(project.description)
-                    url.set("https://gitlab.com/mindstorm38/msengine")
+                    url.set("https://github.com/mindstorm38/msengine")
 
                     developers {
                         developer {
@@ -114,9 +114,9 @@ subprojects {
                     }
 
                     scm {
-                        connection.set("scm:git:git://github.com/mindstorm38/sutil.git")
-                        developerConnection.set("scm:git:ssh://github.com:mindstorm38/sutil.git")
-                        url.set("https://github.com/mindstorm38/sutil/tree/master")
+                        connection.set("scm:git:git://github.com/mindstorm38/msengine.git")
+                        developerConnection.set("scm:git:ssh://github.com:mindstorm38/msengine.git")
+                        url.set("https://github.com/mindstorm38/msengine/tree/master")
                     }
 
                 }
