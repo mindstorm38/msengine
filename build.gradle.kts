@@ -1,30 +1,28 @@
-/*
-
-	-- MS Engine (MSE) --
-
-	Java   : 1.8
-	Gradle : 6.1.1
-
-*/
+//
+//  [MSEngine]
+//
+//	- Java   : 1.8
+//	- Gradle : 6.1.1
+//
 
 // Import from your gradle.properties
 val ossrhUsername: String by project
 val ossrhPassword: String by project
+
+description = "A Java 3D engine on top of LWJGL 3, using OpenGL, GLFW and JOML"
 
 allprojects {
     version = "1.0.8-SNAPSHOT"
     group = "fr.theorozier"
 }
 
-description = "A Java 3D engine on top of LWJGL 3, using OpenGL, GLFW and JOML"
-project("client").description = "$description - Client side library, containing OpenGL natives."
-project("common").description = "$description - Common library, containing math utilies and resources handling."
-
 subprojects {
 
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
+
+    val snapshot = project.version.toString().endsWith("SNAPSHOT")
 
     repositories {
         mavenCentral()
@@ -56,12 +54,6 @@ subprojects {
         from(tasks.named<Javadoc>("javadoc"))
     }
 
-    tasks.register("showConf") {
-        configurations.named("runtimeClasspath").get().forEach { println(it) }
-    }
-
-    val snapshot = (project.version as String).endsWith("SNAPSHOT")
-
     configure<PublishingExtension> {
 
         publications {
@@ -84,12 +76,10 @@ subprojects {
 
                     developers {
                         developer {
-
                             id.set("fr.theorozier")
                             name.set("Théo Rozier")
                             email.set("contact@theorozier.fr")
                             url.set("https://github.com/mindstorm38")
-
                         }
                     }
 
@@ -131,7 +121,7 @@ subprojects {
 
     if (!snapshot) {
         configure<SigningExtension> {
-            sign(project.the<PublishingExtension>().publications.named("mavenJar").get())
+            sign(the<PublishingExtension>().publications.named("mavenJar").get())
         }
     }
 

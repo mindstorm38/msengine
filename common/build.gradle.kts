@@ -1,3 +1,8 @@
+//
+//  [MSEngine] Common module
+//
+
+description = "MSEngine - Common library, containing math utils and resources handling."
 
 dependencies {
 
