@@ -40,7 +40,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	private final Window window;
 	private final GuiRenderer renderer;
 	
-	private final NamespaceRegistry<Class<? extends GuiScene>> scenes; 
+	private final Map<String, Class<? extends GuiScene>> scenes;
 	private final Map<Class<? extends GuiScene>, GuiScene> instances;
 	
 	private GuiScene currentScene;
@@ -53,7 +53,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		this.window = Window.getInstance();
 		this.renderer = new GuiRenderer();
 		
-		this.scenes = new NamespaceRegistry<>();
+		this.scenes = new HashMap<>();
 		this.instances = new HashMap<>();
 		
 	}
@@ -118,10 +118,9 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 * Update the current scene, or nothing if no scene is loaded.
 	 */
 	public void update() {
-		
-		if ( this.currentScene != null )
+		if (this.currentScene != null) {
 			this.currentScene.update();
-		
+		}
 	}
 	
 	/**
@@ -130,7 +129,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 * @param sceneClass The class of the scene, the scene constructor must be empty
 	 */
 	public void registerSceneClass(String identifier, Class<? extends GuiScene> sceneClass) {
-		this.scenes.register( identifier, sceneClass );
+		this.scenes.put(identifier, sceneClass);
 	}
 	
 	/**
@@ -187,16 +186,12 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 		
 		this.currentScene = inst;
 		
-		if ( inst != null ) {
-			
-			if (!inst.usable()) {
-				inst._init();
-			}
-			
-			inst.loaded(previousScene);
-			inst.setSceneSize(this.window.getWidth(), this.window.getHeight());
-			
+		if (!inst.usable()) {
+			inst._init();
 		}
+		
+		inst.loaded(previousScene);
+		inst.setSceneSize(this.window.getWidth(), this.window.getHeight());
 		
 	}
 	
@@ -236,14 +231,14 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 * @see #loadScene(String, Consumer)
 	 */
 	public void loadScene(String sceneIdentifier) {
-		this.loadScene( sceneIdentifier, null );
+		this.loadScene(sceneIdentifier, null);
 	}
 	
 	/**
 	 * Unload the current loaded class
 	 */
 	public void unloadScene() {
-		this.loadScene( (Class<? extends GuiScene>) null );
+		this.loadScene((Class<? extends GuiScene>) null);
 	}
 	
 	/**
@@ -267,9 +262,9 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 */
 	private void updateRenderSize(int width, int height) {
 		
-		this.renderer.updateRenderSize( width, height );
+		this.renderer.updateRenderSize(width, height);
 		
-		if ( this.currentScene != null ) {
+		if (this.currentScene != null) {
 			this.currentScene.setSceneSize(width, height);
 		}
 		
@@ -280,12 +275,12 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 	 * @param window The window instance
 	 */
 	private void updateRenderSize(Window window) {
-		this.updateRenderSize( window.getWidth(), window.getHeight() );
+		this.updateRenderSize(window.getWidth(), window.getHeight());
 	}
 
 	@Override
 	public void windowFramebufferSizeChangedEvent(int width, int height) {
-		this.updateRenderSize( width, height );
+		this.updateRenderSize(width, height);
 	}
 	
 }
