@@ -5,13 +5,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
-import io.msengine.client.gui.event.GuiSceneResizedEvent;
 import io.msengine.client.renderer.gui.GuiRenderer;
 import io.msengine.client.renderer.window.Window;
 import io.msengine.client.renderer.window.listener.WindowFramebufferSizeEventListener;
 import io.msengine.common.util.GameNotCreatedException;
 import io.sutil.SingletonAlreadyInstantiatedException;
-import io.sutil.registry.NamespaceRegistry;
 
 import static io.msengine.common.util.GameLogger.LOGGER;
 
