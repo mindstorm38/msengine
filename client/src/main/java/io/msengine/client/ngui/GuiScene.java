@@ -7,13 +7,8 @@ public class GuiScene extends GuiParent {
 		super.setYAnchor(-1);
 	}
 	
-	protected void loaded() {
-		super.setDisplayed(true);
-	}
-	
-	protected void unloaded() {
-		super.setDisplayed(false);
-	}
+	protected void loaded() {}
+	protected void unloaded() {}
 	
 	void setSceneSize(int width, int height) {
 		super.setWidth(width);

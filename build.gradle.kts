@@ -6,8 +6,8 @@
 //
 
 // Import from your gradle.properties
-val ossrhUsername: String by project
-val ossrhPassword: String by project
+val ossrhUsername: String? by project
+val ossrhPassword: String? by project
 
 description = "A Java 3D engine on top of LWJGL 3, using OpenGL, GLFW and JOML"
 

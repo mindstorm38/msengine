@@ -19,21 +19,13 @@ public class GuiParent extends GuiObject {
 	
 	private void initChild(GuiObject child) {
 		if (this.isReady()) {
-			try {
-				child.innerInit();
-			} catch (RuntimeException e) {
-				//
-			}
+			child.innerInit();
 		}
 	}
 	
 	private void stopChild(GuiObject child) {
 		if (this.isReady()) {
-			try {
-				child.innerStop();
-			} catch (RuntimeException e) {
-				//
-			}
+			child.innerStop();
 		}
 	}
 	

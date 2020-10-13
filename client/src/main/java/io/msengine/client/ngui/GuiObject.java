@@ -1,7 +1,12 @@
 package io.msengine.client.ngui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public abstract class GuiObject {
-	
+
+	protected static final Logger LOGGER = Logger.getLogger("msengine.gui.object");
+
 	public static final int SIZE_AUTO = -1;
 	
 	private static final int FLAG_READY     = 0x1;
@@ -25,23 +30,25 @@ public abstract class GuiObject {
 	abstract void update();
 	
 	void innerInit() {
-		
-		if (this.isReady())
-			throw new IllegalStateException("This GuiObject is already ready");
-		
-		this.setFlag(FLAG_READY, true);
-		this.init();
-		
+		if (!this.isReady()) {
+			try {
+				this.init();
+				this.setFlag(FLAG_READY, true);
+			} catch (Exception e) {
+				LOGGER.log(Level.WARNING, "Failed to call init() on " + this.getClass() + ", the object no longer ready.", e);
+			}
+		}
 	}
 	
 	void innerStop() {
-		
-		if (!this.isReady())
-			throw new IllegalStateException("This GuiObject is not ready");
-		
-		this.stop();
-		this.setFlag(FLAG_READY, false);
-		
+		if (this.isReady()) {
+			try {
+				this.setFlag(FLAG_READY, false);
+				this.stop();
+			} catch (Exception e) {
+				LOGGER.log(Level.WARNING, "Failed to call stop() on " + this.getClass() + ", the object no longer ready.", e);
+			}
+		}
 	}
 	
 	public boolean isReady() {
@@ -282,5 +289,19 @@ public abstract class GuiObject {
 		this.parent = parent;
 		this.updateOffsets();
 	}
-	
+
+	// [ Utils ] //
+
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() +
+				"<x=" + this.getXPos() +
+				", y=" + this.getYPos() +
+				", w=" + this.getWidth() +
+				", h=" + this.getHeight() +
+				", ax=" + this.getXAnchor() +
+				", ay=" + this.getYAnchor() + ">";
+	}
+
 }
