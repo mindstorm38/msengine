@@ -18,8 +18,24 @@ This engine is available on Maven Central since version `1.0.5` in two versions 
 
 Each version released on GitLab will be soon available on Maven Central.
 
-## Contribute
+## Goals for MSEngine 1.1
+[ ] Deprecate all uses of SUtil
+[ ] Remove `io.msengine.{client,common}.game` packages
+[x] Create tick/frame regulated interfaces
+    - `io.msengine.common.logic.TickRegulated`
+    - `io.msengine.common.logic.FrameRegulated`
+[ ] Remove OSF package `io.msengine.common.osf`
+[ ] Rework GUI
+[ ] Rework `Window` class (no longer a singleton, but an object oriented wrapper for GLFW)
+[ ] Rework resources
+[ ] Rework options
+[ ] Work on audio package which was never finished
+[ ] Rework `io.msengine.common.util.event.MethodEventManager`
+[ ] Deprecate uses of `GameLogger` *(use individual named loggers instead)*
+[ ] Update `AxisAlignedBB`
+[ ] Remove or adapt `io.msengine.client.renderer.texture.TextureObject`
+[ ] Promote raw uses of GL functions and make simple wrappers for complicated GL objects *(shader, programs, framebuffers, etc.)*
 
-Section TODO.
+## Contribute
 
 Remember to use `./gradlew` or `./gradlew.bat` to use gradle.

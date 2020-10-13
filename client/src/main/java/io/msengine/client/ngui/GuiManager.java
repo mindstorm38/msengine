@@ -97,4 +97,35 @@ public class GuiManager {
 
     }
 
+    /**
+     * Load a scene from its registered identifier.
+     * @param identifier The scene identifier.
+     * @see #loadScene(String, Consumer)
+     */
+    public void loadScene(String identifier) {
+        this.loadScene(identifier, null);
+    }
+
+    /**
+     * Unload the current loaded class
+     */
+    public void unloadScene() {
+        this.loadScene(null, null);
+    }
+
+    /**
+     * Force uncaching of a cached scene instance, this call its stop() method.
+     * This can't be the current loaded scene.
+     * @param identifier The scene identifier.
+     */
+    public void uncacheScene(String identifier) {
+        GuiScene scene = this.instances.get(identifier);
+        if (scene != this.currentScene) {
+            this.instances.remove(identifier);
+            if (scene != null) {
+                scene.innerStop();
+            }
+        }
+    }
+
 }
