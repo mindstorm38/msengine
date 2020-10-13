@@ -26,7 +26,12 @@ Each version released on GitLab will be soon available on Maven Central.
     - `io.msengine.common.logic.FrameRegulated`
 - [ ] Remove OSF package `io.msengine.common.osf`
 - [ ] Rework GUI
-- [ ] Rework `Window` class (no longer a singleton, but an object oriented wrapper for GLFW)
+- [x] Rework `Window` class (no longer a singleton, but an object oriented wrapper for GLFW)
+    - `io.msengine.client.window.Monitor`
+    - `io.msengine.client.window.Window`
+    - `io.msengine.client.window.WindowBuilder`
+    - `io.msengine.client.window.*`
+    - ***Missing window destroying***
 - [ ] Rework resources
 - [ ] Rework options
 - [ ] Work on audio package which was never finished
