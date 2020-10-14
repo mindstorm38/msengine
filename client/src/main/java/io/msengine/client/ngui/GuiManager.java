@@ -1,20 +1,38 @@
 package io.msengine.client.ngui;
 
+import io.msengine.client.window.Window;
+import io.msengine.client.window.listener.WindowFramebufferSizeEventListener;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-public class GuiManager {
+public class GuiManager implements WindowFramebufferSizeEventListener {
 
     private static final Logger LOGGER = Logger.getLogger("msengine.gui");
 
+    private final Window window;
     private final Map<String, Supplier<GuiScene>> scenes = new HashMap<>();
     private final Map<String, GuiScene> instances = new HashMap<>();
 
     private GuiScene currentScene;
-
+    
+    public GuiManager(Window window) {
+        this.window = Objects.requireNonNull(window, "Missing window.");
+        this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
+    }
+    
+    public Window getWindow() {
+        return this.window;
+    }
+    
+    public void init() {
+        this.updateSceneSizeFromWindow();
+    }
+    
     /**
      * Register a scene class.
      * @param identifier The scene identifier.
@@ -90,9 +108,16 @@ public class GuiManager {
         this.currentScene = scene;
 
         if (scene != null) {
+            
             scene.innerInit();
             scene.loaded();
+            
+            // Not calling updateSceneSizeFromWindow() because we
+            // don't need to update the renderer.
+            this.window.getSize(scene::setSceneSize);
+            
             scene.setDisplayed(true);
+            
         }
 
     }
@@ -127,5 +152,22 @@ public class GuiManager {
             }
         }
     }
-
+    
+    private void updateSceneSize(int width, int height) {
+        if (this.currentScene != null) {
+            this.currentScene.setSceneSize(width, height);
+        }
+    }
+    
+    private void updateSceneSizeFromWindow() {
+        this.window.getSize(this::updateSceneSize);
+    }
+    
+    @Override
+    public void onWindowFramebufferSizeChangedEvent(Window origin, int width, int height) {
+        if (origin == this.window) {
+            this.updateSceneSize(width, height);
+        }
+    }
+    
 }

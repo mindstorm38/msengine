@@ -5,7 +5,7 @@ import java.util.List;
 
 public class GuiParent extends GuiObject {
 	
-	private final List<GuiObject> children = new ArrayList<>();
+	protected final List<GuiObject> children = new ArrayList<>();
 	
 	@Override
 	protected void init() {
