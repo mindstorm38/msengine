@@ -122,7 +122,7 @@ public abstract class Window implements AutoCloseable {
         GLFWVidMode vidMode = monitor.getVideoMode();
         
         if (vidMode == null) {
-            LOGGER.warning("Can't set window to fullscreen on monitor '" + monitor.getName() + "'.");
+            LOGGER.warning("Can't set window to fullscreen on monitor '" + monitor.getName() + "' because no video mode is available.");
             return;
         }
         

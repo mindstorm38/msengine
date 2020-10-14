@@ -23,7 +23,7 @@ public class GLWindowBuilder extends ContextWindowBuilder<GLWindow, GLWindowBuil
 		glfwMakeContextCurrent(id);
 		GLCapabilities capabilities = GL.createCapabilities();
 		glfwMakeContextCurrent(lastContext);
-		return new GLWindow(id, this.width, this.height, capabilities);
+		return new GLWindow(id, capabilities);
 	}
 	
 }

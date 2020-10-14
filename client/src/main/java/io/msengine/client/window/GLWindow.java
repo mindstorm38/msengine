@@ -18,4 +18,10 @@ public class GLWindow extends ContextWindow {
         return this.capabilities;
     }
     
+    @Override
+    public void close() {
+        this.capabilities = null;
+        super.close();
+    }
+    
 }

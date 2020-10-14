@@ -14,7 +14,7 @@ public abstract class ContextWindow extends Window {
 	}
 	
 	public void makeContextCurrent() {
-		glfwMakeContextCurrent(this.id);
+		glfwMakeContextCurrent(this.checkId());
 	}
 	
 	public static void detachCurrentContext() {
@@ -22,7 +22,7 @@ public abstract class ContextWindow extends Window {
 	}
 
 	public void swapBuffers() {
-		glfwSwapBuffers(this.id);
+		glfwSwapBuffers(this.checkId());
 	}
 
 	public static void setVSync(boolean vsync) {
