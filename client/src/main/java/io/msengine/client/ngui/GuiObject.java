@@ -1,5 +1,9 @@
 package io.msengine.client.ngui;
 
+import io.msengine.client.ngui.event.GuiEvent;
+import io.msengine.client.ngui.event.GuiEventListener;
+import io.msengine.client.ngui.event.GuiEventManager;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +25,8 @@ public abstract class GuiObject {
 	
 	private byte flags = 0;
 	private GuiParent parent = null;
+
+	private GuiEventManager eventManager = null;
 	
 	// [ Management ] //
 	
@@ -288,6 +294,31 @@ public abstract class GuiObject {
 	void setParent(GuiParent parent) {
 		this.parent = parent;
 		this.updateOffsets();
+	}
+
+	// [ Events ] //
+
+	public GuiEventManager getEventManager() {
+		if (this.eventManager == null) {
+			this.eventManager = new GuiEventManager();
+		}
+		return this.eventManager;
+	}
+
+	public <E extends GuiEvent> void addEventListener(Class<E> clazz, GuiEventListener<E> listener) {
+		this.getEventManager().addEventListener(clazz, listener);
+	}
+
+	public <E extends GuiEvent> void removeEventListener(Class<E> clazz, GuiEventListener<E> listener) {
+		if (this.eventManager != null) {
+			this.eventManager.removeEventListener(clazz, listener);
+		}
+	}
+
+	public void fireEvent(GuiEvent event) {
+		if (this.eventManager != null) {
+			this.eventManager.fireGuiEvent(this, event);
+		}
 	}
 
 	// [ Utils ] //

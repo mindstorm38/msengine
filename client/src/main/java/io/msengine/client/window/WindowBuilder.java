@@ -4,14 +4,30 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public abstract class WindowBuilder<W extends Window, SELF extends WindowBuilder<W, SELF>> {
 
+    static {
+        WindowHandler.init();
+    }
+
+    protected static int glfwBool(boolean b) {
+        return b ? GLFW_TRUE : GLFW_FALSE;
+    }
+
+    // Class //
+
     protected int width = 1280;
     protected int height = 720;
     protected String title = "Hello world";
     protected long monitor = 0L;
     protected boolean resizable = false;
+    protected boolean decorated = true;
+    protected boolean floating = false;
+    protected boolean transparentFramebuffer = false;
 
     protected void setupHints() {
-        glfwWindowHint(GLFW_RESIZABLE, this.resizable ? GLFW_TRUE : GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, glfwBool(this.resizable));
+        glfwWindowHint(GLFW_DECORATED, glfwBool(this.decorated));
+        glfwWindowHint(GLFW_FLOATING, glfwBool(this.floating));
+        glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, glfwBool(this.transparentFramebuffer));
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
     }
 
@@ -63,6 +79,24 @@ public abstract class WindowBuilder<W extends Window, SELF extends WindowBuilder
     @SuppressWarnings("unchecked")
     public SELF withResizable(boolean resizable) {
         this.resizable = resizable;
+        return (SELF) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public SELF withDecorated(boolean decorated) {
+        this.decorated = decorated;
+        return (SELF) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public SELF withFloating(boolean floating) {
+        this.floating = floating;
+        return (SELF) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public SELF withTransparentFramebuffer(boolean transparentFramebuffer) {
+        this.transparentFramebuffer = transparentFramebuffer;
         return (SELF) this;
     }
     

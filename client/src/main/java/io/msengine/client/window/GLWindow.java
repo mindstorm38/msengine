@@ -2,8 +2,6 @@ package io.msengine.client.window;
 
 import org.lwjgl.opengl.GLCapabilities;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 public class GLWindow extends ContextWindow {
 
     public static final int MIN_VERSION_MAJOR = 4;
@@ -11,8 +9,8 @@ public class GLWindow extends ContextWindow {
 
     private GLCapabilities capabilities;
     
-    GLWindow(long id, int width, int height, GLCapabilities capabilities) {
-        super(id, width, height);
+    GLWindow(long id, GLCapabilities capabilities) {
+        super(id);
         this.capabilities = capabilities;
     }
     

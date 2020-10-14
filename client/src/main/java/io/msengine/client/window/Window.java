@@ -1,5 +1,12 @@
 package io.msengine.client.window;
 
+import io.msengine.client.window.listener.WindowCharEventListener;
+import io.msengine.client.window.listener.WindowFramebufferSizeEventListener;
+import io.msengine.client.window.listener.WindowKeyEventListener;
+import io.msengine.client.window.listener.WindowMouseButtonEventListener;
+import io.msengine.client.window.listener.WindowMousePositionEventListener;
+import io.msengine.client.window.listener.WindowScrollEventListener;
+import io.msengine.common.util.event.MethodEventManager;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
@@ -8,42 +15,90 @@ import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
+import static org.lwjgl.glfw.GLFW.glfwSetCharCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 
-public abstract class Window {
+public abstract class Window implements AutoCloseable {
 
     protected static final Logger LOGGER = Logger.getLogger("msengine.window");
+
+    static {
+        WindowHandler.init();
+    }
 
     // Class //
 
     protected long id;
-    private int realWidth;
-    private int realHeight;
-    //private int minimizedWidth;
-    //private int minimizedHeight;
-    //private boolean fullscreen = false;
 
-    Window(long id, int width, int height) {
+    private final MethodEventManager eventManager = new MethodEventManager();
+
+    Window(long id) {
+
         this.id = id;
-        this.realWidth = width;
-        this.realHeight = height;
-        //this.minimizedWidth = width;
-        //this.minimizedHeight = height;
+
+        this.eventManager.addAllowedClass(WindowCharEventListener.class);
+        this.eventManager.addAllowedClass(WindowFramebufferSizeEventListener.class);
+        this.eventManager.addAllowedClass(WindowKeyEventListener.class);
+        this.eventManager.addAllowedClass(WindowMouseButtonEventListener.class);
+        this.eventManager.addAllowedClass(WindowMousePositionEventListener.class);
+        this.eventManager.addAllowedClass(WindowScrollEventListener.class);
+
+        glfwSetKeyCallback(id, (long window, int key, int scanCode, int action, int mods) -> {
+            this.eventManager.fireListeners(WindowKeyEventListener.class, l -> l.onWindowKeyEvent(this, key, scanCode, action, mods));
+        });
+
+        glfwSetMouseButtonCallback(id, (long window, int button, int action, int mods) -> {
+            this.eventManager.fireListeners(WindowMouseButtonEventListener.class, l -> l.onWindowMouseButtonEvent(this, button, action, mods));
+        });
+
+        glfwSetScrollCallback(id, (long window, double xOffset, double yOffset) -> {
+            this.eventManager.fireListeners(WindowScrollEventListener.class, l -> l.onWindowScrollEvent(this, xOffset, yOffset));
+        });
+
+        glfwSetCursorPosCallback(id, (long window, double x, double y) -> {
+            int ix = (int) x;
+            int iy = (int) y;
+            this.eventManager.fireListeners(WindowMousePositionEventListener.class, l -> l.onWindowMousePositionEvent(this, ix, iy));
+        });
+
+        glfwSetCharCallback(id, (long window, int codePoint) -> {
+            this.eventManager.fireListeners(WindowCharEventListener.class, l -> l.onWindowCharEvent(this, (char) codePoint));
+        });
+
+        glfwSetFramebufferSizeCallback(id, (long window, int width, int height) -> {
+            this.eventManager.fireListeners(WindowFramebufferSizeEventListener.class, l -> l.onWindowFramebufferSizeChangedEvent(this, width, height));
+        });
+
     }
 
     public long getId() {
         return this.id;
     }
+
+    public long checkId() {
+        if (this.id == 0L) {
+            throw new IllegalStateException("Can't call this method because the " + this.getClass().getSimpleName() + " is already closed.");
+        }
+        return this.id;
+    }
+
+    public MethodEventManager getEventManager() {
+        return this.eventManager;
+    }
+
+    // Real methods //
     
     public void setSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
-        glfwSetWindowSizeLimits(this.id, minWidth, minHeight, maxWidth, maxHeight);
+        glfwSetWindowSizeLimits(this.checkId(), minWidth, minHeight, maxWidth, maxHeight);
     }
     
     public void show() {
-        glfwShowWindow(this.id);
+        glfwShowWindow(this.checkId());
     }
     
     public void hide() {
-        glfwHideWindow(this.id);
+        glfwHideWindow(this.checkId());
     }
     
     public void setVisible(boolean visible) {
@@ -70,15 +125,8 @@ public abstract class Window {
             LOGGER.warning("Can't set window to fullscreen on monitor '" + monitor.getName() + "'.");
             return;
         }
-    
-        /*if (!this.fullscreen) {
-            this.getSize((width, height) -> {
-                this.minimizedWidth = width;
-                this.minimizedHeight = height;
-            });
-        }*/
         
-        glfwSetWindowMonitor(this.id, monitor.getHandle(), 0, 0, vidMode.width(), vidMode.height(), GLFW_DONT_CARE);
+        glfwSetWindowMonitor(this.checkId(), monitor.getHandle(), 0, 0, vidMode.width(), vidMode.height(), GLFW_DONT_CARE);
         
     }
     
@@ -87,23 +135,44 @@ public abstract class Window {
     }
     
     public boolean isFullscreen() {
-        return glfwGetWindowMonitor(this.id) != 0L;
+        return glfwGetWindowMonitor(this.checkId()) != 0L;
     }
     
     public void setMaximized() {
-        glfwMaximizeWindow(this.id);
+        glfwMaximizeWindow(this.checkId());
     }
     
     public boolean isMaximized() {
-        return glfwGetWindowAttrib(this.id, GLFW_MAXIMIZED) == GLFW_TRUE;
+        return glfwGetWindowAttrib(this.checkId(), GLFW_MAXIMIZED) == GLFW_TRUE;
     }
     
     public void setRestored() {
-        glfwRestoreWindow(this.id);
+        glfwRestoreWindow(this.checkId());
     }
     
     public boolean isResizable() {
-        return glfwGetWindowAttrib(this.id, GLFW_RESIZABLE) == GLFW_TRUE;
+        return glfwGetWindowAttrib(this.checkId(), GLFW_RESIZABLE) == GLFW_TRUE;
+    }
+
+    public boolean shouldClose() {
+        return glfwWindowShouldClose(this.checkId());
+    }
+
+    @Override
+    public void close() {
+        if (this.id != 0L) {
+            glfwFreeCallbacks(this.id);
+            glfwDestroyWindow(this.id);
+            this.id = 0L;
+        }
+    }
+
+    public static void pollEvents() {
+        glfwPollEvents();
+    }
+
+    public static double getTime() {
+        return glfwGetTime();
     }
 
 }

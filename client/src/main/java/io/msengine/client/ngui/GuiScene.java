@@ -13,7 +13,7 @@ public class GuiScene extends GuiParent {
 	void setSceneSize(int width, int height) {
 		super.setWidth(width);
 		super.setHeight(height);
-		// TODO Fire scene resized event
+		// TODO Fire scene resized onEvent
 	}
 	
 	@Override
