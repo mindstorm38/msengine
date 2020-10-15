@@ -1,7 +1,6 @@
 package io.msengine.client.graphics.gui;
 
 import io.msengine.client.graphics.gui.render.GuiShaderProgram;
-import io.msengine.client.window.GLWindow;
 import io.msengine.client.window.Window;
 import io.msengine.client.window.listener.WindowFramebufferSizeEventListener;
 
@@ -16,14 +15,14 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 
     private static final Logger LOGGER = Logger.getLogger("msengine.gui");
 
-    private final GLWindow window;
+    private final Window window;
     private final Map<String, Supplier<GuiScene>> scenes = new HashMap<>();
     private final Map<String, GuiScene> instances = new HashMap<>();
 
     private GuiShaderProgram program;
     private GuiScene currentScene;
     
-    public GuiManager(GLWindow window) {
+    public GuiManager(Window window) {
         this.window = Objects.requireNonNull(window, "Missing window.");
     }
 
