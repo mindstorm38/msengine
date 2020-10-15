@@ -22,15 +22,19 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
     
     public GuiManager(Window window) {
         this.window = Objects.requireNonNull(window, "Missing window.");
-        this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
     }
-    
+
     public Window getWindow() {
         return this.window;
     }
     
     public void init() {
         this.updateSceneSizeFromWindow();
+        this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
+    }
+
+    public void stop() {
+        this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
     }
     
     /**
