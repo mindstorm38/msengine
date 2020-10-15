@@ -109,10 +109,12 @@ public abstract class Window implements AutoCloseable {
         }
     }
     
-    public void getSize(BiConsumer<Integer, Integer> consumer) {
+    public void getFramebufferSize(BiConsumer<Integer, Integer> consumer) {
+        this.checkId();
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer width = stack.mallocInt(1);
             IntBuffer height = stack.mallocInt(1);
+            glfwGetFramebufferSize(this.id, width, height);
             consumer.accept(width.get(), height.get());
         }
     }

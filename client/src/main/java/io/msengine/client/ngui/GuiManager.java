@@ -114,7 +114,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
             
             // Not calling updateSceneSizeFromWindow() because we
             // don't need to update the renderer.
-            this.window.getSize(scene::setSceneSize);
+            this.window.getFramebufferSize(scene::setSceneSize);
             
             scene.setDisplayed(true);
             
@@ -160,7 +160,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
     }
     
     private void updateSceneSizeFromWindow() {
-        this.window.getSize(this::updateSceneSize);
+        this.window.getFramebufferSize(this::updateSceneSize);
     }
     
     @Override
