@@ -1,4 +1,4 @@
-package io.msengine.client.ngui.event;
+package io.msengine.client.graphics.gui.event;
 
 import io.msengine.common.util.event.ObjectEventListener;
 

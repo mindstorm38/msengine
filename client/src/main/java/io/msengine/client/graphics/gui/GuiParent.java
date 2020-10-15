@@ -1,4 +1,4 @@
-package io.msengine.client.ngui;
+package io.msengine.client.graphics.gui;
 
 import java.util.ArrayList;
 import java.util.List;

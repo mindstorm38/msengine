@@ -1,8 +1,8 @@
-package io.msengine.client.ngui;
+package io.msengine.client.graphics.gui;
 
-import io.msengine.client.ngui.event.GuiEvent;
-import io.msengine.client.ngui.event.GuiEventListener;
-import io.msengine.client.ngui.event.GuiEventManager;
+import io.msengine.client.graphics.gui.event.GuiEvent;
+import io.msengine.client.graphics.gui.event.GuiEventListener;
+import io.msengine.client.graphics.gui.event.GuiEventManager;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

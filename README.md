@@ -25,7 +25,7 @@ Each version released on GitLab will be soon available on Maven Central.
     - `common.logic.TickRegulated`
     - `common.logic.FrameRegulated`
 - [ ] Remove OSF package `common.osf`
-- [ ] Rework GUI
+- [ ] Rework GUI (`client.graphics.gui`)
 - [x] Rework event managers :
     - Object event manager `common.util.event.ObjectEventManager`
     - Method event manager `common.util.event.MethodEventManager`
@@ -34,7 +34,7 @@ Each version released on GitLab will be soon available on Maven Central.
     - `client.window.Window`
     - `client.window.WindowBuilder`
     - `client.window.*`
-- [ ] Rework resources
+- [ ] Rework resources (using java FileSystems)
 - [ ] Rework options
 - [ ] Work on audio package which was never finished
 - [ ] Rework `common.util.event.MethodEventManager`

@@ -1,6 +1,6 @@
-package io.msengine.client.ngui;
+package io.msengine.client.graphics.gui;
 
-import io.msengine.client.ngui.event.GuiSceneResizedEvent;
+import io.msengine.client.graphics.gui.event.GuiSceneResizedEvent;
 
 public class GuiScene extends GuiParent {
 	

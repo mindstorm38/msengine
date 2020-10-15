@@ -1,5 +1,7 @@
-package io.msengine.client.ngui;
+package io.msengine.client.graphics.gui;
 
+import io.msengine.client.graphics.gui.render.GuiShaderProgram;
+import io.msengine.client.window.GLWindow;
 import io.msengine.client.window.Window;
 import io.msengine.client.window.listener.WindowFramebufferSizeEventListener;
 
@@ -14,27 +16,40 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 
     private static final Logger LOGGER = Logger.getLogger("msengine.gui");
 
-    private final Window window;
+    private final GLWindow window;
     private final Map<String, Supplier<GuiScene>> scenes = new HashMap<>();
     private final Map<String, GuiScene> instances = new HashMap<>();
 
+    private GuiShaderProgram program;
     private GuiScene currentScene;
     
-    public GuiManager(Window window) {
+    public GuiManager(GLWindow window) {
         this.window = Objects.requireNonNull(window, "Missing window.");
     }
 
     public Window getWindow() {
         return this.window;
     }
+
+    protected GuiShaderProgram createProgram() {
+        return new GuiShaderProgram();
+    }
     
     public void init() {
-        this.updateSceneSizeFromWindow();
-        this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
+        if (this.program  == null) {
+            this.program = this.createProgram();
+            this.program.link();
+            this.updateSceneSizeFromWindow();
+            this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
+        }
     }
 
     public void stop() {
-        this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
+        if (this.program != null) {
+            this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
+            this.program.close();
+            this.program = null;
+        }
     }
     
     /**

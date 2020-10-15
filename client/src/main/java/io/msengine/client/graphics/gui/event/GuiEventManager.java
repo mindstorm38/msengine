@@ -1,6 +1,6 @@
-package io.msengine.client.ngui.event;
+package io.msengine.client.graphics.gui.event;
 
-import io.msengine.client.ngui.GuiObject;
+import io.msengine.client.graphics.gui.GuiObject;
 import io.msengine.common.util.event.ObjectEventManager;
 
 public class GuiEventManager extends ObjectEventManager<GuiEvent> {
