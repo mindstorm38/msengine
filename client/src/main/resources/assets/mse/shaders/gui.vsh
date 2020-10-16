@@ -11,7 +11,7 @@ uniform mat4 global_matrix;
 
 void main() {
 
-	gl_Position = global_matrix * vec4( position, 0.0, 1.0 );
+	gl_Position = global_matrix * vec4(position, 0.0, 1.0);
 	
 	out_color = color;
 	out_tex_coord = tex_coord;
