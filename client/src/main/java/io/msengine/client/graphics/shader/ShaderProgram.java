@@ -1,7 +1,10 @@
 package io.msengine.client.graphics.shader;
 
+import io.msengine.client.graphics.shader.uniform.Uniform;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL20.*;
@@ -41,6 +44,12 @@ public class ShaderProgram implements AutoCloseable {
             throw new IllegalStateException("Cannot call this because the program is already linked.");
         }
     }
+    
+    public void checkLinked() {
+        if (!this.isLinked()) {
+            throw new IllegalStateException("Cannot call this because the program is not yet linked.");
+        }
+    }
 
     public void attachShader(Shader shader) {
         this.checkValidity();
@@ -49,6 +58,27 @@ public class ShaderProgram implements AutoCloseable {
         this.shaders.add(shader);
         glAttachShader(this.name, shader.getName());
     }
+    
+    /**
+     * @return Attached shaders, or null if this program is already linked.
+     */
+    public List<Shader> getAttachedShaders() {
+        return this.shaders;
+    }
+    
+    /**
+     * Delete attached shaders (call {@link Shader#close()},
+     * this can be called before linking, or at the latest in
+     * {@link #postLink()} method.
+     */
+    public void deleteAttachedShaders() {
+        if (this.shaders != null) {
+            this.shaders.forEach(Shader::close);
+        }
+    }
+    
+    protected void preLink() { }
+    protected void postLink() { }
 
     public void link() {
 
@@ -65,6 +95,8 @@ public class ShaderProgram implements AutoCloseable {
         for (Shader shader : this.shaders) {
             glDetachShader(this.name, shader.getName());
         }
+    
+        this.postLink();
 
         this.shaders.clear();
         this.shaders = null;
@@ -77,7 +109,22 @@ public class ShaderProgram implements AutoCloseable {
 
     }
     
-    protected void preLink() { }
+    public <U extends Uniform> U getUniformLocation(String identifier, Supplier<U> supplier) {
+        
+        this.checkValidity();
+        this.checkLinked();
+        
+        int loc = glGetUniformLocation(this.name, identifier);
+        
+        if (loc == -1) {
+            throw new IllegalArgumentException("Failed to find uniform '" + identifier + "'.");
+        }
+    
+        U uniform = supplier.get();
+        uniform.setup(identifier, loc);
+        return uniform;
+        
+    }
 
     @Override
     public void close() {

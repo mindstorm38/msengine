@@ -39,4 +39,10 @@ public class GuiShaderProgram extends ShaderProgram {
 		
 	}
 	
+	@Override
+	protected void postLink() {
+		super.postLink();
+		this.deleteAttachedShaders();
+	}
+	
 }

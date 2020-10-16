@@ -97,6 +97,8 @@ public class Shader implements AutoCloseable {
     public void sendSource(InputStream stream) throws IOException {
         this.sendSource(stream, Charset.defaultCharset());
     }
+    
+    protected void preCompile() { }
 
     public void compile() {
 
@@ -111,8 +113,6 @@ public class Shader implements AutoCloseable {
         }
 
     }
-    
-    protected void preCompile() { }
 
     @Override
     public void close() {
