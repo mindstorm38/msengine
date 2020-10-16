@@ -23,8 +23,15 @@ public class Asset {
 	 * @return The data stream of null.
 	 */
 	public InputStream openStream() {
-		return this.assets.openAssetStream(this.path);
+		return this.assets.openAssetStreamSimplified(this.path);
 	}
+	
+	/*public InputStream openStreamExcept() throws IOException {
+		InputStream stream = this.openStream();
+		if (stream == null) {
+			throw new IOException("");
+		}
+	}*/
 	
 	/**
 	 * Get sub assets <b>only if this asset is a directory</b>.
@@ -46,7 +53,7 @@ public class Asset {
 			
 			while ((line = reader.readLine()) != null) {
 				if (filter == null || filter.test(line)) {
-					asset = this.assets.getAsset(this.path + "/" + line);
+					asset = this.assets.getAsset(this.path + Assets.simplifyPath(line));
 					if (asset != null) {
 						assets.add(asset);
 					}

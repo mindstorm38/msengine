@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class ShaderProgram implements AutoCloseable {
 
     private List<Shader> shaders = new ArrayList<>();
-    private int name = 0;
+    private int name;
 
     public ShaderProgram() {
         this.name = glCreateProgram();
@@ -54,6 +54,7 @@ public class ShaderProgram implements AutoCloseable {
 
         this.checkValidity();
         this.checkNotLinked();
+        this.preLink();
 
         glLinkProgram(this.name);
 
@@ -75,6 +76,8 @@ public class ShaderProgram implements AutoCloseable {
         }
 
     }
+    
+    protected void preLink() { }
 
     @Override
     public void close() {

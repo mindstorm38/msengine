@@ -1,5 +1,9 @@
 package io.msengine.client.graphics.shader;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.GL_TRUE;
@@ -7,8 +11,20 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class Shader implements AutoCloseable {
 
+    public static Shader fromSource(ShaderType type, InputStream stream, Charset charset) throws IOException {
+        Shader shader = new Shader(type);
+        shader.sendSource(stream, charset);
+        return shader;
+    }
+    
+    public static Shader fromSource(ShaderType type, InputStream stream) throws IOException {
+        return fromSource(type, stream, Charset.defaultCharset());
+    }
+    
+    // Class //
+    
     private final ShaderType type;
-    private int name = 0;
+    private int name;
 
     public Shader(ShaderType type) {
         this.type = Objects.requireNonNull(type);
@@ -61,11 +77,32 @@ public class Shader implements AutoCloseable {
         this.checkValidity();
         glShaderSource(this.name, text);
     }
+    
+    public void sendSource(InputStream stream, Charset charset) throws IOException {
+        
+        Objects.requireNonNull(stream);
+        Objects.requireNonNull(charset);
+        
+        ByteArrayOutputStream res = new ByteArrayOutputStream();
+        final byte[] buf = new byte[512];
+        int len;
+        while ((len = stream.read(buf)) != -1) {
+            res.write(buf, 0, len);
+        }
+        
+        this.sendSource(res.toString(charset.name()));
+        
+    }
+    
+    public void sendSource(InputStream stream) throws IOException {
+        this.sendSource(stream, Charset.defaultCharset());
+    }
 
     public void compile() {
 
         this.checkValidity();
         this.checkNotCompiled();
+        this.preCompile();
 
         glCompileShader(this.name);
 
@@ -74,6 +111,8 @@ public class Shader implements AutoCloseable {
         }
 
     }
+    
+    protected void preCompile() { }
 
     @Override
     public void close() {

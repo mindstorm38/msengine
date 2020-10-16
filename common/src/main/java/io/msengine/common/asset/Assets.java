@@ -1,5 +1,6 @@
 package io.msengine.common.asset;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public abstract class Assets {
@@ -18,8 +19,16 @@ public abstract class Assets {
 		return this.getAssetSimplified(simplifyPath(path));
 	}
 	
+	public InputStream openAssetStream(String path) {
+		return this.openAssetStreamSimplified(simplifyPath(path));
+	}
+	
 	protected abstract Asset getAssetSimplified(String simplifiedPath);
-	public abstract InputStream openAssetStream(String path);
+	protected abstract InputStream openAssetStreamSimplified(String simplifiedPath);
+	
+	public InputStream openAssetStreamExcept(String path) throws IOException {
+		return throwIfNoStream(this.openAssetStream(path));
+	}
 	
 	// Utils //
 	
@@ -32,6 +41,14 @@ public abstract class Assets {
 			}
 		}
 		return builder.toString();
+	}
+	
+	public static InputStream throwIfNoStream(InputStream stream) throws IOException {
+		if (stream == null) {
+			throw new IOException("No data stream for this asset.");
+		} else {
+			return stream;
+		}
 	}
 
 }

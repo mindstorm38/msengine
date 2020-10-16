@@ -22,8 +22,8 @@ final class ClassLoaderAssets extends Assets {
 	}
 	
 	@Override
-	public InputStream openAssetStream(String path) {
-		return this.loader.getResourceAsStream(path);
+	public InputStream openAssetStreamSimplified(String simplifiedPath) {
+		return this.loader.getResourceAsStream(simplifiedPath);
 	}
 	
 }
