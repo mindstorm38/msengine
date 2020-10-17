@@ -1,5 +1,6 @@
 package io.msengine.client.graphics.shader;
 
+import io.msengine.client.graphics.shader.uniform.SamplerUniform;
 import io.msengine.client.graphics.shader.uniform.Uniform;
 
 import java.util.ArrayList;
@@ -126,9 +127,24 @@ public class ShaderProgram implements AutoCloseable {
         }
     }
     
+    /**
+     * Called just before linking the program, and
+     * after {@link #checkNotLinked()} call.
+     */
     protected void preLink() { }
+    
+    /**
+     * Called after the program is successfully linked,
+     * after detaching all shaders but just before
+     * clearing the internal attached shaders collection
+     * ({@link #shaders}) and validating.
+     */
     protected void postLink() { }
-
+    
+    /**
+     * Link this program, this also call {@link #validate()} if not
+     * exception are thrown in {@link #postLink()} or before.
+     */
     public void link() {
 
         this.checkNotLinked();
@@ -151,12 +167,19 @@ public class ShaderProgram implements AutoCloseable {
             this.shaders = null;
         }
 
+        this.validate();
+        
+    }
+    
+    /**
+     * (Re)Validate the program, this is automatically called at
+     * the end of {@link #link()}.
+     */
+    public void validate() {
         glValidateProgram(this.name);
-
         if (glGetProgrami(this.name, GL_VALIDATE_STATUS) != GL_TRUE) {
             throw new IllegalStateException("Failed to validate the shader program: " + glGetProgramInfoLog(this.name));
         }
-
     }
     
     // For components //
@@ -173,7 +196,6 @@ public class ShaderProgram implements AutoCloseable {
         this.checkLinked();
         
         int loc = glGetUniformLocation(this.name, identifier);
-        
         if (loc == -1) {
             throw new IllegalArgumentException("Failed to find uniform '" + identifier + "'.");
         }
@@ -183,6 +205,10 @@ public class ShaderProgram implements AutoCloseable {
         this.getComponents().add(uniform);
         return uniform;
         
+    }
+    
+    public SamplerUniform createSampler(String identifier) {
+        return this.createUniform(identifier, SamplerUniform::new);
     }
     
     // Using //

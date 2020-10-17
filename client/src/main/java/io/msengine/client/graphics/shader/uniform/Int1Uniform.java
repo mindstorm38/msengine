@@ -11,6 +11,10 @@ public class Int1Uniform extends Uniform {
 		this.uploadIfUsed();
 	}
 	
+	public void set(boolean b) {
+		this.set(b ? 1 : 0);
+	}
+	
 	@Override
 	public void upload() {
 		GL20.glUniform1i(this.location, this.x);
