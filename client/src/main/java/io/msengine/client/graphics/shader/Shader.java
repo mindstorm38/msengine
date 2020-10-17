@@ -113,13 +113,18 @@ public class Shader implements AutoCloseable {
         }
 
     }
-
+    
     @Override
     public void close() {
         if (this.isValid()) {
             glDeleteShader(this.name);
             this.name = 0;
         }
+    }
+    
+    @Override
+    public int hashCode() {
+        return this.name;
     }
 
 }

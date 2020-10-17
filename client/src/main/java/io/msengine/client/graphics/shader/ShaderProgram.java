@@ -3,7 +3,10 @@ package io.msengine.client.graphics.shader;
 import io.msengine.client.graphics.shader.uniform.Uniform;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +24,7 @@ public class ShaderProgram implements AutoCloseable {
 
     private static final Logger LOGGER = Logger.getLogger("shader.program");
     
-    private List<Shader> shaders = new ArrayList<>();
+    private Set<Shader> shaders = new HashSet<>();
     private int name;
     
     private List<ShaderComponent> components;
@@ -86,18 +89,29 @@ public class ShaderProgram implements AutoCloseable {
             throw new IllegalStateException("Cannot call this because the program is not yet linked.");
         }
     }
-
+    
+    /**
+     * <p>Attach a shader to the program, only if this
+     * program is not currently linked.</p>
+     * <p>Note: Attached shaders are not closed (deleted)
+     * after linking, they're only detached. You can use
+     * {@link #deleteAttachedShaders()} in {@link #postLink()}
+     * to do that, or delete them manually after {@link #link()}.</p>
+     * <p>Adding same shader multiple times does nothing.</p>
+     * @param shader The shader to attach.
+     */
     public void attachShader(Shader shader) {
         this.checkNotLinked();
         shader.checkCompiled();
-        this.shaders.add(shader);
-        glAttachShader(this.name, shader.getName());
+        if (this.shaders.add(shader)) {
+            glAttachShader(this.name, shader.getName());
+        }
     }
     
     /**
      * @return Attached shaders, or null if this program is already linked.
      */
-    public List<Shader> getAttachedShaders() {
+    public Collection<Shader> getAttachedShaders() {
         return this.shaders;
     }
     
@@ -205,6 +219,11 @@ public class ShaderProgram implements AutoCloseable {
         } catch (RuntimeException e) {
             LOGGER.log(Level.WARNING, "Failed to close a shader component.", e);
         }
+    }
+    
+    @Override
+    public int hashCode() {
+        return this.name;
     }
     
 }
