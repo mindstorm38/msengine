@@ -211,6 +211,10 @@ public class ShaderProgram implements AutoCloseable {
         return this.createUniform(identifier, SamplerUniform::new);
     }
     
+    public int getAttribLocation(String identifier) {
+        return glGetAttribLocation(this.name, identifier);
+    }
+    
     // Using //
     
     public void use() {

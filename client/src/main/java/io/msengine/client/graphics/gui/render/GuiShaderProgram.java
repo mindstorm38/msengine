@@ -1,6 +1,7 @@
 package io.msengine.client.graphics.gui.render;
 
 import io.msengine.client.EngineClient;
+import io.msengine.client.graphics.buffer.BufferArray;
 import io.msengine.client.graphics.shader.Shader;
 import io.msengine.client.graphics.shader.ShaderProgram;
 import io.msengine.client.graphics.shader.ShaderType;
@@ -10,6 +11,7 @@ import io.msengine.client.graphics.shader.uniform.Int1Uniform;
 import io.msengine.client.graphics.shader.uniform.SamplerUniform;
 import io.msengine.common.util.Color;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 
@@ -87,6 +89,16 @@ public class GuiShaderProgram extends ShaderProgram {
 		if (activeTexture != null) {
 			this.textureSampler.setActiveTexture(activeTexture);
 		}
+	}
+	
+	public GuiBufferArray createBuffer(boolean color, boolean tex) {
+		return BufferArray.newBuilder(GuiBufferArray::new)
+				.newBuffer()
+					.withAttrib(this.getAttribLocation("position"), GL11.GL_FLOAT, 2)
+					.withCond(color, bb -> bb.withAttrib(this.getAttribLocation("color"), GL11.GL_FLOAT, 4))
+					.withCond(color, bb -> bb.withAttrib(this.getAttribLocation("tex_coord"), GL11.GL_FLOAT, 2))
+					.build()
+				.build();
 	}
 	
 }
