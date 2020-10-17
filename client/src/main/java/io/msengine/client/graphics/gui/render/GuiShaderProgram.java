@@ -15,7 +15,8 @@ import java.io.IOException;
 
 public class GuiShaderProgram extends ShaderProgram {
 
-	private FloatMatrix4Uniform globalMatrixUniform;
+	private FloatMatrix4Uniform projectionMatrixUniform;
+	private FloatMatrix4Uniform modelMatrixUniform;
 	private Float4Uniform globalColorUniform;
 	private Int1Uniform textureEnabledUniform;
 	private SamplerUniform textureSampler;
@@ -55,7 +56,8 @@ public class GuiShaderProgram extends ShaderProgram {
 		
 		super.postLink();
 		
-		this.globalMatrixUniform = this.createUniform("global_matrix", FloatMatrix4Uniform::new);
+		this.projectionMatrixUniform = this.createUniform("projection_matrix", FloatMatrix4Uniform::new);
+		this.modelMatrixUniform = this.createUniform("model_matrix", FloatMatrix4Uniform::new);
 		this.globalColorUniform = this.createUniform("global_color", Float4Uniform::new);
 		this.textureEnabledUniform = this.createUniform("texture_enabled", Int1Uniform::new);
 		this.textureSampler = this.createSampler("texture_sampler");
@@ -64,16 +66,24 @@ public class GuiShaderProgram extends ShaderProgram {
 		
 	}
 	
-	public void setGlobalMatrix(Matrix4f mat) {
-		this.globalMatrixUniform.set(mat);
+	public void setProjectionMatrix(Matrix4f mat) {
+		this.projectionMatrixUniform.set(mat);
+	}
+	
+	public void setModelMatrix(Matrix4f mat) {
+		this.modelMatrixUniform.set(mat);
 	}
 	
 	public void setGlobalColor(Color color) {
 		this.globalColorUniform.set(color);
 	}
 	
+	public void setTextureEnabled(boolean enabled) {
+		this.textureEnabledUniform.set(enabled);
+	}
+	
 	public void setActiveTexture(Integer activeTexture) {
-		this.textureEnabledUniform.set(activeTexture != null);
+		this.setTextureEnabled(activeTexture != null);
 		if (activeTexture != null) {
 			this.textureSampler.setActiveTexture(activeTexture);
 		}

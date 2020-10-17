@@ -3,6 +3,7 @@ package io.msengine.client.graphics.gui;
 import io.msengine.client.graphics.gui.event.GuiEvent;
 import io.msengine.client.graphics.gui.event.GuiEventListener;
 import io.msengine.client.graphics.gui.event.GuiEventManager;
+import io.msengine.client.renderer.model.ModelHandler;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,9 +25,10 @@ public abstract class GuiObject {
 	protected int xIntOffset = 0, yIntOffset = 0;
 	
 	private byte flags = 0;
-	private GuiParent parent = null;
+	private GuiParent parent;
+	private GuiManager manager;
 
-	private GuiEventManager eventManager = null;
+	private GuiEventManager eventManager;
 	
 	// [ Management ] //
 	
@@ -35,10 +37,11 @@ public abstract class GuiObject {
 	abstract void render(float alpha);
 	abstract void update();
 	
-	void innerInit() {
+	void innerInit(GuiManager manager) {
 		if (!this.isReady()) {
 			try {
 				this.init();
+				this.manager = manager;
 				this.setFlag(FLAG_READY, true);
 			} catch (Exception e) {
 				LOGGER.log(Level.WARNING, "Failed to call init() on " + this.getClass() + ", the object no longer ready.", e);
@@ -53,6 +56,8 @@ public abstract class GuiObject {
 				this.stop();
 			} catch (Exception e) {
 				LOGGER.log(Level.WARNING, "Failed to call stop() on " + this.getClass() + ", the object no longer ready.", e);
+			} finally {
+				this.manager = null;
 			}
 		}
 	}
@@ -91,6 +96,14 @@ public abstract class GuiObject {
 	
 	private boolean hasFlag(int mask) {
 		return (this.flags & mask) == mask;
+	}
+	
+	public GuiManager getManager() {
+		return this.manager;
+	}
+	
+	public ModelHandler getModel() {
+		return this.manager == null ? null : this.manager.getModel();
 	}
 	
 	// [ Position ] //

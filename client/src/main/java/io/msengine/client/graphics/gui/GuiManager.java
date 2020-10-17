@@ -1,8 +1,15 @@
 package io.msengine.client.graphics.gui;
 
+import io.msengine.client.graphics.gui.mask.GuiMask;
 import io.msengine.client.graphics.gui.render.GuiShaderProgram;
+import io.msengine.client.graphics.shader.ShaderProgram;
+import io.msengine.client.renderer.model.ModelApplyListener;
+import io.msengine.client.renderer.model.ModelHandler;
+import io.msengine.client.renderer.util.BlendMode;
 import io.msengine.client.window.Window;
 import io.msengine.client.window.listener.WindowFramebufferSizeEventListener;
+import io.msengine.common.util.Color;
+import org.joml.Matrix4f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,16 +18,25 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-public class GuiManager implements WindowFramebufferSizeEventListener {
+import static org.lwjgl.opengl.GL11.*;
+
+public class GuiManager implements WindowFramebufferSizeEventListener, ModelApplyListener {
 
     private static final Logger LOGGER = Logger.getLogger("msengine.gui");
 
     private final Window window;
     private final Map<String, Supplier<GuiScene>> scenes = new HashMap<>();
     private final Map<String, GuiScene> instances = new HashMap<>();
-
+    
+    private final ModelHandler model = new ModelHandler(this);
+    private final Matrix4f projectionMatrix = new Matrix4f();
+    private final Color globalColor = new Color();
+    
     private GuiShaderProgram program;
     private GuiScene currentScene;
+    
+    private boolean rendering;
+    private boolean masking;
     
     public GuiManager(Window window) {
         this.window = Objects.requireNonNull(window, "Missing window.");
@@ -46,8 +62,44 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
     public void stop() {
         if (this.program != null) {
             this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
+            this.unloadScene();
+            this.instances.values().forEach(GuiScene::stop);
+            this.instances.clear();
             this.program.close();
             this.program = null;
+        }
+    }
+    
+    public void render(float alpha) {
+        
+        if (this.rendering) {
+            throw new IllegalStateException("Already rendering GUI.");
+        }
+        
+        if (this.currentScene != null && this.program != null) {
+    
+            this.rendering = true;
+            this.masking = false;
+            
+            glEnable(GL_BLEND);
+            BlendMode.TRANSPARENCY.use();
+            this.program.use();
+            this.setGlobalColor(Color.WHITE);
+            
+            this.currentScene.render(alpha);
+            
+            ShaderProgram.release();
+            
+            this.unmask();
+            this.rendering = false;
+            
+        }
+        
+    }
+    
+    public void update() {
+        if (this.currentScene != null) {
+            this.currentScene.update();
         }
     }
     
@@ -127,7 +179,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
 
         if (scene != null) {
             
-            scene.innerInit();
+            scene.innerInit(this);
             scene.loaded();
             
             // Not calling updateSceneSizeFromWindow() because we
@@ -171,10 +223,84 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
         }
     }
     
+    // Rendering variables //
+    
+    /**
+     * @return The shader program model used when rendering.
+     */
+    public ModelHandler getModel() {
+        return this.model;
+    }
+    
+    /**
+     * @return The mutable global color.
+     */
+    public Color getGlobalColor() {
+        return this.globalColor;
+    }
+    
+    /**
+     * Upload the global color to the program uniform.
+     */
+    public void applyGlobalColor() {
+        this.program.setGlobalColor(this.globalColor);
+    }
+    
+    public void setGlobalColor(Color color) {
+        this.globalColor.setAll(color);
+        this.applyGlobalColor();
+    }
+    
+    public void mask(GuiMask[] masks) {
+        
+        if (!this.rendering) {
+            throw new IllegalStateException("Masking is only available");
+        }
+        
+        if (this.masking) {
+            throw new IllegalStateException("Already masking");
+        }
+        
+        this.masking = true;
+        this.program.setTextureEnabled(false);
+        
+        glEnable(GL_STENCIL_TEST);
+        
+        glStencilMask(1);
+        glStencilFunc(GL_ALWAYS, 1, 1);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glColorMask(false, false, false, false);
+        
+        for (GuiMask mask : masks) {
+            mask.draw();
+        }
+        
+        glStencilMask(1);
+        glStencilFunc(GL_EQUAL, 1, 1);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+        glColorMask(true, true, true, true);
+        
+    }
+    
+    public void unmask() {
+        if (this.rendering && this.masking) {
+            glDisable(GL_STENCIL_TEST);
+            this.masking = false;
+        }
+    }
+    
+    // Scene Size //
+    
     private void updateSceneSize(int width, int height) {
+        
+        this.projectionMatrix.identity();
+        this.projectionMatrix.ortho(0, width, height, 0, 1024, -1024);
+        this.program.setProjectionMatrix(this.projectionMatrix);
+        
         if (this.currentScene != null) {
             this.currentScene.setSceneSize(width, height);
         }
+        
     }
     
     private void updateSceneSizeFromWindow() {
@@ -186,6 +312,11 @@ public class GuiManager implements WindowFramebufferSizeEventListener {
         if (origin == this.window) {
             this.updateSceneSize(width, height);
         }
+    }
+    
+    @Override
+    public void modelApply(Matrix4f model) {
+        this.program.setModelMatrix(model);
     }
     
 }

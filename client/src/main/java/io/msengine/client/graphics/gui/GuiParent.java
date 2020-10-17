@@ -19,7 +19,7 @@ public class GuiParent extends GuiObject {
 	
 	private void initChild(GuiObject child) {
 		if (this.isReady()) {
-			child.innerInit();
+			child.innerInit(this.getManager());
 		}
 	}
 	
@@ -90,7 +90,7 @@ public class GuiParent extends GuiObject {
 		
 		try {
 			child.setParent(this);
-			if (!child.hasParent()) {
+			if (child.getParent() != this) {
 				throw new IllegalArgumentException("This given child GuiObject had not set the parent after a call to GuiObject.setParent(GuiParent)");
 			}
 		} catch (Exception e) {
