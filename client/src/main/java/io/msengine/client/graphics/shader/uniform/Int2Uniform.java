@@ -10,11 +10,11 @@ public class Int2Uniform extends Uniform {
 	public void set(int x, int y) {
 		this.x = x;
 		this.y = y;
+		this.uploadIfUsed();
 	}
 	
 	public void set(Vector2i vec) {
-		this.x = vec.x;
-		this.y = vec.y;
+		this.set(vec.x, vec.y);
 	}
 	
 	@Override

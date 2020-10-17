@@ -11,12 +11,11 @@ public class Int3Uniform extends Uniform {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.uploadIfUsed();
 	}
 	
 	public void set(Vector3i vec) {
-		this.x = vec.x;
-		this.y = vec.y;
-		this.z = vec.z;
+		this.set(vec.x, vec.y, vec.z);
 	}
 	
 	@Override

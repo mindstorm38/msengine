@@ -5,14 +5,26 @@ import io.msengine.client.graphics.shader.uniform.Uniform;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.GL_TRUE;
+import static org.lwjgl.opengl.GL11.glGetInteger;
 import static org.lwjgl.opengl.GL20.*;
 
+/**
+ * <p>A mid-level wrapper for OpenGL shader programs.</p>
+ * <p>By using this, you should never delete the program
+ * otherwise than calling {@link #close()}.</p>
+ */
 public class ShaderProgram implements AutoCloseable {
 
+    private static final Logger LOGGER = Logger.getLogger("shader.program");
+    
     private List<Shader> shaders = new ArrayList<>();
     private int name;
+    
+    private List<ShaderComponent> components;
 
     public ShaderProgram() {
         this.name = glCreateProgram();
@@ -24,27 +36,51 @@ public class ShaderProgram implements AutoCloseable {
     public int getName() {
         return this.name;
     }
-
+    
+    /**
+     * @return True if this program is currently valid.
+     */
     public boolean isValid() {
         return glIsProgram(this.name);
     }
-
+    
+    /**
+     * @return True if this program is successfully linked, this
+     * can also return false if the program is not valid.
+     */
     public boolean isLinked() {
         return glGetProgrami(this.name, GL_LINK_STATUS) == GL_TRUE;
     }
-
+    
+    /**
+     * @return True if this program is currently used in the render pipeline.
+     */
+    public boolean isUsed() {
+        return glGetInteger(GL_CURRENT_PROGRAM) == this.name;
+    }
+    
+    /**
+     * @throws IllegalStateException If the program is no longer valid.
+     */
     public void checkValidity() {
         if (!this.isValid()) {
             throw new IllegalStateException("This shader program is no longer usable, probably because of close.");
         }
     }
-
+    
+    /**
+     * @throws IllegalStateException If the program is already linked, {@link #checkValidity()} is called before checking.
+     */
     public void checkNotLinked() {
+        this.checkValidity();
         if (this.isLinked()) {
             throw new IllegalStateException("Cannot call this because the program is already linked.");
         }
     }
     
+    /**
+     * @throws IllegalStateException If the program is not successfully linked.
+     */
     public void checkLinked() {
         if (!this.isLinked()) {
             throw new IllegalStateException("Cannot call this because the program is not yet linked.");
@@ -52,7 +88,6 @@ public class ShaderProgram implements AutoCloseable {
     }
 
     public void attachShader(Shader shader) {
-        this.checkValidity();
         this.checkNotLinked();
         shader.checkCompiled();
         this.shaders.add(shader);
@@ -82,7 +117,6 @@ public class ShaderProgram implements AutoCloseable {
 
     public void link() {
 
-        this.checkValidity();
         this.checkNotLinked();
         this.preLink();
 
@@ -96,10 +130,12 @@ public class ShaderProgram implements AutoCloseable {
             glDetachShader(this.name, shader.getName());
         }
     
-        this.postLink();
-
-        this.shaders.clear();
-        this.shaders = null;
+        try {
+            this.postLink();
+        } finally {
+            this.shaders.clear();
+            this.shaders = null;
+        }
 
         glValidateProgram(this.name);
 
@@ -109,9 +145,17 @@ public class ShaderProgram implements AutoCloseable {
 
     }
     
-    public <U extends Uniform> U getUniformLocation(String identifier, Supplier<U> supplier) {
+    // For components //
+    
+    private List<ShaderComponent> getComponents() {
+        if (this.components == null) {
+            this.components = new ArrayList<>();
+        }
+        return this.components;
+    }
+    
+    public <U extends Uniform> U createUniform(String identifier, Supplier<U> supplier) {
         
-        this.checkValidity();
         this.checkLinked();
         
         int loc = glGetUniformLocation(this.name, identifier);
@@ -121,17 +165,46 @@ public class ShaderProgram implements AutoCloseable {
         }
     
         U uniform = supplier.get();
-        uniform.setup(identifier, loc);
+        uniform.setup(this, identifier, loc);
+        this.getComponents().add(uniform);
         return uniform;
         
     }
+    
+    // Using //
+    
+    public void use() {
+        this.checkLinked();
+        glUseProgram(this.name);
+    }
+    
+    public static void release() {
+        glUseProgram(0);
+    }
+    
+    // Closing //
 
     @Override
     public void close() {
+        
         if (glIsProgram(this.name)) {
             glDeleteProgram(this.name);
             this.name = 0;
         }
+        
+        if (this.components != null) {
+            this.components.forEach(ShaderProgram::closeComponent);
+            this.components = null;
+        }
+        
     }
-
+    
+    private static void closeComponent(ShaderComponent component) {
+        try {
+            component.close();
+        } catch (RuntimeException e) {
+            LOGGER.log(Level.WARNING, "Failed to close a shader component.", e);
+        }
+    }
+    
 }

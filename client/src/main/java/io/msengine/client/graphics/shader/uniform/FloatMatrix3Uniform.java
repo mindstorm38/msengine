@@ -6,12 +6,13 @@ import org.lwjgl.opengl.GL20;
 public class FloatMatrix3Uniform extends FloatBufferUniform {
 	
 	@Override
-	protected int size() {
+	protected int getBufferSize() {
 		return 9;
 	}
 	
 	public void set(Matrix3f mat) {
-		mat.get(0, this.buffer);
+		mat.get(0, this.ensureBuffer());
+		this.uploadIfUsed();
 	}
 	
 	@Override

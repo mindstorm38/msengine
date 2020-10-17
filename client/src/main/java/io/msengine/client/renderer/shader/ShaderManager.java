@@ -465,6 +465,7 @@ public class ShaderManager implements ShaderUniformHandler {
 		this.checkNotBuilt();
 		
 		glUseProgram( 0 );
+		
 		currentProgram = -1;
 		currentShaderManager = null;
 		

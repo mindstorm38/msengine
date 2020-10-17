@@ -10,11 +10,11 @@ public class Float2Uniform extends Uniform {
 	public void set(float x, float y) {
 		this.x = x;
 		this.y = y;
+		this.uploadIfUsed();
 	}
 	
 	public void set(Vector2f vec) {
-		this.x = vec.x;
-		this.y = vec.y;
+		this.set(vec.x, vec.y);
 	}
 	
 	@Override

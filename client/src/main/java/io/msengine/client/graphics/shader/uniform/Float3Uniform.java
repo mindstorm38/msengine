@@ -12,18 +12,15 @@ public class Float3Uniform extends Uniform {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.uploadIfUsed();
 	}
 	
 	public void set(Vector3f vec) {
-		this.x = vec.x;
-		this.y = vec.y;
-		this.z = vec.z;
+		this.set(vec.x, vec.y, vec.z);
 	}
 	
 	public void set(Color color) {
-		this.x = color.getRed();
-		this.y = color.getGreen();
-		this.z = color.getBlue();
+		this.set(color.getRed(), color.getGreen(), color.getBlue());
 	}
 	
 	@Override

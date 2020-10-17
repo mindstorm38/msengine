@@ -1,11 +1,15 @@
 package io.msengine.client.graphics.shader.uniform;
 
-public abstract class Uniform implements AutoCloseable {
+import io.msengine.client.graphics.shader.ShaderComponent;
+import io.msengine.client.graphics.shader.ShaderProgram;
+
+public abstract class Uniform extends ShaderComponent {
 	
 	protected String identifier;
 	protected int location;
 	
-	public void setup(String identifier, int location) {
+	public void setup(ShaderProgram program, String identifier, int location) {
+		super.setup(program);
 		this.identifier = identifier;
 		this.location = location;
 	}
@@ -16,6 +20,12 @@ public abstract class Uniform implements AutoCloseable {
 	
 	public int getLocation() {
 		return this.location;
+	}
+	
+	public void uploadIfUsed() {
+		if (this.isProgramUsed()) {
+			this.upload();
+		}
 	}
 	
 	public abstract void upload();

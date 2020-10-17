@@ -6,19 +6,22 @@ import org.lwjgl.opengl.GL20;
 public class Int4Uniform extends IntBufferUniform {
 	
 	@Override
-	protected int size() {
+	protected int getBufferSize() {
 		return 4;
 	}
 	
 	public void set(int x, int y, int z, int w) {
+		this.ensureBuffer();
 		this.buffer.put(0, x);
 		this.buffer.put(1, y);
 		this.buffer.put(2, z);
 		this.buffer.put(3, w);
+		this.uploadIfUsed();
 	}
 	
 	public void set(Vector4i vec) {
-		vec.get(0, this.buffer);
+		vec.get(0, this.ensureBuffer());
+		this.uploadIfUsed();
 	}
 	
 	@Override

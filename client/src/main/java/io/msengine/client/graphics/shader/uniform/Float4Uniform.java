@@ -7,19 +7,22 @@ import org.lwjgl.opengl.GL20;
 public class Float4Uniform extends FloatBufferUniform {
 	
 	@Override
-	protected int size() {
+	protected int getBufferSize() {
 		return 4;
 	}
 	
 	public void set(float x, float y, float z, float w) {
+		this.ensureBuffer();
 		this.buffer.put(0, x);
 		this.buffer.put(1, y);
 		this.buffer.put(2, z);
 		this.buffer.put(3, w);
+		this.uploadIfUsed();
 	}
 	
 	public void set(Vector4f vec) {
-		vec.get(0, this.buffer);
+		vec.get(0, this.ensureBuffer());
+		this.uploadIfUsed();
 	}
 	
 	public void set(Color color) {
