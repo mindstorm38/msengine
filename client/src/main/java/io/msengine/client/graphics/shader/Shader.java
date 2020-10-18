@@ -1,5 +1,7 @@
 package io.msengine.client.graphics.shader;
 
+import io.msengine.client.graphics.util.ShaderType;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

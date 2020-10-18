@@ -1,5 +1,7 @@
 package io.msengine.client.graphics.buffer;
 
+import io.msengine.client.graphics.util.BufferUsage;
+import io.msengine.client.graphics.util.DataType;
 import io.msengine.client.renderer.util.GLUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -261,38 +263,15 @@ public abstract class BufferArray implements AutoCloseable {
 			return this;
 		}
 		
-		public BufferBuilder<A> withAttrib(int attribLocation, int dataType, int dataTypeSizeOf, int dataCount) {
-			
-			int sizeOf = dataCount * dataTypeSizeOf;
-			
-			this.attribs.add(new BufferAttrib(attribLocation, dataType, dataCount, sizeOf));
+		public BufferBuilder<A> withAttrib(int attribLocation, DataType dataType, int dataCount) {
+			int sizeOf = dataCount * dataType.size;
+			this.attribs.add(new BufferAttrib(attribLocation, dataType.value, dataCount, sizeOf));
 			this.totalSize += sizeOf;
 			return this;
-			
-		}
-		
-		public BufferBuilder<A> withAttrib(int attribLocation, int dataType, int dataCount) {
-			return this.withAttrib(attribLocation, dataType, getDataTypeSizeOf(dataType), dataCount);
 		}
 		
 		public Builder<A> build() {
 			return this.builder;
-		}
-		
-		private static int getDataTypeSizeOf(int dataType) {
-			switch (dataType) {
-				case GL_BYTE:
-				case GL_UNSIGNED_BYTE:
-					return 1;
-				case GL_SHORT:
-				case GL_UNSIGNED_SHORT:
-					return 2;
-				case GL_INT:
-				case GL_UNSIGNED_INT:
-					return 4;
-				default:
-					throw new IllegalArgumentException("The given data type sizeof is not internally known, please use long withAttrib() method.");
-			}
 		}
 		
 	}

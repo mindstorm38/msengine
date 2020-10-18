@@ -1,4 +1,4 @@
-package io.msengine.client.graphics.buffer;
+package io.msengine.client.graphics.util;
 
 import static org.lwjgl.opengl.GL15.*;
 

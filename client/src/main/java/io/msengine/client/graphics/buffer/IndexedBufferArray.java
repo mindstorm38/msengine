@@ -1,5 +1,7 @@
 package io.msengine.client.graphics.buffer;
 
+import io.msengine.client.graphics.util.BufferUsage;
+
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL15.*;

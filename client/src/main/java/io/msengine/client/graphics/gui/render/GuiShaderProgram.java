@@ -4,7 +4,8 @@ import io.msengine.client.EngineClient;
 import io.msengine.client.graphics.buffer.BufferArray;
 import io.msengine.client.graphics.shader.Shader;
 import io.msengine.client.graphics.shader.ShaderProgram;
-import io.msengine.client.graphics.shader.ShaderType;
+import io.msengine.client.graphics.util.DataType;
+import io.msengine.client.graphics.util.ShaderType;
 import io.msengine.client.graphics.shader.uniform.Float4Uniform;
 import io.msengine.client.graphics.shader.uniform.FloatMatrix4Uniform;
 import io.msengine.client.graphics.shader.uniform.Int1Uniform;
@@ -106,9 +107,9 @@ public class GuiShaderProgram extends ShaderProgram {
 	public GuiBufferArray createBuffer(boolean color, boolean tex) {
 		return BufferArray.newBuilder(GuiBufferArray::new)
 				.newBuffer()
-					.withAttrib(this.attribPosition, GL_FLOAT, 2)
-					.withCond(color, bb -> bb.withAttrib(this.attribColor, GL_FLOAT, 4))
-					.withCond(color, bb -> bb.withAttrib(this.attribTexCoord, GL_FLOAT, 2))
+					.withAttrib(this.attribPosition, DataType.FLOAT, 2)
+					.withCond(color, bb -> bb.withAttrib(this.attribColor, DataType.FLOAT, 4))
+					.withCond(color, bb -> bb.withAttrib(this.attribTexCoord, DataType.FLOAT, 2))
 					.build()
 				.withVertexAttrib(this.attribPosition, true)
 				.withVertexAttrib(this.attribColor, color)
