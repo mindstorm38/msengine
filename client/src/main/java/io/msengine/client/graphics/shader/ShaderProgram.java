@@ -212,7 +212,11 @@ public class ShaderProgram implements AutoCloseable {
     }
     
     public int getAttribLocation(String identifier) {
-        return glGetAttribLocation(this.name, identifier);
+        int loc = glGetAttribLocation(this.name, identifier);
+        if (loc == -1) {
+            throw new IllegalArgumentException("Failed to find attribute '" + identifier + "' location.");
+        }
+        return loc;
     }
     
     // Using //

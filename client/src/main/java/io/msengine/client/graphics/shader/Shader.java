@@ -28,7 +28,7 @@ public class Shader implements AutoCloseable {
 
     public Shader(ShaderType type) {
         this.type = Objects.requireNonNull(type);
-        this.name = glCreateShader(type.getValue());
+        this.name = glCreateShader(type.value);
         if (!glIsShader(this.name)) {
             throw new IllegalStateException("Failed to create the shader.");
         }

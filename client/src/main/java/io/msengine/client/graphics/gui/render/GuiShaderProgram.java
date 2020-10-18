@@ -23,6 +23,10 @@ public class GuiShaderProgram extends ShaderProgram {
 	private Int1Uniform textureEnabledUniform;
 	private SamplerUniform textureSampler;
 	
+	private int attribPosition;
+	private int attribColor;
+	private int attribTexCoord;
+	
 	protected Shader createVertexShader() throws IOException {
 		return Shader.fromSource(ShaderType.VERTEX, EngineClient.ASSETS.openAssetStreamExcept("mse/shaders/gui.vsh"));
 	}
@@ -64,6 +68,10 @@ public class GuiShaderProgram extends ShaderProgram {
 		this.textureEnabledUniform = this.createUniform("texture_enabled", Int1Uniform::new);
 		this.textureSampler = this.createSampler("texture_sampler");
 		
+		this.attribPosition = this.getAttribLocation("position");
+		this.attribColor = this.getAttribLocation("color");
+		this.attribTexCoord = this.getAttribLocation("tex_coord");
+		
 		this.deleteAttachedShaders();
 		
 	}
@@ -94,10 +102,13 @@ public class GuiShaderProgram extends ShaderProgram {
 	public GuiBufferArray createBuffer(boolean color, boolean tex) {
 		return BufferArray.newBuilder(GuiBufferArray::new)
 				.newBuffer()
-					.withAttrib(this.getAttribLocation("position"), GL11.GL_FLOAT, 2)
-					.withCond(color, bb -> bb.withAttrib(this.getAttribLocation("color"), GL11.GL_FLOAT, 4))
-					.withCond(color, bb -> bb.withAttrib(this.getAttribLocation("tex_coord"), GL11.GL_FLOAT, 2))
+					.withAttrib(this.attribPosition, GL11.GL_FLOAT, 2)
+					.withCond(color, bb -> bb.withAttrib(this.attribColor, GL11.GL_FLOAT, 4))
+					.withCond(color, bb -> bb.withAttrib(this.attribTexCoord, GL11.GL_FLOAT, 2))
 					.build()
+				.withVertexAttrib(this.attribPosition, true)
+				.withVertexAttrib(this.attribColor, color)
+				.withVertexAttrib(this.attribTexCoord, tex)
 				.build();
 	}
 	
