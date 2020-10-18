@@ -3,7 +3,6 @@ package io.msengine.client.graphics.gui.mask;
 import io.msengine.client.graphics.util.BufferAlloc;
 import io.msengine.client.graphics.util.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
-import io.msengine.client.graphics.util.BufferType;
 
 public class GuiMaskRectangle extends GuiMask {
 	
