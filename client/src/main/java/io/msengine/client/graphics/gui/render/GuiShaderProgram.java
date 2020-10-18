@@ -11,9 +11,11 @@ import io.msengine.client.graphics.shader.uniform.Int1Uniform;
 import io.msengine.client.graphics.shader.uniform.SamplerUniform;
 import io.msengine.common.util.Color;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
 public class GuiShaderProgram extends ShaderProgram {
 
@@ -61,6 +63,7 @@ public class GuiShaderProgram extends ShaderProgram {
 	protected void postLink() {
 		
 		super.postLink();
+		this.deleteAttachedShaders();
 		
 		this.projectionMatrixUniform = this.createUniform("projection_matrix", FloatMatrix4Uniform::new);
 		this.modelMatrixUniform = this.createUniform("model_matrix", FloatMatrix4Uniform::new);
@@ -72,7 +75,8 @@ public class GuiShaderProgram extends ShaderProgram {
 		this.attribColor = this.getAttribLocation("color");
 		this.attribTexCoord = this.getAttribLocation("tex_coord");
 		
-		this.deleteAttachedShaders();
+		glVertexAttrib4f(this.attribColor, 1, 1, 1, 1);
+		glVertexAttrib2f(this.attribTexCoord, 0, 0);
 		
 	}
 	
@@ -102,9 +106,9 @@ public class GuiShaderProgram extends ShaderProgram {
 	public GuiBufferArray createBuffer(boolean color, boolean tex) {
 		return BufferArray.newBuilder(GuiBufferArray::new)
 				.newBuffer()
-					.withAttrib(this.attribPosition, GL11.GL_FLOAT, 2)
-					.withCond(color, bb -> bb.withAttrib(this.attribColor, GL11.GL_FLOAT, 4))
-					.withCond(color, bb -> bb.withAttrib(this.attribTexCoord, GL11.GL_FLOAT, 2))
+					.withAttrib(this.attribPosition, GL_FLOAT, 2)
+					.withCond(color, bb -> bb.withAttrib(this.attribColor, GL_FLOAT, 4))
+					.withCond(color, bb -> bb.withAttrib(this.attribTexCoord, GL_FLOAT, 2))
 					.build()
 				.withVertexAttrib(this.attribPosition, true)
 				.withVertexAttrib(this.attribColor, color)
