@@ -37,7 +37,7 @@ Each version released on GitLab will be soon available on Maven Central.
     - `client.window.Window`
     - `client.window.WindowBuilder`
     - `client.window.*`
-- [x] Rework resources (using java FileSystems)
+- [x] Rework resources (~~using java FileSystems~~)
     - `common.asset.*`
 - [ ] Rework options
 - [ ] Work on audio package which was never finished
