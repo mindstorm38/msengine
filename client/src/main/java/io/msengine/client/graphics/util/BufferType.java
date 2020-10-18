@@ -10,6 +10,10 @@ import java.nio.IntBuffer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * @deprecated Use {@link BufferAlloc} instead.
+ */
+@Deprecated
 public class BufferType<E extends Buffer> {
 	
 	public static final BufferType<IntBuffer> INT = new BufferType<>(MemoryUtil::memAllocInt);

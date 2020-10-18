@@ -1,5 +1,6 @@
 package io.msengine.client.graphics.gui.mask;
 
+import io.msengine.client.graphics.util.BufferAlloc;
 import io.msengine.client.graphics.util.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
 import io.msengine.client.graphics.util.BufferType;
@@ -53,7 +54,7 @@ public class GuiMaskRectangle extends GuiMask {
 		this.buf.bindVao();
 		this.buf.allocateVboData(0, 8 << 2, BufferUsage.DYNAMIC_DRAW);
 		
-		BufferType.INT.alloc(this.buf.setIndicesCount(6), buf -> {
+		BufferAlloc.allocStackInt(this.buf.setIndicesCount(6), buf -> {
 			buf.put(0).put(1).put(3);
 			buf.put(1).put(2).put(3);
 			buf.flip();
@@ -66,7 +67,7 @@ public class GuiMaskRectangle extends GuiMask {
 		
 		this.buf.bindVao();
 		
-		BufferType.FLOAT.alloc(8, buf -> {
+		BufferAlloc.allocStackFloat(8, buf -> {
 			buf.put(0).put(0);
 			buf.put(0).put(this.height);
 			buf.put(this.width).put(this.height);
