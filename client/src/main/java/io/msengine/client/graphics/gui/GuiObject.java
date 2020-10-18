@@ -3,6 +3,7 @@ package io.msengine.client.graphics.gui;
 import io.msengine.client.graphics.gui.event.GuiEvent;
 import io.msengine.client.graphics.gui.event.GuiEventListener;
 import io.msengine.client.graphics.gui.event.GuiEventManager;
+import io.msengine.client.graphics.gui.render.GuiShaderProgram;
 import io.msengine.client.renderer.model.ModelHandler;
 
 import java.util.logging.Level;
@@ -26,8 +27,9 @@ public abstract class GuiObject {
 	
 	private byte flags = 0;
 	private GuiParent parent;
-	private GuiManager manager;
-
+	protected GuiManager manager;
+	protected ModelHandler model;
+	
 	private GuiEventManager eventManager;
 	
 	// [ Management ] //
@@ -42,6 +44,7 @@ public abstract class GuiObject {
 			try {
 				this.init();
 				this.manager = manager;
+				this.model = manager.getModel();
 				this.setFlag(FLAG_READY, true);
 			} catch (Exception e) {
 				LOGGER.log(Level.WARNING, "Failed to call init() on " + this.getClass() + ", the object no longer ready.", e);
@@ -57,6 +60,7 @@ public abstract class GuiObject {
 			} catch (Exception e) {
 				LOGGER.log(Level.WARNING, "Failed to call stop() on " + this.getClass() + ", the object no longer ready.", e);
 			} finally {
+				this.model = null;
 				this.manager = null;
 			}
 		}
@@ -102,8 +106,12 @@ public abstract class GuiObject {
 		return this.manager;
 	}
 	
+	public GuiShaderProgram getProgram() {
+		return this.manager == null ? null : this.manager.getProgram();
+	}
+	
 	public ModelHandler getModel() {
-		return this.manager == null ? null : this.manager.getModel();
+		return this.model;
 	}
 	
 	// [ Position ] //

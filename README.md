@@ -26,6 +26,9 @@ Each version released on GitLab will be soon available on Maven Central.
     - `common.logic.FrameRegulated`
 - [ ] Remove OSF package `common.osf`
 - [ ] Rework GUI (`client.graphics.gui`)
+    - [x] Rework base GUI framework classes
+    - [x] Rework shaders, buffers and masking
+    - [ ] Re-implement all useful classes from old GUI framework
 - [x] Rework event managers :
     - Object event manager `common.util.event.ObjectEventManager`
     - Method event manager `common.util.event.MethodEventManager`
@@ -34,10 +37,10 @@ Each version released on GitLab will be soon available on Maven Central.
     - `client.window.Window`
     - `client.window.WindowBuilder`
     - `client.window.*`
-- [ ] Rework resources (using java FileSystems)
+- [x] Rework resources (using java FileSystems)
+    - `common.asset.*`
 - [ ] Rework options
 - [ ] Work on audio package which was never finished
-- [ ] Rework `common.util.event.MethodEventManager`
 - [ ] Deprecate uses of `GameLogger` *(use individual named loggers instead)*
 - [ ] Update `AxisAlignedBB`
 - [ ] Remove or adapt `client.renderer.texture.TextureObject`

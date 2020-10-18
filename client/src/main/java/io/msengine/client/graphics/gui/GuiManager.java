@@ -226,7 +226,14 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
     // Rendering variables //
     
     /**
-     * @return The shader program model used when rendering.
+     * @return The shader program used when rendering.
+     */
+    public GuiShaderProgram getProgram() {
+        return this.program;
+    }
+    
+    /**
+     * @return The model (for model matrix) used when rendering.
      */
     public ModelHandler getModel() {
         return this.model;
