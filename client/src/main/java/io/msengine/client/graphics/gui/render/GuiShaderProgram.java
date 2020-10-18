@@ -108,9 +108,20 @@ public class GuiShaderProgram extends ShaderProgram {
 		return BufferArray.newBuilder(GuiBufferArray::new)
 				.newBuffer()
 					.withAttrib(this.attribPosition, DataType.FLOAT, 2)
-					.withCond(color, bb -> bb.withAttrib(this.attribColor, DataType.FLOAT, 4))
-					.withCond(color, bb -> bb.withAttrib(this.attribTexCoord, DataType.FLOAT, 2))
+					.withCond(color, b -> b.withAttrib(this.attribColor, DataType.FLOAT, 4))
+					.withCond(tex, b -> b.withAttrib(this.attribTexCoord, DataType.FLOAT, 2))
 					.build()
+				.withVertexAttrib(this.attribPosition, true)
+				.withVertexAttrib(this.attribColor, color)
+				.withVertexAttrib(this.attribTexCoord, tex)
+				.build();
+	}
+	
+	public GuiBufferArray createBufferSep(boolean color, boolean tex) {
+		return BufferArray.newBuilder((vao, vbos) -> new GuiBufferArray(vao, vbos, color ? 1 : 0, tex ? (color ? 2 : 1) : 0))
+				.newBuffer().withAttrib(this.attribPosition, DataType.FLOAT, 2).build()
+				.withCond(color, b -> b.newBuffer().withAttrib(this.attribColor, DataType.FLOAT, 4).build())
+				.withCond(tex, b -> b.newBuffer().withAttrib(this.attribTexCoord, DataType.FLOAT, 2).build())
 				.withVertexAttrib(this.attribPosition, true)
 				.withVertexAttrib(this.attribColor, color)
 				.withVertexAttrib(this.attribTexCoord, tex)

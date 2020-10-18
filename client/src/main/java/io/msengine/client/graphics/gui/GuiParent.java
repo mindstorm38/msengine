@@ -30,7 +30,7 @@ public class GuiParent extends GuiObject {
 	}
 	
 	@Override
-	void render(float alpha) {
+	protected void render(float alpha) {
 		for (GuiObject child : this.children) {
 			if (child.mustRender()) {
 				child.render(alpha);
@@ -39,7 +39,7 @@ public class GuiParent extends GuiObject {
 	}
 	
 	@Override
-	void update() {
+	protected void update() {
 		for (GuiObject child : this.children) {
 			if (child.mustRender()) {
 				child.update();

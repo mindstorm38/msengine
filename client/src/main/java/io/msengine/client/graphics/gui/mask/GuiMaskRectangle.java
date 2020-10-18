@@ -26,7 +26,7 @@ public class GuiMaskRectangle extends GuiMask {
 	@Override
 	public void init() {
 		this.buf = this.getProgram().createBuffer(false, false);
-		allocBuffers();
+		initBuffers();
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class GuiMaskRectangle extends GuiMask {
 		
 	}
 	
-	private void allocBuffers() {
+	private void initBuffers() {
 		
 		this.buf.bindVao();
 		this.buf.allocateVboData(0, 8 << 2, BufferUsage.DYNAMIC_DRAW);
@@ -59,6 +59,8 @@ public class GuiMaskRectangle extends GuiMask {
 			buf.flip();
 			this.buf.uploadIboData(buf, BufferUsage.STATIC_DRAW);
 		});
+		
+		this.updateVerticesBuffer();
 		
 	}
 	

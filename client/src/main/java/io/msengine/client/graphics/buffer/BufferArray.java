@@ -200,6 +200,13 @@ public abstract class BufferArray implements AutoCloseable {
 			this.creator = creator;
 		}
 		
+		public Builder<A> withCond(boolean cond, Consumer<Builder<A>> ifTrue) {
+			if (cond) {
+				ifTrue.accept(this);
+			}
+			return this;
+		}
+		
 		public BufferBuilder<A> newBuffer() {
 			BufferBuilder<A> builder = new BufferBuilder<>(this);
 			this.builders.add(builder);

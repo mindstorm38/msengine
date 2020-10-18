@@ -36,8 +36,8 @@ public abstract class GuiObject {
 	
 	protected abstract void init();
 	protected abstract void stop();
-	abstract void render(float alpha);
-	abstract void update();
+	protected abstract void render(float alpha);
+	protected abstract void update();
 	
 	void innerInit(GuiManager manager) {
 		if (!this.isReady()) {
