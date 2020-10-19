@@ -7,8 +7,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class WindowHandler {
 
@@ -27,6 +26,12 @@ public class WindowHandler {
 
     public static void registerErrorCallback() {
         setErrorCallback(WindowHandler::errorCallback);
+    }
+    
+    public static void ensureReady() {
+        if (!glfwInit()) {
+            throw new IllegalStateException("Failed to initialize GLFW.");
+        }
     }
 
     public static void terminateWindows() {

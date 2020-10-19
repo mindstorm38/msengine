@@ -157,7 +157,7 @@ public abstract class Window implements AutoCloseable {
     }
 
     public boolean shouldClose() {
-        return glfwWindowShouldClose(this.checkId());
+        return this.id != 0L && glfwWindowShouldClose(this.id);
     }
 
     @Override

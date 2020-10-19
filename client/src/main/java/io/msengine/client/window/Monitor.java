@@ -10,7 +10,12 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Monitor {
 	
+	static {
+		WindowHandler.init();
+	}
+	
 	public static List<Monitor> getMonitors() {
+		WindowHandler.ensureReady();
 		PointerBuffer buf = glfwGetMonitors();
 		List<Monitor> monitors = new ArrayList<>();
 		if (buf != null) {
@@ -22,6 +27,7 @@ public class Monitor {
 	}
 	
 	public static Monitor getPrimaryMonitor() {
+		WindowHandler.ensureReady();
 		return new Monitor(glfwGetPrimaryMonitor());
 	}
 	

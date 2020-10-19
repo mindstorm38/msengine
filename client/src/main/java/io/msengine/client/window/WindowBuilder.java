@@ -18,9 +18,10 @@ public abstract class WindowBuilder<W extends Window, SELF extends WindowBuilder
     protected int height = 720;
     protected String title = "Hello world";
     protected long monitor = 0L;
-    protected boolean resizable = false;
+    protected boolean resizable = true;
     protected boolean decorated = true;
     protected boolean floating = false;
+    protected boolean visible = false;
     protected boolean transparentFramebuffer = false;
 
     protected void setupHints() {
@@ -28,7 +29,7 @@ public abstract class WindowBuilder<W extends Window, SELF extends WindowBuilder
         glfwWindowHint(GLFW_DECORATED, glfwBool(this.decorated));
         glfwWindowHint(GLFW_FLOATING, glfwBool(this.floating));
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, glfwBool(this.transparentFramebuffer));
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_VISIBLE, glfwBool(this.visible));
     }
 
     protected long createWindow() {
@@ -37,9 +38,7 @@ public abstract class WindowBuilder<W extends Window, SELF extends WindowBuilder
     
     public W build() {
 
-        if (!glfwInit()) {
-            throw new IllegalStateException("Can't build a new window since GLFW failed to initialize.");
-        }
+        WindowHandler.ensureReady();
 
         this.setupHints();
 
@@ -91,6 +90,12 @@ public abstract class WindowBuilder<W extends Window, SELF extends WindowBuilder
     @SuppressWarnings("unchecked")
     public SELF withFloating(boolean floating) {
         this.floating = floating;
+        return (SELF) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public SELF withInitiallyVisible(boolean visible) {
+        this.visible = visible;
         return (SELF) this;
     }
 
