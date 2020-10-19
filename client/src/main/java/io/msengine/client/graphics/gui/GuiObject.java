@@ -19,13 +19,13 @@ public abstract class GuiObject {
 	private static final int FLAG_DISPLAYED = 0x2;
 	private static final int FLAG_VISIBLE   = 0x4;
 	
-	protected float xPos = 0, yPos = 0;
-	protected float width = 0, height = 0;
-	protected float xAnchor = 0, yAnchor = 0;
-	protected float xOffset = 0, yOffset = 0;
-	protected int xIntOffset = 0, yIntOffset = 0;
+	protected float xPos, yPos;
+	protected float width, height;
+	protected float xAnchor = -1, yAnchor = -1;
+	protected float xOffset, yOffset;
+	protected int xIntOffset, yIntOffset;
 	
-	private byte flags = 0;
+	private byte flags;
 	private GuiParent parent;
 	protected GuiManager manager;
 	protected ModelHandler model;
