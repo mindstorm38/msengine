@@ -31,11 +31,11 @@ public class ObjectEventManager<E extends ObjectEvent> {
     public <T extends E> void fireEvent(T event) {
 
         for (Class<?> clazz = event.getClass(); clazz != EVENT_SUPER_CLASS; clazz = clazz.getSuperclass()) {
-            List<ObjectEventListener<? super T>> group = (List<ObjectEventListener<? super T>>) this.listeners.get(clazz);
+            List<ObjectEventListener<?>> group = this.listeners.get(clazz);
             if (group != null) {
                 group.forEach(l -> {
                     try {
-                        l.onEvent(event);
+                        ((ObjectEventListener<? super T>) l).onEvent(event);
                     } catch (RuntimeException e) {
                         LOGGER.log(Level.SEVERE, "Error when firing event.", e);
                     }
@@ -44,5 +44,5 @@ public class ObjectEventManager<E extends ObjectEvent> {
         }
 
     }
-
+    
 }
