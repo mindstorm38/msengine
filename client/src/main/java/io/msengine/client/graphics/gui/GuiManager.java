@@ -50,6 +50,10 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
         return new GuiShaderProgram();
     }
     
+    /**
+     * Init the manager, this require a bound OpenGL context
+     * and a valid window.
+     */
     public void init() {
         if (this.program  == null) {
             this.program = this.createProgram();
@@ -58,7 +62,10 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
             this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
         }
     }
-
+    
+    /**
+     * Stop the manager.
+     */
     public void stop() {
         if (this.program != null) {
             this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
