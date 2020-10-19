@@ -1,20 +1,21 @@
 package io.msengine.example.gui;
 
-import io.msengine.client.graphics.gui.GuiColorSolid;
 import io.msengine.client.graphics.gui.GuiScene;
 
 public class GuiTestScene extends GuiScene {
-
-	private final GuiColorSolid color;
 	
 	public GuiTestScene() {
-	
-		this.color = new GuiColorSolid();
-		this.color.setColor(200, 130, 240);
-		this.color.setSize(100, 100);
-		this.color.setPosition(100, 100);
-		this.addChild(this.color);
+		
+		GuiRainbowFlag flag = new GuiRainbowFlag();
+		flag.setPosition(100, 100);
+		flag.setSize(300, 200);
+		this.addChild(flag);
+		
+		GuiRainbowFlag flag2 = new GuiRainbowFlag();
+		flag2.setPosition(400, 600);
+		flag2.setSize(200, 100);
+		this.addChild(flag2);
 		
 	}
-
+	
 }

@@ -40,8 +40,6 @@ public abstract class GuiColorBase extends GuiObject {
 			this.updateColorsBuffer();
 		}
 		
-		// System.out.println("Drawing " + this);
-		
 		this.model.push().translate(this.xOffset, this.yOffset).apply();
 		this.buf.draw();
 		this.model.pop();
@@ -52,14 +50,14 @@ public abstract class GuiColorBase extends GuiObject {
 	protected void update() { }
 	
 	@Override
-	public void setWidth(float width) {
-		super.setWidth(width);
+	protected void onWidthChanged(float width) {
+		super.onWidthChanged(width);
 		this.updateVertices = true;
 	}
 	
 	@Override
-	public void setHeight(float height) {
-		super.setHeight(height);
+	public void onHeightChanged(float height) {
+		super.onHeightChanged(height);
 		this.updateVertices = true;
 	}
 	

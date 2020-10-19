@@ -117,10 +117,14 @@ public abstract class GuiObject {
 	
 	// [ Position ] //
 	
+	protected void onXPosChanged(float xPos) { }
+	protected void onYPosChanged(float yPos) { }
+	
 	public void setXPos(float xPos) {
 		if (this.xPos != xPos) {
 			this.xPos = xPos;
 			this.updateXOffset();
+			this.onXPosChanged(xPos);
 		}
 	}
 	
@@ -128,6 +132,7 @@ public abstract class GuiObject {
 		if (this.yPos != yPos) {
 			this.yPos = yPos;
 			this.updateYOffset();
+			this.onYPosChanged(yPos);
 		}
 	}
 	
@@ -146,6 +151,9 @@ public abstract class GuiObject {
 	
 	// [ Size ] //
 	
+	protected void onWidthChanged(float width) { }
+	protected void onHeightChanged(float height) { }
+	
 	public void setWidth(float width) {
 		
 		if (this.width == width)
@@ -159,6 +167,7 @@ public abstract class GuiObject {
 		
 		this.width = width;
 		this.updateXOffset();
+		this.onWidthChanged(width);
 		
 	}
 	
@@ -175,6 +184,7 @@ public abstract class GuiObject {
 		
 		this.height = height;
 		this.updateYOffset();
+		this.onHeightChanged(height);
 		
 	}
 	
@@ -213,10 +223,14 @@ public abstract class GuiObject {
 	
 	// [ Anchor ] //
 	
+	protected void onXAnchorChanged(float xAnchor) { }
+	protected void onYAnchorChanged(float yAnchor) { }
+	
 	public void setXAnchor(float xAnchor) {
 		if (this.xAnchor != xAnchor) {
 			this.xAnchor = xAnchor;
 			this.updateXOffset();
+			this.onXAnchorChanged(xAnchor);
 		}
 	}
 	
@@ -224,6 +238,7 @@ public abstract class GuiObject {
 		if (this.yAnchor != yAnchor) {
 			this.yAnchor = yAnchor;
 			this.updateYOffset();
+			this.onYAnchorChanged(yAnchor);
 		}
 	}
 	
