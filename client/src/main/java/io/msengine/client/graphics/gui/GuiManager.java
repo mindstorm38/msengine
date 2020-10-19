@@ -6,6 +6,7 @@ import io.msengine.client.graphics.shader.ShaderProgram;
 import io.msengine.client.renderer.model.ModelApplyListener;
 import io.msengine.client.renderer.model.ModelHandler;
 import io.msengine.client.renderer.util.BlendMode;
+import io.msengine.client.window.ContextWindow;
 import io.msengine.client.window.Window;
 import io.msengine.client.window.listener.WindowFramebufferSizeEventListener;
 import io.msengine.common.util.Color;
@@ -24,7 +25,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 
     private static final Logger LOGGER = Logger.getLogger("msengine.gui");
 
-    private final Window window;
+    private final ContextWindow window;
     private final Map<String, Supplier<GuiScene>> scenes = new HashMap<>();
     private final Map<String, GuiScene> instances = new HashMap<>();
     
@@ -38,11 +39,11 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
     private boolean rendering;
     private boolean masking;
     
-    public GuiManager(Window window) {
+    public GuiManager(ContextWindow window) {
         this.window = Objects.requireNonNull(window, "Missing window.");
     }
 
-    public Window getWindow() {
+    public ContextWindow getWindow() {
         return this.window;
     }
 
@@ -53,9 +54,13 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
     /**
      * Init the manager, this require a bound OpenGL context
      * and a valid window.
+     * @throws IllegalStateException If the manager window's context is not the current one.
      */
     public void init() {
-        if (this.program  == null) {
+        if (this.program == null) {
+            if (!this.window.isContextCurrent()) {
+                throw new IllegalStateException("The GUI manager window's context is not the current one.");
+            }
             this.program = this.createProgram();
             this.program.link();
             this.updateSceneSizeFromWindow();

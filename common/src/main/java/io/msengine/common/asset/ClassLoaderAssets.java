@@ -15,15 +15,14 @@ final class ClassLoaderAssets extends Assets {
 	
 	@Override
 	protected Asset getAssetSimplified(String simplifiedPath) {
-		String fullPath = this.root + simplifiedPath;
-		if (this.loader.getResource(fullPath) == null)
+		if (this.loader.getResource(this.root + simplifiedPath) == null)
 			return null;
-		return new Asset(this, fullPath);
+		return new Asset(this, simplifiedPath);
 	}
 	
 	@Override
 	public InputStream openAssetStreamSimplified(String simplifiedPath) {
-		return this.loader.getResourceAsStream(simplifiedPath);
+		return this.loader.getResourceAsStream(this.root + simplifiedPath);
 	}
 	
 }

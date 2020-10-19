@@ -1,8 +1,6 @@
 package io.msengine.client.window;
 
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Base context window for OpenGL or OpenGL ES (not yet implemented).
@@ -15,6 +13,10 @@ public abstract class ContextWindow extends Window {
 	
 	public void makeContextCurrent() {
 		glfwMakeContextCurrent(this.checkId());
+	}
+	
+	public boolean isContextCurrent() {
+		return glfwGetCurrentContext() == this.checkId();
 	}
 	
 	public static void detachCurrentContext() {
