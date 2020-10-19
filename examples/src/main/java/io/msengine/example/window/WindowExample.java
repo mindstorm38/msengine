@@ -18,11 +18,11 @@ public class WindowExample {
 		System.out.println("Starting window ...");
 		
 		GLWindow window = new GLWindowBuilder()
-				.withTitle("Test title")
+				.withTitle("[MSE] Test title")
 				.build();
 		
 		GLWindow subWindow = new GLWindowBuilder()
-				.withTitle("Sub Window")
+				.withTitle("[MSE] Sub Window")
 				.shareOther(window)
 				.build();
 		
