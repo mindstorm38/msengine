@@ -8,7 +8,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class GLWindowBuilder extends ContextWindowBuilder<GLWindow, GLWindowBuilder> {
 	
 	public GLWindowBuilder() {
-		super(GLWindow.MIN_VERSION_MINOR, GLWindow.MIN_VERSION_MAJOR);
+		super(GLWindow.MIN_VERSION_MAJOR, GLWindow.MIN_VERSION_MINOR);
 	}
 	
 	@Override
