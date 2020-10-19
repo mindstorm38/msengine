@@ -18,19 +18,24 @@ allprojects {
 }
 
 subprojects {
-
-    apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
-    apply(plugin = "signing")
-
-    val snapshot = project.version.toString().endsWith("SNAPSHOT")
-
     repositories {
         mavenCentral()
         maven {
             url = uri("https://oss.sonatype.org/content/groups/public/")
         }
     }
+}
+
+project("common").mseLibrary()
+project("client").mseLibrary()
+
+fun Project.mseLibrary() {
+
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
+    apply(plugin = "signing")
+
+    val snapshot = version.toString().endsWith("SNAPSHOT")
 
     dependencies {
         "api"("fr.theorozier", "sutil", "1.1.1-SNAPSHOT")

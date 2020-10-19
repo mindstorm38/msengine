@@ -9,7 +9,7 @@ dependencies {
     val lwjglVersion = "3.1.6"
     val lwjglNatives = listOf("natives-windows", "natives-linux", "natives-macos")
 
-    "compileOnly"(project(":common"))
+    "api"(project(":common"))
 
     "api"("org.lwjgl", "lwjgl", lwjglVersion)
     "api"("org.lwjgl", "lwjgl-glfw", lwjglVersion)
