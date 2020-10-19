@@ -34,9 +34,6 @@ public class VerticesBufferArray extends BufferArray {
 	public void draw(int primitiveType) {
 		if (this.verticesCount != 0) {
 			this.bindVao();
-			// GLUtils.glSetVertexAttribArray(0, true);
-			// GLUtils.glSetVertexAttribArray(1, true);
-			// GLUtils.glSetVertexAttribArray(2, false);
 			glDrawArrays(primitiveType, 0, this.verticesCount);
 			unbindVao();
 		}

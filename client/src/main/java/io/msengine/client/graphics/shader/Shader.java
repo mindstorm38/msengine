@@ -118,7 +118,7 @@ public class Shader implements AutoCloseable {
     
     @Override
     public void close() {
-        if (this.isValid()) {
+        if (glIsShader(this.name)) {
             glDeleteShader(this.name);
             this.name = 0;
         }

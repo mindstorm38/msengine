@@ -74,12 +74,6 @@ public class GuiExample implements FrameRegulated {
 		glViewport(0, 0, this.window.getFramebufferWidth(), this.window.getFramebufferHeight());
 		
 		this.gui.render(alpha);
-		
-		int err;
-		while ((err = glGetError()) != GL_NO_ERROR) {
-			System.out.println("GL error: " + err);
-		}
-		
 		this.window.swapBuffers();
 		
 	}
@@ -87,7 +81,6 @@ public class GuiExample implements FrameRegulated {
 	@Override
 	public void tick() {
 		this.gui.update();
-		// System.out.println("tick");
 	}
 	
 	@Override
