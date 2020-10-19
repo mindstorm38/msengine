@@ -52,15 +52,24 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
     }
     
     /**
+     * Internal method to check if the used window's context is the current one.
+     * <b>This method is not called for {@link #render(float)} to avoid overhead,
+     * but render should be called in the valid context.</b>
+     */
+    private void checkWindowContext() {
+        if (!this.window.isContextCurrent()) {
+            throw new IllegalStateException("Can't call this because The GUI manager window's context is not the current one.");
+        }
+    }
+    
+    /**
      * Init the manager, this require a bound OpenGL context
      * and a valid window.
      * @throws IllegalStateException If the manager window's context is not the current one.
      */
     public void init() {
         if (this.program == null) {
-            if (!this.window.isContextCurrent()) {
-                throw new IllegalStateException("The GUI manager window's context is not the current one.");
-            }
+            this.checkWindowContext();
             this.program = this.createProgram();
             this.program.link();
             this.updateSceneSizeFromWindow();
@@ -73,6 +82,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
      */
     public void stop() {
         if (this.program != null) {
+            this.checkWindowContext();
             this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
             this.unloadScene();
             this.instances.values().forEach(GuiScene::stop);
@@ -97,7 +107,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
             BlendMode.TRANSPARENCY.use();
             this.program.use();
             this.setGlobalColor(Color.WHITE);
-            
+            this.program.uploadProjectionMatrix();
+    
             this.currentScene.render(alpha);
             
             ShaderProgram.release();
@@ -167,6 +178,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
      *                            consumer parameter is this last scene instance
      */
     public void loadScene(String identifier, Consumer<GuiScene> oncePreviousStopped) {
+        
+        this.checkWindowContext();
 
         GuiScene scene = null;
 
@@ -226,6 +239,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
      * @param identifier The scene identifier.
      */
     public void uncacheScene(String identifier) {
+        this.checkWindowContext();
         GuiScene scene = this.instances.get(identifier);
         if (scene != this.currentScene) {
             this.instances.remove(identifier);

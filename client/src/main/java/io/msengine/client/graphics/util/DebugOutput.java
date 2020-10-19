@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL43.*;
 
 public class DebugOutput implements GLDebugMessageCallbackI {
@@ -30,6 +31,7 @@ public class DebugOutput implements GLDebugMessageCallbackI {
 	
 	public static void registerIfSupported(GLCapabilities cap) {
 		if (isSupported(cap)) {
+			glEnable(GL_DEBUG_OUTPUT);
 			glDebugMessageCallback(new DebugOutput(), 0L);
 		}
 	}

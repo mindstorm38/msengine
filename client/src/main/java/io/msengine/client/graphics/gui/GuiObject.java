@@ -25,7 +25,7 @@ public abstract class GuiObject {
 	protected float xOffset, yOffset;
 	protected int xIntOffset, yIntOffset;
 	
-	private byte flags;
+	private byte flags = FLAG_VISIBLE; // Visible by default
 	private GuiParent parent;
 	protected GuiManager manager;
 	protected ModelHandler model;
@@ -42,11 +42,12 @@ public abstract class GuiObject {
 	void innerInit(GuiManager manager) {
 		if (!this.isReady()) {
 			try {
-				this.init();
+				this.setFlag(FLAG_READY, true);
 				this.manager = manager;
 				this.model = manager.getModel();
-				this.setFlag(FLAG_READY, true);
+				this.init();
 			} catch (Exception e) {
+				this.setFlag(FLAG_READY, false);
 				LOGGER.log(Level.WARNING, "Failed to call init() on " + this.getClass() + ", the object no longer ready.", e);
 			}
 		}
@@ -55,13 +56,13 @@ public abstract class GuiObject {
 	void innerStop() {
 		if (this.isReady()) {
 			try {
-				this.setFlag(FLAG_READY, false);
 				this.stop();
 			} catch (Exception e) {
 				LOGGER.log(Level.WARNING, "Failed to call stop() on " + this.getClass() + ", the object no longer ready.", e);
 			} finally {
 				this.model = null;
 				this.manager = null;
+				this.setFlag(FLAG_READY, false);
 			}
 		}
 	}
@@ -344,16 +345,13 @@ public abstract class GuiObject {
 
 	// [ Utils ] //
 
-
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() +
-				"<x=" + this.getXPos() +
-				", y=" + this.getYPos() +
-				", w=" + this.getWidth() +
-				", h=" + this.getHeight() +
-				", ax=" + this.getXAnchor() +
-				", ay=" + this.getYAnchor() + ">";
+				"<pos=" + this.getXPos() + "/" + this.getYPos() +
+				", size=" + this.getWidth() + "/" + this.getHeight() +
+				", anchor=" + this.getXAnchor() + "/" + this.getYAnchor() +
+				", offset=" + this.xOffset + "/" + this.yOffset + ">";
 	}
 
 }

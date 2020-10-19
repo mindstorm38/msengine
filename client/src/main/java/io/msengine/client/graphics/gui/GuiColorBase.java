@@ -40,6 +40,8 @@ public abstract class GuiColorBase extends GuiObject {
 			this.updateColorsBuffer();
 		}
 		
+		// System.out.println("Drawing " + this);
+		
 		this.model.push().translate(this.xOffset, this.yOffset).apply();
 		this.buf.draw();
 		this.model.pop();

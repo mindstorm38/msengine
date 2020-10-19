@@ -60,7 +60,7 @@ public class MethodEventManager {
 	// ADD //
 	
 	public <A> void addEventListener(Class<A> clazz, A listener) {
-		this.getListenerGroup(clazz).remove(listener);
+		this.getListenerGroup(clazz).add(listener);
 
 		/*List<A> group = this.getListenerGroup(clazz);
 		

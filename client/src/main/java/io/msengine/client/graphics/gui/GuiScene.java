@@ -38,11 +38,6 @@ public class GuiScene extends GuiParent {
 	protected void onSceneResized(float width, float height) { }
 	
 	@Override
-	void setDisplayed(boolean displayed) {
-		throw new UnsupportedOperationException("Can't set displayed for scene.");
-	}
-	
-	@Override
 	public void setVisible(boolean visible) {
 		throw new UnsupportedOperationException("Can't set scene visible state.");
 	}

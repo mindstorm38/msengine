@@ -195,6 +195,7 @@ public abstract class BufferArray implements AutoCloseable {
 		
 		private final List<BufferBuilder<A>> builders = new ArrayList<>();
 		private final BufferArrayCreator<A> creator;
+		private final List<BufferEnableAttrib> vertexAttribs = new ArrayList<>();
 		
 		private Builder(BufferArrayCreator<A> creator) {
 			this.creator = creator;
@@ -214,7 +215,7 @@ public abstract class BufferArray implements AutoCloseable {
 		}
 		
 		public Builder<A> withVertexAttrib(int location, boolean enabled) {
-			GLUtils.glSetVertexAttribArray(location, enabled);
+			this.vertexAttribs.add(new BufferEnableAttrib(location, enabled));
 			return this;
 		}
 		
@@ -222,6 +223,10 @@ public abstract class BufferArray implements AutoCloseable {
 			
 			int vao = glGenVertexArrays();
 			glBindVertexArray(vao);
+			
+			for (BufferEnableAttrib vertexAttrib : this.vertexAttribs) {
+				GLUtils.glSetVertexAttribArray(vertexAttrib.attribLocation, vertexAttrib.enabled);
+			}
 			
 			int count = this.builders.size();
 			int[] vbos = new int[count];
@@ -290,13 +295,25 @@ public abstract class BufferArray implements AutoCloseable {
 		private final int dataCount;
 		private final int sizeOf;
 		
-		public BufferAttrib(int attribLocation, int dataType, int dataCount, int sizeOf) {
+		private BufferAttrib(int attribLocation, int dataType, int dataCount, int sizeOf) {
 			this.attribLocation = attribLocation;
 			this.dataType = dataType;
 			this.dataCount = dataCount;
 			this.sizeOf = sizeOf;
 		}
 	
+	}
+	
+	private static class BufferEnableAttrib {
+		
+		private final int attribLocation;
+		private final boolean enabled;
+		
+		private BufferEnableAttrib(int attribLocation, boolean enabled) {
+			this.attribLocation = attribLocation;
+			this.enabled = enabled;
+		}
+		
 	}
 	
 }
