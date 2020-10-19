@@ -3,6 +3,7 @@
 //
 //	- Java   : 1.8
 //	- Gradle : 6.1.1
+//  - Version : 1.1.0 (snapshot)
 //
 
 // Import from your gradle.properties
@@ -12,7 +13,7 @@ val ossrhPassword: String? by project
 description = "A Java 3D engine on top of LWJGL 3, using OpenGL, GLFW and JOML"
 
 allprojects {
-    version = "1.0.8-SNAPSHOT"
+    version = "1.1.0-SNAPSHOT"
     group = "fr.theorozier"
 }
 
