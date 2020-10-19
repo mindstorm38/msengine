@@ -11,7 +11,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
-import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -30,7 +29,8 @@ public abstract class Window implements AutoCloseable {
     // Class //
 
     protected long id;
-
+    protected int fbWidth, fbHeight;
+    
     private final MethodEventManager eventManager = new MethodEventManager();
 
     Window(long id) {
@@ -67,6 +67,8 @@ public abstract class Window implements AutoCloseable {
         });
 
         glfwSetFramebufferSizeCallback(id, (long window, int width, int height) -> {
+            this.fbWidth = width;
+            this.fbHeight = height;
             this.eventManager.fireListeners(WindowFramebufferSizeEventListener.class, l -> l.onWindowFramebufferSizeChangedEvent(this, width, height));
         });
 
@@ -109,14 +111,23 @@ public abstract class Window implements AutoCloseable {
         }
     }
     
-    public void getFramebufferSize(BiConsumer<Integer, Integer> consumer) {
-        this.checkId();
+    public int getFramebufferWidth() {
+        return this.fbWidth;
+    }
+    
+    public int getFramebufferHeight() {
+        return this.fbHeight;
+    }
+    
+    public void getFramebufferSize(SizeConsumer consumer) {
+        consumer.accept(this.fbWidth, this.fbHeight);
+        /*this.checkId();
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer width = stack.mallocInt(1);
             IntBuffer height = stack.mallocInt(1);
             glfwGetFramebufferSize(this.id, width, height);
             consumer.accept(width.get(), height.get());
-        }
+        }*/
     }
     
     public void setFullscreen(Monitor monitor) {
@@ -175,6 +186,11 @@ public abstract class Window implements AutoCloseable {
 
     public static double getTime() {
         return glfwGetTime();
+    }
+    
+    @FunctionalInterface
+    public interface SizeConsumer {
+        void accept(int width, int height);
     }
 
 }
