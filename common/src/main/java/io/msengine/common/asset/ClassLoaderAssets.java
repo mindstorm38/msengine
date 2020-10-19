@@ -13,16 +13,20 @@ final class ClassLoaderAssets extends Assets {
 		this.root = simplifyPath(root);
 	}
 	
+	private String getRootedPath(String path) {
+		return this.root + '/' + path;
+	}
+	
 	@Override
 	protected Asset getAssetSimplified(String simplifiedPath) {
-		if (this.loader.getResource(this.root + simplifiedPath) == null)
+		if (this.loader.getResource(this.getRootedPath(simplifiedPath)) == null)
 			return null;
 		return new Asset(this, simplifiedPath);
 	}
 	
 	@Override
 	public InputStream openAssetStreamSimplified(String simplifiedPath) {
-		return this.loader.getResourceAsStream(this.root + simplifiedPath);
+		return this.loader.getResourceAsStream(this.getRootedPath(simplifiedPath));
 	}
 	
 }

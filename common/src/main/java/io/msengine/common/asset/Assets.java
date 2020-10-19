@@ -36,7 +36,9 @@ public abstract class Assets {
 		StringBuilder builder = new StringBuilder();
 		for (String part : path.split("/")) {
 			if (!part.isEmpty()) {
-				builder.append('/');
+				if (builder.length() != 0) {
+					builder.append('/');
+				}
 				builder.append(part);
 			}
 		}
