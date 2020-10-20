@@ -1,8 +1,10 @@
-package io.msengine.client.graphics.util;
+package io.msengine.client.graphics.buffer;
+
+import io.msengine.client.graphics.util.Symbol;
 
 import static org.lwjgl.opengl.GL15.*;
 
-public class BufferUsage {
+public class BufferUsage extends Symbol {
 	
 	public static final BufferUsage STATIC_DRAW = new BufferUsage(GL_STATIC_DRAW);
 	public static final BufferUsage STATIC_READ = new BufferUsage(GL_STATIC_READ);
@@ -16,10 +18,8 @@ public class BufferUsage {
 	
 	// Class //
 	
-	public final int value;
-	
 	public BufferUsage(int value) {
-		this.value = value;
+		super(value);
 	}
 
 }

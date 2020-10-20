@@ -5,7 +5,7 @@ import io.msengine.client.graphics.buffer.BufferArray;
 import io.msengine.client.graphics.shader.Shader;
 import io.msengine.client.graphics.shader.ShaderProgram;
 import io.msengine.client.graphics.util.DataType;
-import io.msengine.client.graphics.util.ShaderType;
+import io.msengine.client.graphics.shader.ShaderType;
 import io.msengine.client.graphics.shader.uniform.Float4Uniform;
 import io.msengine.client.graphics.shader.uniform.FloatMatrix4Uniform;
 import io.msengine.client.graphics.shader.uniform.Int1Uniform;
@@ -15,7 +15,6 @@ import org.joml.Matrix4f;
 
 import java.io.IOException;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
 public class GuiShaderProgram extends ShaderProgram {

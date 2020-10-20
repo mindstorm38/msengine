@@ -1,6 +1,5 @@
 package io.msengine.client.graphics.buffer;
 
-import io.msengine.client.graphics.util.BufferUsage;
 import io.msengine.client.graphics.util.DataType;
 import io.msengine.client.renderer.util.GLUtils;
 import org.lwjgl.opengl.GL11;

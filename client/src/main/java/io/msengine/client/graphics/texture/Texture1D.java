@@ -11,7 +11,7 @@ public class Texture1D extends Texture {
 	
 	public void upload(int level, int internalFormat, int width, int height) {
 		this.bind();
-		glTexImage1D(GL_TEXTURE_1D, 0, internalFormat, width, height);
+		glTexImage1D(GL_TEXTURE_1D, 0, internalFormat, width, height, );
 	}
 	
 }
