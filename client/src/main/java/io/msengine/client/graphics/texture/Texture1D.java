@@ -9,9 +9,13 @@ public class Texture1D extends Texture {
 		return GL_TEXTURE_1D;
 	}
 	
-	public void upload(int level, int internalFormat, int width, int height) {
+	public void allocate(int level, TextureInternalFormat internalFormat, int width) {
 		this.bind();
-		glTexImage1D(GL_TEXTURE_1D, 0, internalFormat, width, height, );
+	}
+	
+	public void upload(int level, TextureInternalFormat internalFormat, int width, TextureClientFormat format, TextureClientType type) {
+		this.bind();
+		// glTexImage1D(GL_TEXTURE_1D, 0, format.value, width, 0, format.value, type.value);
 	}
 	
 }
