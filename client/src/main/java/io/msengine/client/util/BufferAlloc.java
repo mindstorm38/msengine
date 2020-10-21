@@ -1,15 +1,19 @@
-package io.msengine.client.graphics.util;
+package io.msengine.client.util;
 
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.function.Consumer;
 
-public class BufferAlloc {
+public final class BufferAlloc {
 
 	// Off-heap Stack allocation //
 	
@@ -64,6 +68,39 @@ public class BufferAlloc {
 	@FunctionalInterface
 	public interface MemoryAllocator<B extends Buffer> {
 		B alloc(int count);
+	}
+
+	// Utils //
+
+	public static ByteBuffer fromInputStream(InputStream stream, int initialSize) throws IOException {
+
+		ByteBuffer buffer = MemoryUtil.memAlloc(initialSize);
+
+		try (ReadableByteChannel channel = Channels.newChannel(stream)) {
+
+			int read;
+			while ((read = channel.read(buffer)) != -1) {
+				if (buffer.remaining() == 0) {
+					int pos = buffer.position();
+					ByteBuffer newBuffer = MemoryUtil.memRealloc(buffer, buffer.capacity() + 2048);
+					if (newBuffer == null) {
+						MemoryUtil.memFree(buffer);
+						throw new IOException("Failed to realloc buffer when reading stream.");
+					} else {
+						buffer = newBuffer;
+					}
+					buffer.position(pos);
+				}
+			}
+
+		}
+
+		return buffer;
+
+	}
+
+	public static ByteBuffer fromInputStream(InputStream stream) throws IOException {
+		return fromInputStream(stream, 4096);
 	}
 
 }

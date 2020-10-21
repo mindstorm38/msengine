@@ -21,17 +21,22 @@ public class Asset {
 	/**
 	 * Open an {@link InputStream} reading this asset data, <b>or null if this asset is no longer valid</b>.
 	 * @return The data stream of null.
+	 * @see Assets#openAssetStreamSimplified(String)
 	 */
 	public InputStream openStream() {
 		return this.assets.openAssetStreamSimplified(this.path);
 	}
-	
-	/*public InputStream openStreamExcept() throws IOException {
-		InputStream stream = this.openStream();
-		if (stream == null) {
-			throw new IOException("");
-		}
-	}*/
+
+	/**
+	 * Open an {@link InputStream} reading this asset data, or throw an {@link IOException}.
+	 * @return The data stream.
+	 * @throws IOException If the stream can't be opened.
+	 * @see Assets#throwIfNoStream(InputStream)
+	 * @see #openStream()
+	 */
+	public InputStream openStreamExcept() throws IOException {
+		return Assets.throwIfNoStream(this.openStream());
+	}
 	
 	/**
 	 * Get sub assets <b>only if this asset is a directory</b>.

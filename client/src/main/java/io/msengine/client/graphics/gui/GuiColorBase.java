@@ -1,7 +1,7 @@
 package io.msengine.client.graphics.gui;
 
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
-import io.msengine.client.graphics.util.BufferAlloc;
+import io.msengine.client.util.BufferAlloc;
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.common.util.Color;
 
