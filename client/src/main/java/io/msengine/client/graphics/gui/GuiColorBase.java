@@ -68,8 +68,7 @@ public abstract class GuiColorBase extends GuiObject {
 		this.buf.allocateVboData(this.buf.getColorIndex(), 16 << 2, BufferUsage.DYNAMIC_DRAW);
 		
 		BufferAlloc.allocStackInt(this.buf.setIndicesCount(6), buf -> {
-			buf.put(0).put(1).put(3);
-			buf.put(1).put(2).put(3);
+			GuiCommon.putSquareIndices(buf);
 			buf.flip();
 			this.buf.uploadIboData(buf, BufferUsage.STATIC_DRAW);
 		});
@@ -82,10 +81,7 @@ public abstract class GuiColorBase extends GuiObject {
 	private void updateVerticesBuffer() {
 		
 		BufferAlloc.allocStackFloat(8, buf -> {
-			buf.put(0).put(0);
-			buf.put(0).put(this.height);
-			buf.put(this.width).put(this.height);
-			buf.put(this.width).put(0);
+			GuiCommon.putSquareVertices(buf, this.width, this.height);
 			buf.flip();
 			this.buf.bindVao();
 			this.buf.uploadVboSubData(this.buf.getPositionIndex(), 0, buf);

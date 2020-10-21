@@ -368,5 +368,5 @@ public abstract class GuiObject {
 				", anchor=" + this.getXAnchor() + "/" + this.getYAnchor() +
 				", offset=" + this.xOffset + "/" + this.yOffset + ">";
 	}
-
+	
 }

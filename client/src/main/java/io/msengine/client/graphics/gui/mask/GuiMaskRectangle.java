@@ -1,5 +1,6 @@
 package io.msengine.client.graphics.gui.mask;
 
+import io.msengine.client.graphics.gui.GuiCommon;
 import io.msengine.client.util.BufferAlloc;
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
@@ -54,8 +55,7 @@ public class GuiMaskRectangle extends GuiMask {
 		this.buf.allocateVboData(0, 8 << 2, BufferUsage.DYNAMIC_DRAW);
 		
 		BufferAlloc.allocStackInt(this.buf.setIndicesCount(6), buf -> {
-			buf.put(0).put(1).put(3);
-			buf.put(1).put(2).put(3);
+			GuiCommon.putSquareIndices(buf);
 			buf.flip();
 			this.buf.uploadIboData(buf, BufferUsage.STATIC_DRAW);
 		});
@@ -66,13 +66,10 @@ public class GuiMaskRectangle extends GuiMask {
 	
 	private void updateVerticesBuffer() {
 		
-		this.buf.bindVao();
-		
 		BufferAlloc.allocStackFloat(8, buf -> {
-			buf.put(0).put(0);
-			buf.put(0).put(this.height);
-			buf.put(this.width).put(this.height);
-			buf.put(this.width).put(0);
+			GuiCommon.putSquareVertices(buf, this.width, this.height);
+			buf.flip();
+			this.buf.bindVao();
 			this.buf.uploadVboSubData(0, 0, buf);
 		});
 		

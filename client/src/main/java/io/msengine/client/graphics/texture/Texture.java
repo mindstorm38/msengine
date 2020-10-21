@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.stb.STBImage.stbi_failure_reason;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 
-public class Texture implements AutoCloseable {
+public class Texture implements AutoCloseable, TextureProvider {
 	
 	/**
 	 * Get a texture unit ID.
@@ -24,6 +24,28 @@ public class Texture implements AutoCloseable {
 	 */
 	public static int getTextureUnit(int unit) {
 		return GL_TEXTURE0 + unit;
+	}
+	
+	public static void setTextureUnit(int unit) {
+		glActiveTexture(getTextureUnit(unit));
+	}
+	
+	public static void bindTexture(int target, int name) {
+		glBindTexture(target, name);
+	}
+	
+	public static void unbindTexture(int target) {
+		glBindTexture(target, 0);
+	}
+	
+	public static void bindTexture(int unit, int target, int name) {
+		glActiveTexture(getTextureUnit(unit));
+		glBindTexture(target, name);
+	}
+	
+	public static void unbindTexture(int unit, int target) {
+		glActiveTexture(getTextureUnit(unit));
+		glBindTexture(target, 0);
 	}
 	
 	// Class //
@@ -52,18 +74,6 @@ public class Texture implements AutoCloseable {
 			throw new IllegalStateException("The texture is not yet valid.");
 		}
 	}
-
-	public static void setTextureUnit(int unit) {
-		glActiveTexture(getTextureUnit(unit));
-	}
-
-	public static void bindTexture(int target, int name) {
-		glBindTexture(target, name);
-	}
-
-	public static void unbindTexture(int target) {
-		glBindTexture(target, 0);
-	}
 	
 	public void bind() {
 		this.checkValid();
@@ -83,6 +93,11 @@ public class Texture implements AutoCloseable {
 			this.name = 0;
 		}
 	}
+	
+	@Override
+	public int getTextureName() {
+		return this.name;
+	}
 
 	public static void loadImageFromStream(InputStream stream, int initialSize, DynTexture.ImageLoadingConsumer consumer) throws IOException {
 		ByteBuffer buf = BufferAlloc.fromInputStream(stream, initialSize);
@@ -98,7 +113,7 @@ public class Texture implements AutoCloseable {
 		}
 		MemoryUtil.memFree(buf);
 	}
-
+	
 	@FunctionalInterface
 	public interface ImageLoadingConsumer {
 		void accept(ByteBuffer buf, int width, int height);

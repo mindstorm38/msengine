@@ -4,15 +4,15 @@ import org.lwjgl.opengl.GL20;
 
 public class SamplerUniform extends Uniform {
 	
-	private int activeTexture;
+	private int unit;
 	
-	public void setActiveTexture(int activeTexture) {
-		this.activeTexture = activeTexture;
+	public void setTextureUnit(int unit) {
+		this.unit = unit;
 	}
 	
 	@Override
 	public void upload() {
-		GL20.glUniform1i(this.location, this.activeTexture);
+		GL20.glUniform1i(this.location, this.unit);
 	}
 	
 }

@@ -3,6 +3,7 @@ package io.msengine.client.graphics.gui;
 import io.msengine.client.graphics.gui.mask.GuiMask;
 import io.msengine.client.graphics.gui.render.GuiShaderProgram;
 import io.msengine.client.graphics.shader.ShaderProgram;
+import io.msengine.client.graphics.texture.Texture;
 import io.msengine.client.renderer.model.ModelApplyListener;
 import io.msengine.client.renderer.model.ModelHandler;
 import io.msengine.client.renderer.util.BlendMode;
@@ -275,13 +276,26 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
     /**
      * Upload the global color to the program uniform.
      */
-    public void applyGlobalColor() {
-        this.program.setGlobalColor(this.globalColor);
+    public void setGlobalColor(Color color) {
+        this.program.setGlobalColor(color);
     }
     
-    public void setGlobalColor(Color color) {
-        this.globalColor.setAll(color);
-        this.applyGlobalColor();
+    public void setTextureEnabled(boolean enabled) {
+        this.program.setTextureEnabled(enabled);
+    }
+    
+    public void setTextureUnit(int unit) {
+        this.program.setTextureUnit(unit);
+    }
+    
+    public void bindTexture(int unit, int name) {
+        this.setTextureUnit(unit);
+        Texture.setTextureUnit(unit);
+        Texture.bindTexture(GL_TEXTURE_2D, name);
+    }
+    
+    public void bindTexture(int name) {
+        this.bindTexture(0, name);
     }
     
     public void mask(GuiMask[] masks) {

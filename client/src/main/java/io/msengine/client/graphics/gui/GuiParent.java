@@ -19,7 +19,7 @@ public class GuiParent extends GuiObject {
 	
 	private void initChild(GuiObject child) {
 		if (this.isReady()) {
-			child.innerInit(this.getManager());
+			child.innerInit(this.manager);
 		}
 	}
 	

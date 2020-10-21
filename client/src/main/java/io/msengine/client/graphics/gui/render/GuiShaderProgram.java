@@ -100,11 +100,8 @@ public class GuiShaderProgram extends ShaderProgram {
 		this.textureEnabledUniform.set(enabled);
 	}
 	
-	public void setActiveTexture(Integer activeTexture) {
-		this.setTextureEnabled(activeTexture != null);
-		if (activeTexture != null) {
-			this.textureSampler.setActiveTexture(activeTexture);
-		}
+	public void setTextureUnit(int unit) {
+		this.textureSampler.setTextureUnit(unit);
 	}
 	
 	public GuiBufferArray createBuffer(boolean color, boolean tex) {
