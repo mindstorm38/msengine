@@ -1,6 +1,7 @@
 package io.msengine.client.graphics.texture;
 
 import io.msengine.client.util.BufferAlloc;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
@@ -10,12 +11,15 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.stb.STBImage.stbi_failure_reason;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 
 public class Texture implements AutoCloseable, TextureProvider {
+	
+	public static final int CONFIG_UNIT = 31;
 	
 	/**
 	 * Get a texture unit ID.
@@ -54,36 +58,78 @@ public class Texture implements AutoCloseable, TextureProvider {
 	protected int name;
 
 	public Texture(int target) {
+		
 		this.name = glGenTextures();
-		if (!glIsTexture(this.name)) {
-			throw new IllegalStateException("Failed to create texture object.");
-		}
 		this.target = target;
+		
+		this.completeTexture();
+		
+		if (!glIsTexture(this.name)) {
+			throw new IllegalStateException("Failed to create texture object, maybe not set bound.");
+		}
+		
+	}
+	
+	protected void completeTexture() { }
+	
+	public int getName() {
+		return this.name;
 	}
 	
 	public boolean isValid() {
 		return glIsTexture(this.name);
 	}
 	
-	public int getName() {
-		return this.name;
-	}
-	
 	public void checkValid() {
 		if (!this.isValid()) {
-			throw new IllegalStateException("The texture is not yet valid.");
+			throw new IllegalStateException("The texture is no longer valid.");
 		}
 	}
 	
 	public void bind() {
-		this.checkValid();
 		bindTexture(this.target, this.name);
 	}
 	
 	public void bind(int unit) {
-		this.checkValid();
 		setTextureUnit(unit);
 		bindTexture(this.target, this.name);
+	}
+	
+	public void unbind() {
+		unbindTexture(this.target);
+	}
+	
+	public void unbind(int unit) {
+		setTextureUnit(unit);
+		unbindTexture(this.target);
+	}
+	
+	public void setFilter(SamplerParamFilter minFilter, SamplerParamFilter magFilter) {
+		this.bind(CONFIG_UNIT);
+		glTexParameterf(this.target, GL_TEXTURE_MIN_FILTER, minFilter.value);
+		glTexParameterf(this.target, GL_TEXTURE_MAG_FILTER, magFilter.value);
+		this.unbind();
+	}
+	
+	public void setWrap(SamplerParamWrap widthWrap) {
+		this.bind(CONFIG_UNIT);
+		glTexParameterf(this.target, GL_TEXTURE_WRAP_S, widthWrap.value);
+		this.unbind();
+	}
+	
+	public void setWrap(SamplerParamWrap widthWrap, SamplerParamWrap heightWrap) {
+		this.bind(CONFIG_UNIT);
+		glTexParameterf(this.target, GL_TEXTURE_WRAP_S, widthWrap.value);
+		glTexParameterf(this.target, GL_TEXTURE_WRAP_T, heightWrap.value);
+		this.unbind();
+	}
+	
+	public void setWrap(SamplerParamWrap widthWrap, SamplerParamWrap heightWrap, SamplerParamWrap depthWrap) {
+		this.bind(CONFIG_UNIT);
+		glTexParameterf(this.target, GL_TEXTURE_WRAP_S, widthWrap.value);
+		glTexParameterf(this.target, GL_TEXTURE_WRAP_T, heightWrap.value);
+		glTexParameterf(this.target, GL_TEXTURE_WRAP_R, depthWrap.value);
+		this.unbind();
 	}
 	
 	@Override
@@ -99,7 +145,7 @@ public class Texture implements AutoCloseable, TextureProvider {
 		return this.name;
 	}
 
-	public static void loadImageFromStream(InputStream stream, int initialSize, DynTexture.ImageLoadingConsumer consumer) throws IOException {
+	public static void loadImageFromStream(InputStream stream, int initialSize, ImageLoadingConsumer consumer) throws IOException {
 		ByteBuffer buf = BufferAlloc.fromInputStream(stream, initialSize);
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			IntBuffer width = stack.callocInt(1);

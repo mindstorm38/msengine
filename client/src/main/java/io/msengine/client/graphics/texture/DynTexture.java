@@ -7,6 +7,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -131,7 +132,7 @@ public class DynTexture extends Texture {
 	}
 
 	public void allocFromAsset(Asset asset) throws IOException {
-		this.allocFromStream(asset.openStreamExcept());
+		this.allocFromStream(Objects.requireNonNull(asset, "Asset is null.").openStreamExcept());
 	}
 
 	// Graphics //

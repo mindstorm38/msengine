@@ -11,6 +11,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public final class BufferAlloc {
@@ -73,11 +74,11 @@ public final class BufferAlloc {
 	// Utils //
 
 	public static ByteBuffer fromInputStream(InputStream stream, int initialSize) throws IOException {
-
+		
+		Objects.requireNonNull(stream, "Input stream is null.");
 		ByteBuffer buffer = MemoryUtil.memAlloc(initialSize);
 
 		try (ReadableByteChannel channel = Channels.newChannel(stream)) {
-
 			int read;
 			while ((read = channel.read(buffer)) != -1) {
 				if (buffer.remaining() == 0) {
@@ -95,6 +96,7 @@ public final class BufferAlloc {
 
 		}
 
+		buffer.flip();
 		return buffer;
 
 	}
