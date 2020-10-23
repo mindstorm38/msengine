@@ -96,6 +96,8 @@ public class GuiShaderProgram extends ShaderProgram {
 		this.globalColorUniform.set(color);
 	}
 	
+	// Texture //
+	
 	public void setTextureEnabled(boolean enabled) {
 		this.textureEnabledUniform.set(enabled);
 	}
@@ -103,6 +105,15 @@ public class GuiShaderProgram extends ShaderProgram {
 	public void setTextureUnit(int unit) {
 		this.textureSampler.setTextureUnit(unit);
 	}
+	
+	public void setTextureUnit(Integer unitOrNull) {
+		this.textureEnabledUniform.set(unitOrNull != null);
+		if (unitOrNull != null) {
+			this.textureSampler.setTextureUnit(unitOrNull);
+		}
+	}
+	
+	// Buffer //
 	
 	public GuiBufferArray createBuffer(boolean color, boolean tex) {
 		return BufferArray.newBuilder(GuiBufferArray::new)

@@ -107,7 +107,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
             glEnable(GL_BLEND);
             BlendMode.TRANSPARENCY.use();
             this.program.use();
-            this.setGlobalColor(Color.WHITE);
+            this.program.setTextureEnabled(false);
+            this.program.setGlobalColor(Color.WHITE);
             this.program.uploadProjectionMatrix();
     
             this.currentScene.render(alpha);
@@ -280,22 +281,18 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
         this.program.setGlobalColor(color);
     }
     
-    public void setTextureEnabled(boolean enabled) {
-        this.program.setTextureEnabled(enabled);
-    }
-    
-    public void setTextureUnit(int unit) {
+    public void setTextureUnit(Integer unit) {
         this.program.setTextureUnit(unit);
     }
     
-    public void bindTexture(int unit, int name) {
+    public void setTextureUnitAndBind(int unit, int name) {
         this.setTextureUnit(unit);
-        Texture.setTextureUnit(unit);
-        Texture.bindTexture(GL_TEXTURE_2D, name);
+        Texture.bindTexture(unit, GL_TEXTURE_2D, name);
     }
     
-    public void bindTexture(int name) {
-        this.bindTexture(0, name);
+    public void resetTextureUnitAndUnbind() {
+        this.setTextureUnit(null);
+        Texture.unbindTexture(GL_TEXTURE_2D);
     }
     
     public void mask(GuiMask[] masks) {

@@ -2,6 +2,7 @@ package io.msengine.client.graphics.gui;
 
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
+import io.msengine.client.graphics.texture.Texture;
 import io.msengine.client.util.BufferAlloc;
 
 public class GuiTexture extends GuiObject {
@@ -11,10 +12,10 @@ public class GuiTexture extends GuiObject {
 	protected boolean updateTexCoords;
 	
 	protected int textureName;
-	protected int textureX;
-	protected int textureY;
-	protected int textureWidth;
-	protected int textureHeight;
+	protected float textureX;
+	protected float textureY;
+	protected float textureWidth;
+	protected float textureHeight;
 	
 	@Override
 	protected void init() {
@@ -43,16 +44,27 @@ public class GuiTexture extends GuiObject {
 		}
 		
 		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
-		this.manager.bindTexture(this.textureName);
-		this.manager.setTextureEnabled(true);
+		this.manager.setTextureUnitAndBind(0, this.textureName);
 		this.buf.draw();
-		this.manager.setTextureEnabled(false);
+		this.manager.resetTextureUnitAndUnbind();
 		this.model.pop();
 		
 	}
 	
 	@Override
 	protected void update() { }
+	
+	@Override
+	protected void onWidthChanged(float width) {
+		super.onWidthChanged(width);
+		this.updateVertices = true;
+	}
+	
+	@Override
+	protected void onHeightChanged(float height) {
+		super.onHeightChanged(height);
+		this.updateVertices = true;
+	}
 	
 	private void initBuffers() {
 		
@@ -105,6 +117,37 @@ public class GuiTexture extends GuiObject {
 		
 		this.updateTexCoords = false;
 		
+	}
+	
+	public void setTexture(int name) {
+		this.textureName = name;
+	}
+	
+	public void setTexture(Texture texture) {
+		texture.checkValid();
+		this.setTexture(texture.getName());
+	}
+	
+	public void setTextureCoords(float x, float y, float width, float height) {
+		this.textureX = x;
+		this.textureY = y;
+		this.textureWidth = width;
+		this.textureHeight = height;
+		this.updateTexCoords = true;
+	}
+	
+	public void resetTextureCoords() {
+		this.setTextureCoords(0, 0, 1, 1);
+	}
+	
+	public void setTextureFull(int name) {
+		this.setTexture(name);
+		this.resetTextureCoords();
+	}
+	
+	public void setTextureFull(Texture texture) {
+		this.setTexture(texture);
+		this.resetTextureCoords();
 	}
 	
 }
