@@ -3,7 +3,6 @@ package io.msengine.example.gui;
 import io.msengine.client.graphics.gui.GuiScene;
 import io.msengine.client.graphics.gui.GuiTexture;
 import io.msengine.client.graphics.texture.DynTexture2D;
-import io.msengine.client.graphics.texture.ResTexture2D;
 import io.msengine.client.graphics.texture.base.Texture2D;
 import io.msengine.common.asset.Asset;
 import io.msengine.common.asset.Assets;
