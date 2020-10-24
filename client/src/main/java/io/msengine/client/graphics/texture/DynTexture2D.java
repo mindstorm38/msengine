@@ -135,12 +135,15 @@ public class DynTexture2D extends Texture2D {
 		if (this.buf == null) {
 			this.buf = MemoryUtil.memAlloc(size);
 		} else if (size > this.buf.capacity() || size < (this.buf.capacity() << 2)) {
-			ByteBuffer nbuf = MemoryUtil.memRealloc(this.buf, size);
-			if (nbuf == null) {
+			ByteBuffer newBuf = MemoryUtil.memRealloc(this.buf, size);
+			if (newBuf == null) {
 				throw new IllegalArgumentException("Failed to reallocate dynamic texture buffer (size=" + size + "), nothing changed.");
 			} else {
-				this.buf = nbuf;
+				this.buf = newBuf;
 			}
+		} else {
+			this.buf.clear();
+			this.buf.limit(size);
 		}
 
 		this.width = width;
