@@ -2,6 +2,7 @@ package io.msengine.common.util;
 
 import io.sutil.JavaVersion;
 
+@Deprecated
 public class VersionUtils {
 
 	public static void checkMinimumJavaVersion(JavaVersion version) {

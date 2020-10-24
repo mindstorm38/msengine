@@ -3,6 +3,7 @@ package io.msengine.common.util;
 import io.sutil.SingletonAlreadyInstantiatedException;
 import io.sutil.profiler.Profiler;
 
+@Deprecated
 public class GameProfiler extends Profiler {
 	
 	// Singleton \\
