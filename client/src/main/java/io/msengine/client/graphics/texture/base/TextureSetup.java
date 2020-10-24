@@ -56,9 +56,9 @@ public class TextureSetup {
 	
 	public void bind(Texture tex) {
 		if (this.unit != -1) {
-			tex.bind();
-		} else {
 			tex.bind(this.unit);
+		} else {
+			tex.bind();
 		}
 	}
 	

@@ -14,6 +14,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class ResTexture2D extends Texture2D {
 	
+	private int width, height;
+	
 	public ResTexture2D(TextureSetup setup) {
 		super(setup);
 	}
@@ -42,10 +44,22 @@ public class ResTexture2D extends Texture2D {
 		this(SETUP_LINEAR_KEEP, asset);
 	}
 	
+	// Last size //
+	
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
+	}
+	
 	// Upload //
 	
 	public void uploadImageRaw(ByteBuffer buf, int width, int height) {
 		this.checkBound();
+		this.width = width;
+		this.height = height;
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 	}
 	
