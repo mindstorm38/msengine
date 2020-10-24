@@ -93,4 +93,11 @@ public class GuiTextureMosaic extends GuiTexture {
 		
 	}
 	
+	@Override
+	protected void buildToString(StringBuilder builder) {
+		super.buildToString(builder);
+		builder.append(", tileSize=").append(this.tileWidth).append('/').append(this.tileHeight);
+		builder.append(", mosaicOffset=").append(this.mosaicOffsetX).append('/').append(this.mosaicOffsetY);
+	}
+	
 }

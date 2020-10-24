@@ -6,6 +6,7 @@ import io.msengine.client.graphics.gui.event.GuiEventManager;
 import io.msengine.client.graphics.gui.render.GuiShaderProgram;
 import io.msengine.client.renderer.model.ModelHandler;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -359,14 +360,26 @@ public abstract class GuiObject {
 	}
 
 	// [ Utils ] //
-
+	
+	/**
+	 * Build the toString() representation, this must be of the format <b><code>ClassName&lt;prop1=val, prop2=val, ...&gt;</code></b>.
+	 * This method may be overridden.
+	 * @param builder The representation builder.
+	 */
+	protected void buildToString(StringBuilder builder) {
+		builder.append("pos=").append(this.getXPos()).append('/').append(this.getYPos());
+		builder.append(", size=").append(this.getWidth()).append('/').append(this.getHeight());
+		builder.append(", anchor=").append(this.getXAnchor()).append('/').append(this.getYAnchor());
+		builder.append(", offset=").append(this.xOffset).append('/').append(this.yOffset);
+	}
+	
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() +
-				"<pos=" + this.getXPos() + "/" + this.getYPos() +
-				", size=" + this.getWidth() + "/" + this.getHeight() +
-				", anchor=" + this.getXAnchor() + "/" + this.getYAnchor() +
-				", offset=" + this.xOffset + "/" + this.yOffset + ">";
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.getClass().getSimpleName()).append('<');
+		this.buildToString(builder);
+		builder.append('>');
+		return builder.toString();
 	}
 	
 }

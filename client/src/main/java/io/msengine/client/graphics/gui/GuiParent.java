@@ -153,4 +153,10 @@ public class GuiParent extends GuiObject {
 		}
 	}
 	
+	@Override
+	protected void buildToString(StringBuilder builder) {
+		super.buildToString(builder);
+		builder.append(", children=").append(this.children.size());
+	}
+	
 }

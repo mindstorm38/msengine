@@ -150,4 +150,12 @@ public class GuiTexture extends GuiObject {
 		this.resetTextureCoords();
 	}
 	
+	@Override
+	protected void buildToString(StringBuilder builder) {
+		super.buildToString(builder);
+		builder.append(", tex=").append(this.textureName);
+		builder.append(", texPos=").append(this.textureX).append('/').append(this.textureY);
+		builder.append(", texSize=").append(this.textureWidth).append('/').append(this.textureHeight);
+	}
+	
 }

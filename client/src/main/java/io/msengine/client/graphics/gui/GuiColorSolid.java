@@ -41,4 +41,10 @@ public class GuiColorSolid extends GuiColorBase {
 		this.updateColors();
 	}
 	
+	@Override
+	protected void buildToString(StringBuilder builder) {
+		super.buildToString(builder);
+		builder.append(", color=").append(this.color);
+	}
+	
 }

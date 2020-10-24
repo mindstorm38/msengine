@@ -144,4 +144,9 @@ public class Color {
 		return this.r == c.r && this.g == c.g && this.b == c.b && this.a == c.a;
 	}
 	
+	@Override
+	public String toString() {
+		return "Color<" + this.r + "/" + this.g + "/" + this.b + "/" + this.a + ">";
+	}
+	
 }
