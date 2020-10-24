@@ -39,7 +39,7 @@ Each version released on GitLab will be soon available on Maven Central.
     - `client.window.*`
 - [x] Rework resources (~~using java FileSystems~~)
     - `common.asset.*`
-- [ ] Rework textures (for 1D, 2D, 3D)
+- [x] Rework textures (for 1D, 2D, 3D)
 - [ ] Rework options
 - [ ] Work on audio package which was never finished
 - [ ] Deprecate uses of `GameLogger` *(use individual named loggers instead)*
