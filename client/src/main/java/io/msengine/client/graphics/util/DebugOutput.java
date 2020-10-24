@@ -42,59 +42,59 @@ public class DebugOutput implements GLDebugMessageCallbackI {
 		String source = null;
 		switch ( rawSource ) {
 			case GL_DEBUG_SOURCE_API:
-				source = "SOURCE_API";
+				source = "API";
 				break;
 			case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-				source = "SOURCE_WINDOW_SYSTEM";
+				source = "WINDOW_SYSTEM";
 				break;
 			case GL_DEBUG_SOURCE_SHADER_COMPILER:
-				source = "SOURCE_SHADER_COMPILER";
+				source = "SHADER_COMPILER";
 				break;
 			case GL_DEBUG_SOURCE_THIRD_PARTY:
-				source = "SOURCE_THIRD_PARTY";
+				source = "THIRD_PARTY";
 				break;
 			case GL_DEBUG_SOURCE_APPLICATION:
-				source = "SOURCE_APPLICATION";
+				source = "APPLICATION";
 				break;
 			case GL_DEBUG_SOURCE_OTHER:
-				source = "SOURCE_OTHER";
+				source = "OTHER";
 				break;
 		}
 		
 		String type = null;
 		switch ( rawType ) {
 			case GL_DEBUG_TYPE_ERROR:
-				type = "TYPE_ERROR";
+				type = "ERROR";
 				break;
 			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-				type = "TYPE_DEPRECATED_BEHAVIOR";
+				type = "DEPRECATED_BEHAVIOR";
 				break;
 			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-				type = "TYPE_UNDEFINED_BEHAVIOR";
+				type = "UNDEFINED_BEHAVIOR";
 				break;
 			case GL_DEBUG_TYPE_PORTABILITY:
-				type = "TYPE_PORTABILITY";
+				type = "PORTABILITY";
 				break;
 			case GL_DEBUG_TYPE_PERFORMANCE:
-				type = "TYPE_PERFORMANCE";
+				type = "PERFORMANCE";
 				break;
 			case GL_DEBUG_TYPE_MARKER:
-				type = "TYPE_MARKER";
+				type = "MARKER";
 				break;
 			case GL_DEBUG_TYPE_PUSH_GROUP:
-				type = "TYPE_PUSH_GROUP";
+				type = "PUSH_GROUP";
 				break;
 			case GL_DEBUG_TYPE_POP_GROUP:
-				type = "TYPE_POP_GROUP";
+				type = "POP_GROUP";
 				break;
 			case GL_DEBUG_TYPE_OTHER:
-				type = "TYPE_OTHER";
+				type = "OTHER";
 				break;
 		}
 		
 		String message = MemoryUtil.memASCII(rawMessage);
 		Level level = LEVEL_ASSOC.get(severity);
-		LOGGER.log(level, "[GL DEBUG] [" + source + ":" + type + "] " + message.replace("%", "%%"));
+		LOGGER.log(level, "[" + source + ":" + type + "] " + message.replace("%", "%%"));
 		
 	}
 	

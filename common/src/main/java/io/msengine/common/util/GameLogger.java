@@ -6,12 +6,11 @@ import java.util.logging.Logger;
 import io.sutil.LoggerUtils;
 import io.sutil.SingletonAlreadyInstantiatedException;
 
+@Deprecated
 public class GameLogger {
 	
-	@Deprecated
 	public static Logger LOGGER = null;
 	
-	@Deprecated
 	public static Logger create(String name) {
 		
 		if ( LOGGER != null )
