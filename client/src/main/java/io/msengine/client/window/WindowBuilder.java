@@ -1,5 +1,7 @@
 package io.msengine.client.window;
 
+import java.util.Objects;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 public abstract class WindowBuilder<W extends Window, SELF extends WindowBuilder<W, SELF>> {
@@ -65,7 +67,7 @@ public abstract class WindowBuilder<W extends Window, SELF extends WindowBuilder
     
     @SuppressWarnings("unchecked")
     public SELF withTitle(String title) {
-        this.title = title;
+        this.title = Objects.requireNonNull(title);
         return (SELF) this;
     }
     
