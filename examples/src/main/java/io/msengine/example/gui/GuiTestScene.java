@@ -2,7 +2,9 @@ package io.msengine.example.gui;
 
 import io.msengine.client.graphics.gui.GuiScene;
 import io.msengine.client.graphics.gui.GuiTexture;
-import io.msengine.client.graphics.texture.ResTexture;
+import io.msengine.client.graphics.texture.DynTexture2D;
+import io.msengine.client.graphics.texture.ResTexture2D;
+import io.msengine.client.graphics.texture.base.Texture2D;
 import io.msengine.common.asset.Asset;
 import io.msengine.common.asset.Assets;
 
@@ -14,13 +16,13 @@ public class GuiTestScene extends GuiScene {
 	private static final Asset A_EXAMPLE = ASSETS.getAsset("mseex/example.png");
 	
 	private final GuiTexture tex;
-	private ResTexture resTex;
+	private Texture2D resTex;
 	
 	public GuiTestScene() {
 		
 		this.tex = new GuiTexture();
 		this.tex.setPosition(30, 30);
-		this.tex.setSize(100, 100);
+		this.tex.setSize(200, 200);
 		this.addChild(this.tex);
 		
 		/*GuiRainbowFlag flag = new GuiRainbowFlag();
@@ -36,7 +38,10 @@ public class GuiTestScene extends GuiScene {
 		super.init();
 		
 		try {
-			this.tex.setTextureFull(this.resTex = new ResTexture(A_EXAMPLE));
+			
+			this.resTex = new DynTexture2D(Texture2D.SETUP_NEAREST, A_EXAMPLE, true);
+			this.tex.setTextureFull(this.resTex);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

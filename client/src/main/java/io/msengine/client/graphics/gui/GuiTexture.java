@@ -2,7 +2,7 @@ package io.msengine.client.graphics.gui;
 
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
-import io.msengine.client.graphics.texture.Texture;
+import io.msengine.client.graphics.texture.base.Texture;
 import io.msengine.client.util.BufferAlloc;
 
 public class GuiTexture extends GuiObject {

@@ -33,4 +33,9 @@ public abstract class Uniform extends ShaderComponent {
 	@Override
 	public void close() { }
 	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "<" + this.identifier + "#" + this.location + ">";
+	}
+	
 }

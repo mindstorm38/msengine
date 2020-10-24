@@ -1,5 +1,8 @@
 package io.msengine.client.graphics.texture;
 
+import io.msengine.client.graphics.texture.base.Texture2D;
+import io.msengine.client.graphics.texture.base.TextureSetup;
+import io.msengine.client.graphics.util.ImageUtils;
 import io.msengine.common.asset.Asset;
 import io.msengine.common.util.Color;
 import org.lwjgl.system.MemoryUtil;
@@ -11,29 +14,55 @@ import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class DynTexture extends Texture {
+public class DynTexture2D extends Texture2D {
 
 	private ByteBuffer buf;
 	private int width, height;
 
-	public DynTexture() {
-		super(GL_TEXTURE_2D);
+	public DynTexture2D(TextureSetup setup) {
+		super(setup);
 	}
 
-	public DynTexture(int width, int height) {
-		this();
+	public DynTexture2D(TextureSetup setup, int width, int height) {
+		this(setup);
 		this.allocImage(width, height);
 	}
 
-	public DynTexture(InputStream stream) throws IOException {
-		this();
+	public DynTexture2D(TextureSetup setup, InputStream stream, boolean upload) throws IOException {
+		this(upload ? setup.withUnbind(false) : setup);
 		this.allocFromStream(stream);
+		if (upload) {
+			this.uploadImage();
+			setup.unbind(this);
+		}
 	}
 
-	public DynTexture(Asset asset) throws IOException {
-		this();
+	public DynTexture2D(TextureSetup setup, Asset asset, boolean upload) throws IOException {
+		this(upload ? setup.withUnbind(false) : setup);
 		this.allocFromAsset(asset);
+		if (upload) {
+			this.uploadImage();
+			setup.unbind(this);
+		}
 	}
+	
+	public DynTexture2D() {
+		this(SETUP_LINEAR);
+	}
+	
+	public DynTexture2D(int width, int height) {
+		this(SETUP_LINEAR, width, height);
+	}
+	
+	public DynTexture2D(InputStream stream, boolean upload) throws IOException {
+		this(upload ? SETUP_LINEAR_KEEP : SETUP_LINEAR, stream, upload);
+	}
+	
+	public DynTexture2D(Asset asset, boolean upload) throws IOException {
+		this(upload ? SETUP_LINEAR_KEEP : SETUP_LINEAR, asset, upload);
+	}
+	
+	// Edition //
 
 	/**
 	 * @return The internal buffer, you must not free the buffer.
@@ -123,12 +152,13 @@ public class DynTexture extends Texture {
 		if (this.buf == null) {
 			throw new IllegalStateException("Can't upload this dynamic texture because it was not allocated.");
 		} else {
+			this.checkBound();
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.buf);
 		}
 	}
 
 	public void allocFromStream(InputStream stream) throws IOException {
-		loadImageFromStream(stream, 8192, this::setRawBuffer);
+		ImageUtils.loadImageFromStream(stream, 8192, this::setRawBuffer);
 	}
 
 	public void allocFromAsset(Asset asset) throws IOException {

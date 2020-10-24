@@ -3,7 +3,7 @@ package io.msengine.client.graphics.gui;
 import io.msengine.client.graphics.gui.mask.GuiMask;
 import io.msengine.client.graphics.gui.render.GuiShaderProgram;
 import io.msengine.client.graphics.shader.ShaderProgram;
-import io.msengine.client.graphics.texture.Texture;
+import io.msengine.client.graphics.texture.base.Texture;
 import io.msengine.client.renderer.model.ModelApplyListener;
 import io.msengine.client.renderer.model.ModelHandler;
 import io.msengine.client.renderer.util.BlendMode;

@@ -1,4 +1,4 @@
-package io.msengine.client.graphics.texture;
+package io.msengine.client.graphics.texture.old;
 
 import io.msengine.client.graphics.util.DataType;
 
