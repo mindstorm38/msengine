@@ -7,11 +7,7 @@ import io.msengine.client.window.GLWindowBuilder;
 import io.msengine.common.logic.FrameRegulated;
 import io.msengine.common.util.GameLoggerFormatter;
 
-import java.util.Arrays;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import static org.lwjgl.opengl.GL11.*;
 

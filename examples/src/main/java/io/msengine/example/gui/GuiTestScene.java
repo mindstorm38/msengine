@@ -1,5 +1,9 @@
 package io.msengine.example.gui;
 
+import io.msengine.client.graphics.font.Font;
+import io.msengine.client.graphics.font.FontFamily;
+import io.msengine.client.graphics.font.GlyphPage;
+import io.msengine.client.graphics.font.truetype.TrueTypeFontFamily;
 import io.msengine.client.graphics.gui.GuiScene;
 import io.msengine.client.graphics.gui.GuiTexture;
 import io.msengine.client.graphics.gui.wrapper.GuiWrapperCentered;
@@ -15,6 +19,7 @@ public class GuiTestScene extends GuiScene {
 	private static final Assets ASSETS = Assets.forClass(GuiTestScene.class, "assets");
 	private static final Asset A_EXAMPLE = ASSETS.getAsset("mseex/example.png");
 	private static final Asset A_EXAMPLE_BG = ASSETS.getAsset("mseex/example_bg.jpg");
+	private static final Asset A_UBUNTU_FONT = ASSETS.getAsset("mseex/Ubuntu-Regular.ttf");
 	
 	private final GuiTexture exampleTexBg;
 	private final GuiWrapperCentered exampleTexBgCentered;
@@ -22,6 +27,10 @@ public class GuiTestScene extends GuiScene {
 	
 	private final GuiTexture exampleTex;
 	private ResTexture2D exampleTexObj;
+	
+	private final GuiTexture fontTex;
+	private FontFamily fontFamily;
+	private ResTexture2D fontTexObj;
 	
 	public GuiTestScene() {
 		
@@ -35,6 +44,10 @@ public class GuiTestScene extends GuiScene {
 		this.exampleTex.setPosition(30, 30);
 		this.exampleTex.setSize(200, 200);
 		this.addChild(this.exampleTex);
+		
+		this.fontTex = new GuiTexture();
+		this.fontTex.setPosition(300, 30);
+		this.addChild(this.fontTex);
 		
 	}
 	
@@ -52,6 +65,21 @@ public class GuiTestScene extends GuiScene {
 			this.exampleTexObj = new ResTexture2D(Texture2D.SETUP_NEAREST, A_EXAMPLE);
 			this.exampleTex.setTextureFull(this.exampleTexObj);
 			
+			this.fontFamily = new TrueTypeFontFamily(A_UBUNTU_FONT);
+			System.out.println("Font family: " + this.fontFamily);
+			Font font = this.fontFamily.getSize(50);
+			System.out.println("Font: " + font);
+			
+			GlyphPage page = font.getGlyphPage(30);
+			System.out.println("Glyph page: " + page);
+			
+			this.fontTex.setTextureFull(page.getTexture());
+			this.fontTex.setSize(page.getTexture().getWidth(), page.getTexture().getHeight());
+			
+			//this.fontTexObj = FontTest.test(16);
+			//this.fontTex.setTextureFull(this.fontTexObj);
+			//this.fontTex.setSize(this.fontTexObj.getWidth(), this.fontTexObj.getHeight());
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -68,6 +96,10 @@ public class GuiTestScene extends GuiScene {
 		
 		this.exampleTexObj.close();
 		this.exampleTexObj = null;
+		
+		this.fontFamily.close();
+		//this.fontTexObj.close();
+		//this.fontTexObj = null;
 		
 	}
 	

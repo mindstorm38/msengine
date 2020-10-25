@@ -2,18 +2,18 @@ package io.msengine.client.graphics.font;
 
 public class GlyphPage {
 
-	private final int textureName;
+	private final FontTexture2D texture;
 	private final int refCodePoint;
 	private final Glyph[] glyphs;
 	
-	public GlyphPage(int textureName, int refCodePoint, Glyph[] glyphs) {
-		this.textureName = textureName;
+	public GlyphPage(FontTexture2D texture, int refCodePoint, Glyph[] glyphs) {
+		this.texture = texture;
 		this.refCodePoint = refCodePoint;
 		this.glyphs = glyphs;
 	}
 	
-	public final int getTextureName() {
-		return this.textureName;
+	public final FontTexture2D getTexture() {
+		return this.texture;
 	}
 	
 	public final int getRefCodePoint() {
@@ -44,7 +44,7 @@ public class GlyphPage {
 	
 	@Override
 	public String toString() {
-		return "GlyphPage<from=" + this.getRefCodePoint() + ", to=" + this.getLastCodePoint() + ", tex=" + this.textureName + ">";
+		return this.getClass().getSimpleName() + "<from=" + this.getRefCodePoint() + ", to=" + this.getLastCodePoint() + ", tex=" + this.texture + ">";
 	}
 	
 }

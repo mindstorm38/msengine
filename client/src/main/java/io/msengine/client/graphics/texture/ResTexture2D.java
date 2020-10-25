@@ -56,11 +56,15 @@ public class ResTexture2D extends Texture2D {
 	
 	// Upload //
 	
-	public void uploadImageRaw(ByteBuffer buf, int width, int height) {
+	public void uploadImageRaw(ByteBuffer buf, int dataFormat, int dataType, int width, int height, int internalFormat) {
 		this.checkBound();
 		this.width = width;
 		this.height = height;
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, dataType, buf);
+	}
+	
+	public void uploadImageRaw(ByteBuffer buf, int width, int height) {
+		this.uploadImageRaw(buf, GL_RGBA, GL_UNSIGNED_BYTE, width, height, GL_RGBA8);
 	}
 	
 	public void uploadImageFromStream(InputStream stream) throws IOException {
