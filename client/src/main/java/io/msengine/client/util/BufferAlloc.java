@@ -83,12 +83,11 @@ public final class BufferAlloc {
 			while ((read = channel.read(buffer)) != -1) {
 				if (buffer.remaining() == 0) {
 					int pos = buffer.position();
-					ByteBuffer newBuffer = MemoryUtil.memRealloc(buffer, buffer.capacity() + 2048);
-					if (newBuffer == null) {
+					try {
+						buffer = MemoryUtil.memRealloc(buffer, buffer.capacity() + 2048);
+					} catch (OutOfMemoryError e) {
 						MemoryUtil.memFree(buffer);
-						throw new IOException("Failed to realloc buffer when reading stream.");
-					} else {
-						buffer = newBuffer;
+						throw e;
 					}
 					buffer.position(pos);
 				}

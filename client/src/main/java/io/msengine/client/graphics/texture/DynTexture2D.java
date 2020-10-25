@@ -135,7 +135,12 @@ public class DynTexture2D extends Texture2D {
 		if (this.buf == null) {
 			this.buf = MemoryUtil.memAlloc(size);
 		} else if (size > this.buf.capacity() || size < (this.buf.capacity() << 2)) {
-			this.buf = MemoryUtil.memRealloc(this.buf, size);
+			try {
+				this.buf = MemoryUtil.memRealloc(this.buf, size);
+			} catch (OutOfMemoryError e) {
+				MemoryUtil.memFree(this.buf);
+				throw e;
+			}
 		} else {
 			this.buf.clear();
 			this.buf.limit(size);
