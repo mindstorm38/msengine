@@ -9,7 +9,7 @@ public class BitmapFont extends Font {
 	}
 	
 	@Override
-	public GlyphPage getGlyphPage(int codepoint) {
+	public GlyphPage getGlyphPage(int codePoint) {
 		return null;
 	}
 	

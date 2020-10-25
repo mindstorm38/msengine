@@ -2,7 +2,6 @@ package io.msengine.client.graphics.font;
 
 import io.msengine.client.util.BufferAlloc;
 import io.msengine.common.asset.Asset;
-import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -11,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.stb.STBTruetype.*;
 
@@ -44,12 +45,14 @@ public class TrueTypeFont extends Font {
 	
 	// Class //
 	
-	private final ByteBuffer data;
-	private final STBTTFontinfo info;
+	private ByteBuffer data;
+	private STBTTFontinfo info;
 	private final int ascent;
 	private final int descent;
 	private final int lineGap;
 	private final float fontHeight;
+	
+	private final List<GlyphPage> pages = new ArrayList<>();
 	
 	private TrueTypeFont(ByteBuffer data, STBTTFontinfo info, int ascent, int descent, int lineGap, float fontHeight) {
 		this.data = data;
@@ -61,9 +64,61 @@ public class TrueTypeFont extends Font {
 	}
 	
 	@Override
-	public GlyphPage getGlyphPage(int codepoint) {
+	public GlyphPage getGlyphPage(int codePoint) {
 		
-		/*final int bitmapSize = 1024;
+		int count = this.pages.size();
+		GlyphPage page;
+		for (int i = 0; i < count; ++i) {
+			page = this.pages.get(i);
+			if (page.hasCodePoint(codePoint)) {
+				return page;
+			} else if (codePoint < page.getRefCodePoint()) {
+				
+				final int bitmapSize = 512;
+				final int maxGlyphsCount = 128;
+				
+				/*final int glyphsCount;
+				
+				if (i + 1 < count) {
+					glyphsCount = Math.min(this.pages.get(i + 1).getRefCodePoint() - codePoint, maxGlyphsCount);
+				} else {
+					glyphsCount = maxGlyphsCount;
+				}
+				
+				STBTTBakedChar.Buffer cdata = STBTTBakedChar.malloc(maxGlyphsCount);
+				ByteBuffer pixels = MemoryUtil.memAlloc(bitmapSize * bitmapSize);
+				
+				final int nextRefCodePoint;
+				
+				if (i + 1 < count) {
+					nextRefCodePoint = this.pages.get(i + 1).getRefCodePoint();
+				} else {
+					nextRefCodePoint = 0;
+				}
+				
+				int refCodePoint = codePoint;
+				
+				while (true) {
+					
+					int result = stbtt_BakeFontBitmap(this.data, this.fontHeight, pixels, bitmapSize, bitmapSize, refCodePoint, cdata);
+					
+					if (result > 0) {
+						refCodePoint--;
+					} else if (result < 0) {
+						
+						int fitCount = -result;
+						break;
+						
+					} else {
+					
+					}
+					
+				}*/
+				
+			}
+		}
+		
+		/*final int bitmapSize = 512;
 		
 		STBTTBakedChar.Buffer cdata = STBTTBakedChar.malloc(96);
 		
@@ -76,8 +131,17 @@ public class TrueTypeFont extends Font {
 	
 	@Override
 	public void close() {
-		MemoryUtil.memFree(this.data);
-		this.info.free();
+		
+		if (this.data != null) {
+			MemoryUtil.memFree(this.data);
+			this.data = null;
+		}
+		
+		if (this.info != null) {
+			this.info.free();
+			this.info = null;
+		}
+		
 	}
 	
 }
