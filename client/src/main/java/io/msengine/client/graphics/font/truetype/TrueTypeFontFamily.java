@@ -74,15 +74,14 @@ public class TrueTypeFontFamily extends FontFamily {
 		return this.info;
 	}
 	
-	private void checkNotClosed() {
-		if (this.info == null || this.data == null) {
-			throw new IllegalStateException("Can't use this font family because ");
-		}
-	}
-	
 	@Override
 	public String getName() {
 		return this.name;
+	}
+	
+	@Override
+	public boolean isValid() {
+		return this.info != null;
 	}
 	
 	@Override

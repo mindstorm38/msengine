@@ -42,6 +42,10 @@ public class GlyphPage {
 		}
 	}
 	
+	public final int getTextureName() {
+		return this.texture.getName();
+	}
+	
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + "<from=" + this.getRefCodePoint() + ", to=" + this.getLastCodePoint() + ", tex=" + this.texture + ">";

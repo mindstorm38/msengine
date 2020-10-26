@@ -13,17 +13,29 @@ public abstract class FontFamily implements AutoCloseable {
 	public abstract String getName();
 	
 	/**
+	 * @return True if this font is valid.
+	 */
+	public abstract boolean isValid();
+	
+	/**
 	 * Get the font of this family for a specified size, this use caching.
 	 * @param size Font size in pixels.
 	 * @return New font object.
 	 */
 	public Font getSize(float size) {
+		
+		if (!this.isValid()) {
+			throw new IllegalStateException("This font family is no longer valid.");
+		}
+		
 		Font cached = this.cachedSizes.get(size);
 		if (cached == null) {
 			cached = this.buildFontForSize(size);
 			this.cachedSizes.put(size, cached);
 		}
+		
 		return cached;
+		
 	}
 	
 	/**

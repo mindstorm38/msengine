@@ -8,6 +8,17 @@ public final class GuiCommon {
 	/**
 	 * <p>Put indices for drawing a square :<br>
 	 * <code>0/1/3  1/2/3</code></p>
+	 * @param idx The origin index.
+	 * @param buf The buffer containing the indices.
+	 */
+	public static void putSquareIndices(int idx, IntBuffer buf) {
+		buf.put(idx).put(idx + 1).put(idx + 3);
+		buf.put(idx + 1).put(idx + 2).put(idx + 3);
+	}
+	
+	/**
+	 * <p>Put indices for drawing a square :<br>
+	 * <code>0/1/3  1/2/3</code></p>
 	 * @param buf The buffer containing the indices.
 	 */
 	public static void putSquareIndices(IntBuffer buf) {

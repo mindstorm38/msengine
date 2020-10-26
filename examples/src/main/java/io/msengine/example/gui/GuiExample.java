@@ -7,6 +7,7 @@ import io.msengine.client.window.GLWindowBuilder;
 import io.msengine.common.logic.FrameRegulated;
 import io.msengine.common.util.GameLoggerFormatter;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -32,6 +33,7 @@ public class GuiExample implements FrameRegulated {
 	private void init() {
 		
 		GameLoggerFormatter.setupRootLogger();
+		Logger.getGlobal().getParent().setLevel(Level.WARNING);
 		
 		this.window = new GLWindowBuilder()
 				.withTitle("[MSE] GUI Example")

@@ -13,7 +13,7 @@ public class TrueTypeGlyph extends Glyph {
 	}
 	
 	@Override
-	public float getAdvance(int nextCodePoint) {
+	public float getKernAdvance(int nextCodePoint) {
 		return this.getAdvance() + (stbtt_GetCodepointKernAdvance(this.font.getFamily().getInfo(), this.getCodePoint(), nextCodePoint) * this.font.getScale());
 	}
 	

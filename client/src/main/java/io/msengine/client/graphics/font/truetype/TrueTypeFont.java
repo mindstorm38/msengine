@@ -46,6 +46,8 @@ public class TrueTypeFont extends Font {
 	@Override
 	public GlyphPage getGlyphPage(int codePoint) {
 		
+		this.checkValid();
+		
 		int pagesCount = this.pages.size();
 		GlyphPage page = null;
 		
@@ -79,6 +81,8 @@ public class TrueTypeFont extends Font {
 		//  minCodePoint <= codePoint <= maxCodePoint
 		
 		TrueTypeFontFamily family = this.getFamily();
+		
+		System.out.println("### buildGlyphPage for codePoint=" + codePoint + ", min=" + minCodePoint + ", max=" + maxCodePoint);
 		
 		// It's useless to have more maximum code points than the maximum min->max range.
 		final int codePoints = Math.min(128, maxCodePoint - minCodePoint + 1);
@@ -208,8 +212,8 @@ public class TrueTypeFont extends Font {
 						refCodePoint + i,
 						aq.s0(), aq.t0(),
 						aq.s1(), aq.t1(),
-						aq.x0() * scale, aq.y0() * scale,
-						aq.x1() * scale, aq.y1() * scale,
+						aq.x0(), aq.y0(),
+						aq.x1(), aq.y1(),
 						bc.xadvance()
 				);
 				

@@ -20,12 +20,17 @@ public abstract class Font implements AutoCloseable {
 		return this.size;
 	}
 	
-	public abstract GlyphPage getGlyphPage(int codePoint);
-	
-	public Glyph getGlyph(int codePoint) {
-		GlyphPage page = this.getGlyphPage(codePoint);
-		return page == null ? null : page.getGlyph(codePoint);
+	public boolean isValid() {
+		return this.family.isValid();
 	}
+	
+	protected void checkValid() {
+		if (!this.isValid()) {
+			throw new IllegalStateException("This font is no longer valid (check its family).");
+		}
+	}
+	
+	public abstract GlyphPage getGlyphPage(int codePoint);
 	
 	@Override
 	public abstract void close();
