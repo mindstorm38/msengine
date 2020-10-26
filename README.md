@@ -45,9 +45,10 @@ Each version released on GitLab will be soon available on Maven Central.
 - [ ] Rework options
 - [ ] Work on audio package which was never finished
 - [ ] Deprecate uses of `GameLogger` *(use individual named loggers instead)*
+    - [x] Create a logger formatter to apply to global loger
 - [ ] Update `AxisAlignedBB`
-- [ ] Remove or adapt `client.renderer.texture.TextureObject`
-- [ ] Promote raw uses of GL functions and make simple wrappers for complicated GL objects *(shader, programs, framebuffers, etc.)*
+- [x] Remove or adapt `client.renderer.texture.TextureObject`
+- [x] Promote raw uses of GL functions and make simple wrappers for complicated GL objects *(shader, programs, framebuffers, etc.)*
 
 ## Contribute
 
