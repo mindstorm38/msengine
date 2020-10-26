@@ -99,17 +99,17 @@ public class GuiText extends GuiObject {
 	
 	private void updateTextBuffers() {
 		
-		int[] codePoints = this.text.codePoints().toArray();
-		int codePointsCount = codePoints.length;
+		this.codePoints = this.text.codePoints().toArray();
+		int codePointsCount = this.codePoints.length;
 		
-		float[] codePointsOffsets = new float[codePointsCount];
+		this.codePointsOffsets = new float[codePointsCount];
+		
 		GlyphPage[] codePointsPages = new GlyphPage[codePointsCount];
-		
 		Map<Integer, TempBufferData> buffersCodePoints = new HashMap<>();
 		
 		GlyphPage page;
 		for (int i = 0, codePoint; i < codePointsCount; ++i) {
-			codePoint = codePoints[i];
+			codePoint = this.codePoints[i];
 			page = this.font.getGlyphPage(codePoint);
 			codePointsPages[i] = page;
 			buffersCodePoints.computeIfAbsent(page.getTextureName(), tex -> new TempBufferData()).codePointsCount++;
@@ -151,7 +151,7 @@ public class GuiText extends GuiObject {
 			
 			for (int i = 0, codePoint; i < codePointsCount; ++i) {
 				
-				codePoint = codePoints[i];
+				codePoint = this.codePoints[i];
 				page = codePointsPages[i];
 				bufferData = buffersCodePoints.get(page.getTextureName());
 				glyph = page.getGlyph(codePoint);
@@ -162,7 +162,9 @@ public class GuiText extends GuiObject {
 				GuiCommon.putSquareIndices(bufferData.currentIndex, bufferData.indicesBuffer);
 				
 				bufferData.currentIndex += 4;
-				x += (i + 1 < codePointsCount) ? glyph.getKernAdvance(codePoints[i + 1]) : glyph.getAdvance();
+				x += (i + 1 < codePointsCount) ? glyph.getKernAdvance(this.codePoints[i + 1]) : glyph.getAdvance();
+				
+				this.codePointsOffsets[i] = x;
 				
 			}
 			
@@ -177,9 +179,6 @@ public class GuiText extends GuiObject {
 				buf.uploadIboData(temp.indicesBuffer, BufferUsage.DYNAMIC_DRAW);
 				
 			});
-			
-			this.codePoints = codePoints;
-			this.codePointsOffsets = codePointsOffsets;
 			
 		} finally {
 			
