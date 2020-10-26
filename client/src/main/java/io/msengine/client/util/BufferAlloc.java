@@ -12,6 +12,7 @@ import java.nio.IntBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public final class BufferAlloc {
@@ -51,6 +52,17 @@ public final class BufferAlloc {
 			if (buf != null) {
 				MemoryUtil.memFree(buf);
 			}
+		}
+	}
+	
+	public static <B extends Buffer, C extends Buffer> void alloc(int count1, int count2, MemoryAllocator<B> alloc1, MemoryAllocator<C> alloc2, BiConsumer<B, C> cb) {
+		B buf1 = null;
+		C buf2 = null;
+		try {
+			cb.accept(buf1 = alloc1.alloc(count1), buf2 = alloc2.alloc(count2));
+		} finally {
+			if (buf1 != null) MemoryUtil.memFree(buf1);
+			if (buf2 != null) MemoryUtil.memFree(buf2);
 		}
 	}
 	
