@@ -82,39 +82,39 @@ public class TrueTypeFont extends Font {
 		
 		TrueTypeFontFamily family = this.getFamily();
 		
-		System.out.println("### buildGlyphPage for codePoint=" + codePoint + ", min=" + minCodePoint + ", max=" + maxCodePoint);
+		// System.out.println("### buildGlyphPage for codePoint=" + codePoint + ", min=" + minCodePoint + ", max=" + maxCodePoint);
 		
 		// It's useless to have more maximum code points than the maximum min->max range.
 		final int codePoints = Math.min(128, maxCodePoint - minCodePoint + 1);
 		final int rawBitmapSize = (int) (this.getSize() * 6); // TODO: Maybe fix the UNPACK_ALIGNMENT parameter instead ?
 		final int bitmapSize = rawBitmapSize + ((4 - (rawBitmapSize & 3)) & 3); // Padded for texture store
 		
-		System.out.println("codePoints=" + codePoints);
-		System.out.println("bitmapSize=" + bitmapSize);
+		// System.out.println("codePoints=" + codePoints);
+		// System.out.println("bitmapSize=" + bitmapSize);
 		
 		// Compute refCodePoint by subtracting half of codePoints to wanted code point.
 		int refCodePoint = codePoint - (codePoints >> 1);
-		System.out.println("refCodePoint=" + refCodePoint);
+		// System.out.println("refCodePoint=" + refCodePoint);
 		
 		// If refCodePoint if less than minCodePoint, clamp.
 		if (refCodePoint < minCodePoint) {
-			System.out.println("refCodePoint < minCodePoint : refCodePoint=" + minCodePoint);
+			// System.out.println("refCodePoint < minCodePoint : refCodePoint=" + minCodePoint);
 			refCodePoint = minCodePoint;
 		}
 		
 		// Compute lastCodePoint by adding codePoints-1 to ref.
 		int lastCodePoint = refCodePoint + codePoints - 1;
-		System.out.println("lastCodePoint=" + lastCodePoint);
+		// System.out.println("lastCodePoint=" + lastCodePoint);
 		
 		// If lastCodePoint is greater than maxCodePoint, clamp.
 		if (lastCodePoint > maxCodePoint) {
-			System.out.println("lastCodePoint > maxCodePoint : lastCodePoint=" + maxCodePoint);
+			// System.out.println("lastCodePoint > maxCodePoint : lastCodePoint=" + maxCodePoint);
 			lastCodePoint = maxCodePoint;
 		}
 		
 		// Recompute refCodePoint to ensure maximum codePoints at once.
 		refCodePoint = lastCodePoint - codePoints + 1;
-		System.out.println("refCodePoint=" + refCodePoint);
+		// System.out.println("refCodePoint=" + refCodePoint);
 		
 		// Allocate pixels and char data
 		ByteBuffer pixels = MemoryUtil.memAlloc(bitmapSize * bitmapSize);
@@ -126,7 +126,7 @@ public class TrueTypeFont extends Font {
 			
 			int res = stbtt_BakeFontBitmap(family.getData(), this.getSize(), pixels, bitmapSize, bitmapSize, refCodePoint, charData);
 			
-			System.out.println("res=" + res);
+			// System.out.println("res=" + res);
 			
 			if (res >= 0) {
 				bitmapHeight = res;
@@ -135,11 +135,11 @@ public class TrueTypeFont extends Font {
 				
 				int bakedCodePoints = -res;
 				int bakedLastCodePoint = refCodePoint + bakedCodePoints - 1;
-				System.out.println("bakedLastCodePoint=" + bakedLastCodePoint);
+				// System.out.println("bakedLastCodePoint=" + bakedLastCodePoint);
 				
 				if (bakedLastCodePoint < codePoint) {
 					
-					System.out.println("bakedLastCodePoint < codePoint");
+					// System.out.println("bakedLastCodePoint < codePoint");
 					
 					// Increase refCodePoint, but decrease charData limit by one.
 					refCodePoint++;
@@ -151,7 +151,7 @@ public class TrueTypeFont extends Font {
 					
 				} else {
 					
-					System.out.println("bakedLastCodePoint >= codePoint");
+					// System.out.println("bakedLastCodePoint >= codePoint");
 					
 					if (charData.limit() == bakedLastCodePoint) {
 						break;
@@ -177,7 +177,7 @@ public class TrueTypeFont extends Font {
 			System.out.println();
 		}*/
 		
-		System.out.println("bitmapHeight=" + bitmapHeight);
+		// System.out.println("bitmapHeight=" + bitmapHeight);
 		
 		if (bitmapHeight == 0) {
 			MemoryUtil.memFree(pixels);
@@ -189,7 +189,7 @@ public class TrueTypeFont extends Font {
 		MemoryUtil.memFree(pixels);
 		
 		Glyph[] glyphs = new Glyph[charData.remaining()];
-		float scale = this.scale;
+		// float scale = this.scale;
 		
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			

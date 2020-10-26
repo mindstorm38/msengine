@@ -54,7 +54,7 @@ public class GuiTestScene extends GuiScene {
 		this.addChild(this.fontTex);
 		
 		this.text = new GuiText();
-		this.text.setText("AWYA");
+		this.text.setText("while ((read = stream.read(buf)) != -1) {}");
 		this.text.setPosition(30, 500);
 		this.addChild(this.text);
 		
@@ -74,8 +74,8 @@ public class GuiTestScene extends GuiScene {
 			this.exampleTexObj = new ResTexture2D(Texture2D.SETUP_NEAREST, A_EXAMPLE);
 			this.exampleTex.setTextureFull(this.exampleTexObj);
 			
-			this.fontFamily = new TrueTypeFontFamily(A_UBUNTU_FONT);
-			this.text.setFont(this.fontFamily, 26);
+			this.fontFamily = new TrueTypeFontFamily(A_JETBRAINS_MONO);
+			this.text.setFont(this.fontFamily, 30);
 			
 			GlyphPage page = this.fontFamily.getSize(26).getGlyphPage(72);
 			this.fontTex.setTextureFull(page.getTexture());

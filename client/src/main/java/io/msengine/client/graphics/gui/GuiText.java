@@ -100,9 +100,6 @@ public class GuiText extends GuiObject {
 	
 	private void updateTextBuffers() {
 		
-		/*if (!this.isTextReady())
-			return;*/
-		
 		int[] codePoints = this.text.codePoints().toArray();
 		int codePointsCount = codePoints.length;
 		
@@ -120,9 +117,9 @@ public class GuiText extends GuiObject {
 			buffersCodePoints.computeIfAbsent(page.getTextureName(), tex -> new TempBufferData()).codePointsCount++;
 		}
 		
-		System.out.println("codePoints=" + Arrays.toString(codePoints));
-		System.out.println("codePointsPages=" + Arrays.toString(codePointsPages));
-		System.out.println("buffersCodePoints=" + buffersCodePoints);
+		// System.out.println("codePoints=" + Arrays.toString(codePoints));
+		// System.out.println("codePointsPages=" + Arrays.toString(codePointsPages));
+		// System.out.println("buffersCodePoints=" + buffersCodePoints);
 		
 		this.buffers.entrySet().removeIf(e -> {
 			if (!buffersCodePoints.containsKey(e.getKey())) {
@@ -161,7 +158,7 @@ public class GuiText extends GuiObject {
 				bufferData = buffersCodePoints.get(page.getTextureName());
 				glyph = page.getGlyph(codePoint);
 				
-				System.out.println("Draw '" + (char) codePoint + "' to " + x + "/" + y);
+				// System.out.println("Draw '" + (char) codePoint + "' to " + x + "/" + y);
 				
 				glyph.putToBuffer(x, y, bufferData.dataBuffer);
 				GuiCommon.putSquareIndices(bufferData.currentIndex, bufferData.indicesBuffer);
