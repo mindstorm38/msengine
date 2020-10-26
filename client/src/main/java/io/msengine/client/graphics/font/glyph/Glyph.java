@@ -1,4 +1,4 @@
-package io.msengine.client.graphics.font;
+package io.msengine.client.graphics.font.glyph;
 
 import java.nio.FloatBuffer;
 

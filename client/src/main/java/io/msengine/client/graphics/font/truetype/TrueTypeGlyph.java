@@ -1,6 +1,6 @@
 package io.msengine.client.graphics.font.truetype;
 
-import io.msengine.client.graphics.font.Glyph;
+import io.msengine.client.graphics.font.glyph.Glyph;
 import static org.lwjgl.stb.STBTruetype.stbtt_GetCodepointKernAdvance;
 
 public class TrueTypeGlyph extends Glyph {

@@ -3,8 +3,8 @@ package io.msengine.client.graphics.gui;
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.font.Font;
 import io.msengine.client.graphics.font.FontFamily;
-import io.msengine.client.graphics.font.Glyph;
-import io.msengine.client.graphics.font.GlyphPage;
+import io.msengine.client.graphics.font.glyph.Glyph;
+import io.msengine.client.graphics.font.glyph.GlyphPage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
 import io.msengine.client.graphics.texture.base.Texture;
 import org.lwjgl.opengl.GL11;
@@ -12,7 +12,6 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -102,7 +101,6 @@ public class GuiText extends GuiObject {
 		
 		int[] codePoints = this.text.codePoints().toArray();
 		int codePointsCount = codePoints.length;
-		
 		
 		float[] codePointsOffsets = new float[codePointsCount];
 		GlyphPage[] codePointsPages = new GlyphPage[codePointsCount];

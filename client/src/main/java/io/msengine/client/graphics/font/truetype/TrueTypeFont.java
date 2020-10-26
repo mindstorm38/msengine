@@ -2,8 +2,8 @@ package io.msengine.client.graphics.font.truetype;
 
 import io.msengine.client.graphics.font.Font;
 import io.msengine.client.graphics.font.FontTexture2D;
-import io.msengine.client.graphics.font.Glyph;
-import io.msengine.client.graphics.font.GlyphPage;
+import io.msengine.client.graphics.font.glyph.Glyph;
+import io.msengine.client.graphics.font.glyph.GlyphPage;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.system.MemoryStack;
@@ -206,6 +206,8 @@ public class TrueTypeFont extends Font {
 				yPos.put(0, 0);
 				
 				stbtt_GetBakedQuad(charData, bitmapSize, bitmapHeight, i, xPos, yPos, aq, true);
+				
+				// System.out.println("BakedChar '" + (char) (refCodePoint + i) + "': " + );
 				
 				glyphs[i] = new TrueTypeGlyph(
 						this,

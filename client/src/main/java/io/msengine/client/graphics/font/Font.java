@@ -1,5 +1,7 @@
 package io.msengine.client.graphics.font;
 
+import io.msengine.client.graphics.font.glyph.GlyphPage;
+
 import java.util.Objects;
 
 public abstract class Font implements AutoCloseable {

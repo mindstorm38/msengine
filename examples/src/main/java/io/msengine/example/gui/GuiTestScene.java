@@ -1,8 +1,7 @@
 package io.msengine.example.gui;
 
-import io.msengine.client.graphics.font.Font;
 import io.msengine.client.graphics.font.FontFamily;
-import io.msengine.client.graphics.font.GlyphPage;
+import io.msengine.client.graphics.font.glyph.GlyphPage;
 import io.msengine.client.graphics.font.truetype.TrueTypeFontFamily;
 import io.msengine.client.graphics.gui.GuiScene;
 import io.msengine.client.graphics.gui.GuiText;

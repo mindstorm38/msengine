@@ -1,4 +1,6 @@
-package io.msengine.client.graphics.font;
+package io.msengine.client.graphics.font.glyph;
+
+import io.msengine.client.graphics.font.FontTexture2D;
 
 public class GlyphPage {
 
