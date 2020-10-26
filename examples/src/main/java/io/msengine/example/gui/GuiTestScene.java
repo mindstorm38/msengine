@@ -67,11 +67,17 @@ public class GuiTestScene extends GuiScene {
 			
 			this.fontFamily = new TrueTypeFontFamily(A_UBUNTU_FONT);
 			System.out.println("Font family: " + this.fontFamily);
-			Font font = this.fontFamily.getSize(50);
+			Font font = this.fontFamily.getSize(26f);
 			System.out.println("Font: " + font);
 			
 			GlyphPage page = font.getGlyphPage(30);
 			System.out.println("Glyph page: " + page);
+			
+			/*GlyphPage page2 = font.getGlyphPage(160);
+			System.out.println("Glyph page2: " + page2);
+			
+			GlyphPage page3 = font.getGlyphPage(90);
+			System.out.println("Glyph page3: " + page3);*/
 			
 			this.fontTex.setTextureFull(page.getTexture());
 			this.fontTex.setSize(page.getTexture().getWidth(), page.getTexture().getHeight());

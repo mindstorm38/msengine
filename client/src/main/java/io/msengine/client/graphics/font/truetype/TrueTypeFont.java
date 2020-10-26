@@ -82,14 +82,14 @@ public class TrueTypeFont extends Font {
 		
 		// It's useless to have more maximum code points than the maximum min->max range.
 		final int codePoints = Math.min(128, maxCodePoint - minCodePoint + 1);
-		final int bitmapSize = (int) (this.getSize() * 6);
+		final int rawBitmapSize = (int) (this.getSize() * 6);
+		final int bitmapSize = rawBitmapSize + ((4 - (rawBitmapSize & 3)) & 3); // Padded for texture store
 		
 		System.out.println("codePoints=" + codePoints);
 		System.out.println("bitmapSize=" + bitmapSize);
 		
 		// Compute refCodePoint by subtracting half of codePoints to wanted code point.
 		int refCodePoint = codePoint - (codePoints >> 1);
-		
 		System.out.println("refCodePoint=" + refCodePoint);
 		
 		// If refCodePoint if less than minCodePoint, clamp.
@@ -100,7 +100,6 @@ public class TrueTypeFont extends Font {
 		
 		// Compute lastCodePoint by adding codePoints-1 to ref.
 		int lastCodePoint = refCodePoint + codePoints - 1;
-		
 		System.out.println("lastCodePoint=" + lastCodePoint);
 		
 		// If lastCodePoint is greater than maxCodePoint, clamp.
@@ -111,7 +110,6 @@ public class TrueTypeFont extends Font {
 		
 		// Recompute refCodePoint to ensure maximum codePoints at once.
 		refCodePoint = lastCodePoint - codePoints + 1;
-		
 		System.out.println("refCodePoint=" + refCodePoint);
 		
 		// Allocate pixels and char data
@@ -134,8 +132,11 @@ public class TrueTypeFont extends Font {
 				int bakedCodePoints = -res;
 				int bakedLastCodePoint = refCodePoint + bakedCodePoints - 1;
 				System.out.println("bakedLastCodePoint=" + bakedLastCodePoint);
+				
 				if (bakedLastCodePoint < codePoint) {
+					
 					System.out.println("bakedLastCodePoint < codePoint");
+					
 					// Increase refCodePoint, but decrease charData limit by one.
 					refCodePoint++;
 					
@@ -144,19 +145,33 @@ public class TrueTypeFont extends Font {
 					charData.clear();
 					charData.limit(cap - 1);
 					
-					// Clear pixels for next bake.
-					pixels.clear();
-					
 				} else {
+					
 					System.out.println("bakedLastCodePoint >= codePoint");
+					
+					if (charData.limit() == bakedLastCodePoint) {
+						break;
+					}
+					
+					// Clear and set limit, in order to recompute the last unused row.
 					charData.clear();
 					charData.limit(bakedCodePoints);
-					break;
+					
 				}
+				
+				// Clear pixels for next bake.
+				pixels.clear();
 				
 			}
 			
 		}
+		
+		/*for (int y = 0; y < bitmapHeight; ++y) {
+			for (int x = 0; x < bitmapSize; ++x) {
+				System.out.print(pixels.get(y * bitmapSize + x) == 0 ? ' ' : 'o');
+			}
+			System.out.println();
+		}*/
 		
 		System.out.println("bitmapHeight=" + bitmapHeight);
 		
