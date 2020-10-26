@@ -82,7 +82,7 @@ public class TrueTypeFont extends Font {
 		
 		// It's useless to have more maximum code points than the maximum min->max range.
 		final int codePoints = Math.min(128, maxCodePoint - minCodePoint + 1);
-		final int rawBitmapSize = (int) (this.getSize() * 6);
+		final int rawBitmapSize = (int) (this.getSize() * 6); // TODO: Maybe fix the UNPACK_ALIGNMENT parameter instead ?
 		final int bitmapSize = rawBitmapSize + ((4 - (rawBitmapSize & 3)) & 3); // Padded for texture store
 		
 		System.out.println("codePoints=" + codePoints);

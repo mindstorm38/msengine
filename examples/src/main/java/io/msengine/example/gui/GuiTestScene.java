@@ -20,6 +20,7 @@ public class GuiTestScene extends GuiScene {
 	private static final Asset A_EXAMPLE = ASSETS.getAsset("mseex/example.png");
 	private static final Asset A_EXAMPLE_BG = ASSETS.getAsset("mseex/example_bg.jpg");
 	private static final Asset A_UBUNTU_FONT = ASSETS.getAsset("mseex/Ubuntu-Regular.ttf");
+	private static final Asset A_JETBRAINS_MONO = ASSETS.getAsset("mseex/JetBrainsMonoNL-Regular.ttf");
 	
 	private final GuiTexture exampleTexBg;
 	private final GuiWrapperCentered exampleTexBgCentered;
