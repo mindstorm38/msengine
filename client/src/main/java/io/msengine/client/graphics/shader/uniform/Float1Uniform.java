@@ -8,7 +8,7 @@ public class Float1Uniform extends Uniform {
 	
 	public void set(float x) {
 		this.x = x;
-		this.uploadIfUsed();
+		this.setChanged();
 	}
 	
 	@Override

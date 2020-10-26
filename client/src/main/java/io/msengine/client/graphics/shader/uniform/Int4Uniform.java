@@ -16,12 +16,12 @@ public class Int4Uniform extends IntBufferUniform {
 		this.buffer.put(1, y);
 		this.buffer.put(2, z);
 		this.buffer.put(3, w);
-		this.uploadIfUsed();
+		this.setChanged();
 	}
 	
 	public void set(Vector4i vec) {
 		vec.get(0, this.ensureBuffer());
-		this.uploadIfUsed();
+		this.setChanged();
 	}
 	
 	@Override

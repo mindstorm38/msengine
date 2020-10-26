@@ -12,7 +12,7 @@ public class FloatMatrix3Uniform extends FloatBufferUniform {
 	
 	public void set(Matrix3f mat) {
 		mat.get(0, this.ensureBuffer());
-		this.uploadIfUsed();
+		this.setChanged();
 	}
 	
 	@Override

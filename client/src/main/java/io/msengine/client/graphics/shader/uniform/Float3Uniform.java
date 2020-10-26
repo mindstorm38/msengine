@@ -12,7 +12,7 @@ public class Float3Uniform extends Uniform {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.uploadIfUsed();
+		this.setChanged();
 	}
 	
 	public void set(Vector3f vec) {

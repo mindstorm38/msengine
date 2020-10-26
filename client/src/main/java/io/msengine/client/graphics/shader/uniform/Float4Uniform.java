@@ -17,12 +17,12 @@ public class Float4Uniform extends FloatBufferUniform {
 		this.buffer.put(1, y);
 		this.buffer.put(2, z);
 		this.buffer.put(3, w);
-		this.uploadIfUsed();
+		this.setChanged();
 	}
 	
 	public void set(Vector4f vec) {
 		vec.get(0, this.ensureBuffer());
-		this.uploadIfUsed();
+		this.setChanged();
 	}
 	
 	public void set(Color color) {

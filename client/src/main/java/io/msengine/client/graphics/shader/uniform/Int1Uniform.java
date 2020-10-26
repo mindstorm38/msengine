@@ -8,7 +8,7 @@ public class Int1Uniform extends Uniform {
 	
 	public void set(int x) {
 		this.x = x;
-		this.uploadIfUsed();
+		this.setChanged();
 	}
 	
 	public void set(boolean b) {

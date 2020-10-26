@@ -85,7 +85,7 @@ public class GuiShaderProgram extends ShaderProgram {
 	}
 	
 	public void uploadProjectionMatrix() {
-		this.projectionMatrixUniform.upload();
+		this.projectionMatrixUniform.uploadIfChanged();
 	}
 	
 	public void setModelMatrix(Matrix4f mat) {
