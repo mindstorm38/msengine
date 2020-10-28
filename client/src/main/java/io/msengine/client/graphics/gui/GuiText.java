@@ -6,6 +6,7 @@ import io.msengine.client.graphics.font.FontFamily;
 import io.msengine.client.graphics.font.glyph.Glyph;
 import io.msengine.client.graphics.font.glyph.GlyphPage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
+import io.msengine.client.graphics.gui.render.GuiProgramText;
 import io.msengine.client.graphics.texture.base.Texture;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
@@ -27,6 +28,7 @@ public class GuiText extends GuiObject {
 	
 	@Override
 	protected void init() {
+		this.acquireProgram(GuiProgramText.TYPE);
 		if (this.isTextReady()) {
 			this.updateTextBuffers();
 		}
@@ -34,6 +36,7 @@ public class GuiText extends GuiObject {
 	
 	@Override
 	protected void stop() {
+		this.releaseProgram(GuiProgramText.TYPE);
 		this.buffers.values().forEach(GuiBufferArray::close);
 		this.buffers.clear();
 	}
@@ -47,9 +50,12 @@ public class GuiText extends GuiObject {
 				this.updateTextBuffers();
 			}
 			
+			GuiProgramText program = this.useProgram(GuiProgramText.TYPE);
+			
 			this.model.push().translate(this.xOffset, this.yOffset).apply();
 			
-			this.manager.setTextureUnit(0);
+			program.setTextureUnit(0);
+			// this.manager.setTextureUnit(0);
 			Texture.setTextureUnit(0);
 			
 			this.buffers.forEach((textureName, buf) -> {
@@ -58,7 +64,7 @@ public class GuiText extends GuiObject {
 			});
 			
 			Texture.unbindTexture(GL11.GL_TEXTURE_2D);
-			this.manager.setTextureUnit(null);
+			// this.manager.setTextureUnit(null);
 			
 			this.model.pop();
 			
@@ -94,7 +100,8 @@ public class GuiText extends GuiObject {
 	}
 	
 	private GuiBufferArray createTextBufferArray() {
-		return this.getProgram().createBuffer(false, true);
+		// return this.getProgram().createBuffer(false, true);
+		return this.getProgram(GuiProgramText.TYPE).createBuffer(false);
 	}
 	
 	private void updateTextBuffers() {

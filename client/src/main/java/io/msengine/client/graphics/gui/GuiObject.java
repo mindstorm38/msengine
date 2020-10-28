@@ -3,10 +3,10 @@ package io.msengine.client.graphics.gui;
 import io.msengine.client.graphics.gui.event.GuiEvent;
 import io.msengine.client.graphics.gui.event.GuiEventListener;
 import io.msengine.client.graphics.gui.event.GuiEventManager;
-import io.msengine.client.graphics.gui.render.GuiShaderProgram;
+import io.msengine.client.graphics.gui.render.GuiProgramType;
+import io.msengine.client.graphics.shader.ShaderProgram;
 import io.msengine.client.renderer.model.ModelHandler;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -108,12 +108,40 @@ public abstract class GuiObject {
 		return this.manager;
 	}
 	
-	public GuiShaderProgram getProgram() {
+	/*public GuiProgramMain getProgram() {
 		return this.manager == null ? null : this.manager.getProgram();
-	}
+	}*/
 	
 	public ModelHandler getModel() {
 		return this.model;
+	}
+	
+	/**
+	 * @see GuiManager#acquireProgram(GuiProgramType)
+	 */
+	protected <P extends ShaderProgram> P acquireProgram(GuiProgramType<P> type) {
+		return this.manager.acquireProgram(type);
+	}
+	
+	/**
+	 * @see GuiManager#releaseProgram(GuiProgramType)
+	 */
+	protected void releaseProgram(GuiProgramType<?> type) {
+		this.manager.releaseProgram(type);
+	}
+	
+	/**
+	 * @see GuiManager#getProgram(GuiProgramType)
+	 */
+	protected <P extends ShaderProgram> P getProgram(GuiProgramType<P> type) {
+		return this.manager.getProgram(type);
+	}
+	
+	/**
+	 * @see GuiManager#useProgram(GuiProgramType)
+	 */
+	protected <P extends ShaderProgram> P useProgram(GuiProgramType<P> type) {
+		return this.manager.useProgram(type);
 	}
 	
 	// [ Position ] //

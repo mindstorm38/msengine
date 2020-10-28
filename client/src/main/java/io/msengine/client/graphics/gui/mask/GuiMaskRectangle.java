@@ -1,6 +1,8 @@
 package io.msengine.client.graphics.gui.mask;
 
 import io.msengine.client.graphics.gui.GuiCommon;
+import io.msengine.client.graphics.gui.render.GuiProgramMain;
+import io.msengine.client.graphics.gui.render.GuiStdProgram;
 import io.msengine.client.util.BufferAlloc;
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
@@ -26,12 +28,14 @@ public class GuiMaskRectangle extends GuiMask {
 	
 	@Override
 	public void init() {
-		this.buf = this.getProgram().createBuffer(false, false);
+		//this.buf = this.getProgram().createBuffer(false, false);
+		this.buf = this.manager.acquireProgram(GuiProgramMain.TYPE).createBuffer(false, false);
 		initBuffers();
 	}
 	
 	@Override
 	public void stop() {
+		this.manager.releaseProgram(GuiProgramMain.TYPE);
 		this.buf.close();
 		this.buf = null;
 	}
@@ -43,6 +47,7 @@ public class GuiMaskRectangle extends GuiMask {
 			this.updateVerticesBuffer();
 		}
 		
+		this.manager.useProgram(GuiProgramMain.TYPE);
 		this.model.translate(this.x, this.y).apply();
 		this.buf.draw();
 		this.model.pop();

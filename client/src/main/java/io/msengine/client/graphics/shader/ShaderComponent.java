@@ -11,7 +11,7 @@ public abstract class ShaderComponent implements AutoCloseable {
 	
 	private ShaderProgram program;
 	
-	public void setup(ShaderProgram program) {
+	protected void setup(ShaderProgram program) {
 		this.program = program;
 	}
 	

@@ -2,6 +2,7 @@ package io.msengine.client.graphics.shader;
 
 import io.msengine.client.graphics.shader.uniform.SamplerUniform;
 import io.msengine.client.graphics.shader.uniform.Uniform;
+import io.msengine.common.util.Color;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -258,6 +259,24 @@ public class ShaderProgram implements AutoCloseable {
     @Override
     public int hashCode() {
         return this.name;
+    }
+    
+    // Attrib utils //
+    
+    public static void setAttribDefault(int loc, float x) {
+        glVertexAttrib1f(loc, x);
+    }
+    
+    public static void setAttribDefault(int loc, float x, float y) {
+        glVertexAttrib2f(loc, x, y);
+    }
+    
+    public static void setAttribDefault(int loc, float x, float y, float z) {
+        glVertexAttrib3f(loc, x, y, z);
+    }
+    
+    public static void setAttribDefault(int loc, float x, float y, float z, float w) {
+        glVertexAttrib4f(loc, x, y, z, w);
     }
     
 }

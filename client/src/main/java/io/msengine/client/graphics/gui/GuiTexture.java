@@ -2,6 +2,7 @@ package io.msengine.client.graphics.gui;
 
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
+import io.msengine.client.graphics.gui.render.GuiProgramMain;
 import io.msengine.client.graphics.texture.base.Texture;
 import io.msengine.client.util.BufferAlloc;
 
@@ -19,12 +20,14 @@ public class GuiTexture extends GuiObject {
 	
 	@Override
 	protected void init() {
-		this.buf = this.getProgram().createBufferSep(false, true);
+		// this.buf = this.getProgram().createBufferSep(false, true);
+		this.buf = this.acquireProgram(GuiProgramMain.TYPE).createBufferSep(false, true);
 		this.initBuffers();
 	}
 	
 	@Override
 	protected void stop() {
+		this.releaseProgram(GuiProgramMain.TYPE);
 		this.buf.close();
 		this.buf = null;
 	}
@@ -43,10 +46,14 @@ public class GuiTexture extends GuiObject {
 			this.updateTexCoordsBuffer();
 		}
 		
+		GuiProgramMain program = this.useProgram(GuiProgramMain.TYPE);
+		
 		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
-		this.manager.setTextureUnitAndBind(0, this.textureName);
+		program.setTextureUnitAndBind(0, this.textureName);
+		//this.manager.setTextureUnitAndBind(0, this.textureName);
 		this.buf.draw();
-		this.manager.resetTextureUnitAndUnbind();
+		program.resetTextureUnitAndUnbind();
+		//this.manager.resetTextureUnitAndUnbind();
 		this.model.pop();
 		
 	}

@@ -1,95 +1,44 @@
 package io.msengine.client.graphics.gui.render;
 
-import io.msengine.client.EngineClient;
 import io.msengine.client.graphics.buffer.BufferArray;
-import io.msengine.client.graphics.shader.Shader;
-import io.msengine.client.graphics.shader.ShaderProgram;
+import io.msengine.client.graphics.texture.base.Texture;
 import io.msengine.client.graphics.util.DataType;
-import io.msengine.client.graphics.shader.ShaderType;
 import io.msengine.client.graphics.shader.uniform.Float4Uniform;
-import io.msengine.client.graphics.shader.uniform.FloatMatrix4Uniform;
 import io.msengine.client.graphics.shader.uniform.Int1Uniform;
 import io.msengine.client.graphics.shader.uniform.SamplerUniform;
 import io.msengine.common.util.Color;
-import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
+public class GuiProgramMain extends GuiStdProgramBase {
 
-import static org.lwjgl.opengl.GL20.*;
-
-public class GuiShaderProgram extends ShaderProgram {
-
-	private FloatMatrix4Uniform projectionMatrixUniform;
-	private FloatMatrix4Uniform modelMatrixUniform;
+	public static final GuiProgramType<GuiProgramMain> TYPE = new GuiProgramType<>("main", GuiProgramMain::new);
+	
 	private Float4Uniform globalColorUniform;
 	private Int1Uniform textureEnabledUniform;
 	private SamplerUniform textureSampler;
 	
-	private int attribPosition;
 	private int attribColor;
 	private int attribTexCoord;
 	
-	protected Shader createVertexShader() throws IOException {
-		return Shader.fromSource(ShaderType.VERTEX, EngineClient.ASSETS.openAssetStreamExcept("mse/shaders/gui.vsh"));
-	}
-	
-	protected Shader createFragmentShader() throws IOException {
-		return Shader.fromSource(ShaderType.FRAGMENT, EngineClient.ASSETS.openAssetStreamExcept("mse/shaders/gui.fsh"));
-	}
-	
-	@Override
-	protected void preLink() {
-		
-		super.preLink();
-		
-		Shader vsh, fsh;
-		
-		try {
-			vsh = this.createVertexShader();
-			fsh = this.createFragmentShader();
-		} catch (IOException e) {
-			throw new IllegalStateException("Failed to create GUI shaders.", e);
-		}
-		
-		vsh.compile();
-		fsh.compile();
-		
-		this.attachShader(vsh);
-		this.attachShader(fsh);
-		
+	public GuiProgramMain() {
+		super(COMMON_VERTEX_SHADER, MAIN_FRAGMENT_SHADER);
 	}
 	
 	@Override
 	protected void postLink() {
 		
 		super.postLink();
-		this.deleteAttachedShaders();
 		
-		this.projectionMatrixUniform = this.createUniform("projection_matrix", FloatMatrix4Uniform::new);
-		this.modelMatrixUniform = this.createUniform("model_matrix", FloatMatrix4Uniform::new);
 		this.globalColorUniform = this.createUniform("global_color", Float4Uniform::new);
 		this.textureEnabledUniform = this.createUniform("texture_enabled", Int1Uniform::new);
 		this.textureSampler = this.createSampler("texture_sampler");
 		
-		this.attribPosition = this.getAttribLocation("position");
 		this.attribColor = this.getAttribLocation("color");
 		this.attribTexCoord = this.getAttribLocation("tex_coord");
 		
-		glVertexAttrib4f(this.attribColor, 1, 1, 1, 1);
-		glVertexAttrib2f(this.attribTexCoord, 0, 0);
+		setAttribDefault(this.attribColor, 1, 1, 1, 1);
+		setAttribDefault(this.attribTexCoord, 0, 0);
 		
-	}
-	
-	public void setProjectionMatrix(Matrix4f mat) {
-		this.projectionMatrixUniform.set(mat);
-	}
-	
-	public void uploadProjectionMatrix() {
-		this.projectionMatrixUniform.uploadIfChanged();
-	}
-	
-	public void setModelMatrix(Matrix4f mat) {
-		this.modelMatrixUniform.set(mat);
 	}
 	
 	public void setGlobalColor(Color color) {
@@ -98,19 +47,21 @@ public class GuiShaderProgram extends ShaderProgram {
 	
 	// Texture //
 	
-	public void setTextureEnabled(boolean enabled) {
-		this.textureEnabledUniform.set(enabled);
-	}
-	
-	public void setTextureUnit(int unit) {
-		this.textureSampler.setTextureUnit(unit);
-	}
-	
 	public void setTextureUnit(Integer unitOrNull) {
 		this.textureEnabledUniform.set(unitOrNull != null);
 		if (unitOrNull != null) {
 			this.textureSampler.setTextureUnit(unitOrNull);
 		}
+	}
+	
+	public void setTextureUnitAndBind(int unit, int name) {
+		this.setTextureUnit(unit);
+		Texture.bindTexture(unit, GL11.GL_TEXTURE_2D, name);
+	}
+	
+	public void resetTextureUnitAndUnbind() {
+		this.setTextureUnit(null);
+		Texture.unbindTexture(GL11.GL_TEXTURE_2D);
 	}
 	
 	// Buffer //

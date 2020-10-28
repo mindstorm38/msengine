@@ -1,6 +1,7 @@
 package io.msengine.client.graphics.gui;
 
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
+import io.msengine.client.graphics.gui.render.GuiProgramMain;
 import io.msengine.client.util.BufferAlloc;
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.common.util.Color;
@@ -19,12 +20,14 @@ public abstract class GuiColorBase extends GuiObject {
 	
 	@Override
 	protected void init() {
-		this.buf = this.getProgram().createBufferSep(true, false);
+		this.buf = this.acquireProgram(GuiProgramMain.TYPE).createBufferSep(true, false);
+		// this.buf = this.getProgram().createBufferSep(true, false);
 		this.initBuffers();
 	}
 	
 	@Override
 	protected void stop() {
+		this.releaseProgram(GuiProgramMain.TYPE);
 		this.buf.close();
 		this.buf = null;
 	}
@@ -40,6 +43,7 @@ public abstract class GuiColorBase extends GuiObject {
 			this.updateColorsBuffer();
 		}
 		
+		this.useProgram(GuiProgramMain.TYPE);
 		this.model.push().translate(this.xOffset, this.yOffset).apply();
 		this.buf.draw();
 		this.model.pop();
