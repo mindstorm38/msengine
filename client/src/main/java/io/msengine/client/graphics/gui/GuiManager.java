@@ -85,6 +85,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 			this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
 		}*/
 		this.checkWindowContext();
+		this.updateSceneSizeFromWindow();
 		this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
 	}
 	
@@ -383,7 +384,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	
 	// Rendering variables //
 	
-	/**
+	/*
 	 * @return The shader program used when rendering.
 	 */
 	/*public GuiProgramMain getProgram() {

@@ -41,6 +41,13 @@ public class GuiProgramMain extends GuiStdProgramBase {
 		
 	}
 	
+	@Override
+	public void use() {
+		super.use();
+		this.setGlobalColor(Color.WHITE);
+		this.setTextureUnit(null);
+	}
+	
 	public void setGlobalColor(Color color) {
 		this.globalColorUniform.set(color);
 	}
