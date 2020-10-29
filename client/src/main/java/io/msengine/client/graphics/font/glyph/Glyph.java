@@ -1,7 +1,5 @@
 package io.msengine.client.graphics.font.glyph;
 
-import java.nio.FloatBuffer;
-
 public class Glyph {
 
 	private final int codePoint;
@@ -39,20 +37,16 @@ public class Glyph {
 		return this.advance;
 	}
 	
-	public void putToBuffer(float offX, float offY, FloatBuffer buf) {
-		
-		buf.put(offX + px0).put(offY + py0);
-		buf.put(tx0).put(ty0);
-		
-		buf.put(offX + px0).put(offY + py1);
-		buf.put(tx0).put(ty1);
-		
-		buf.put(offX + px1).put(offY + py1);
-		buf.put(tx1).put(ty1);
-		
-		buf.put(offX + px1).put(offY + py0);
-		buf.put(tx1).put(ty0);
-		
+	public void forEachCorner(CornerConsumer consumer) {
+		consumer.accept(px0, py0, tx0, ty0);
+		consumer.accept(px0, py1, tx0, ty1);
+		consumer.accept(px1, py1, tx1, ty1);
+		consumer.accept(px1, py0, tx1, ty0);
+	}
+	
+	@FunctionalInterface
+	public interface CornerConsumer {
+		void accept(float x, float y, float tx, float ty);
 	}
 	
 }

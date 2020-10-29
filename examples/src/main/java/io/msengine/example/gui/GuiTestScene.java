@@ -10,6 +10,7 @@ import io.msengine.client.graphics.texture.ResTexture2D;
 import io.msengine.client.graphics.texture.base.Texture2D;
 import io.msengine.common.asset.Asset;
 import io.msengine.common.asset.Assets;
+import io.msengine.common.util.Color;
 
 import java.io.IOException;
 
@@ -53,6 +54,9 @@ public class GuiTestScene extends GuiScene {
 		this.ubuntuText = new GuiText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed nisl commodo, porttitor libero ut, efficitur erat.");
 		this.ubuntuText.setYPos(550);
 		this.ubuntuText.setXAnchor(0);
+		this.ubuntuText.addColorEffect(0, Color.GREEN);
+		this.ubuntuText.addColorEffect(10, Color.RED);
+		this.ubuntuText.addColorEffect(20, Color.BLUE);
 		this.addChild(this.ubuntuText);
 		
 	}

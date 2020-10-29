@@ -8,13 +8,17 @@ import io.msengine.client.graphics.font.glyph.GlyphPage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
 import io.msengine.client.graphics.gui.render.GuiProgramText;
 import io.msengine.client.graphics.texture.base.Texture;
+import io.msengine.common.util.Color;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class GuiText extends GuiObject {
 	
@@ -26,6 +30,7 @@ public class GuiText extends GuiObject {
 	protected int[] codePoints;
 	protected float[] codePointsOffsets;
 	protected float textWidth;
+	protected Map<Integer, Effect> effects;
 	
 	public GuiText(FontFamily family, float size, String text) {
 		this.setFont(family, size);
@@ -106,6 +111,8 @@ public class GuiText extends GuiObject {
 		return this.font == null ? 0 : this.font.getSize();
 	}
 	
+	// Text and font //
+	
 	public boolean isTextReady() {
 		return this.font != null && this.text != null && this.font.isValid();
 	}
@@ -132,8 +139,42 @@ public class GuiText extends GuiObject {
 		}
 	}
 	
+	// Effects //
+	
+	protected void addEffect(int at, SingleEffect effect) {
+		if (this.effects == null) {
+			this.effects = new HashMap<>();
+		}
+		this.effects.compute(at, (at_, current) -> (current == null) ? effect : current.groupWith(effect));
+	}
+	
+	protected void removeEffect(int at, Class<? extends SingleEffect> effectClass) {
+		if (this.effects != null) {
+			this.effects.compute(at, (at_, current) -> (current == null) ? null : current.groupWithout(effectClass));
+		}
+	}
+	
+	protected void forEachEffect(int at, Consumer<SingleEffect> consumer) {
+		if (this.effects != null) {
+			Effect effect = this.effects.get(at);
+			if (effect != null) {
+				effect.forEach(consumer);
+			}
+		}
+	}
+	
+	public void addColorEffect(int at, Color color) {
+		this.addEffect(at, new ColorEffect(color));
+	}
+	
+	public void removeColorEffect(int at) {
+		this.removeEffect(at, ColorEffect.class);
+	}
+	
+	// Rendering //
+	
 	private GuiBufferArray createTextBufferArray() {
-		return this.getProgram(GuiProgramText.TYPE).createBuffer(false);
+		return this.getProgram(GuiProgramText.TYPE).createBuffer(true);
 	}
 	
 	private void updateTextBuffers() {
@@ -173,7 +214,8 @@ public class GuiText extends GuiObject {
 					this.buffers.put(textureName, buf);
 				}
 				
-				temp.dataBuffer = MemoryUtil.memAllocFloat(temp.codePointsCount * 8 * 2);
+				// For a single glyph = 4 pos (8f), 4 tex (8f), 4 colors (16f=2*8f)
+				temp.dataBuffer = MemoryUtil.memAllocFloat(temp.codePointsCount * 8 * 4);
 				temp.indicesBuffer = MemoryUtil.memAllocInt(buf.setIndicesCount(temp.codePointsCount * 6));
 				
 			});
@@ -181,27 +223,38 @@ public class GuiText extends GuiObject {
 			TempBufferData bufferData;
 			Glyph glyph;
 			
-			float x = 0;
-			float y = 0;
+			float[] pos = {0, 0};
+			Color[] color = {Color.WHITE};
 			
 			for (int i = 0, codePoint; i < codePointsCount; ++i) {
 				
+				this.forEachEffect(i, eff -> {
+					if (eff.getClass() == ColorEffect.class) {
+						color[0] = ((ColorEffect) eff).color;
+					}
+				});
+				
 				codePoint = this.codePoints[i];
 				page = codePointsPages[i];
+				
 				bufferData = buffersCodePoints.get(page.getTextureName());
 				glyph = page.getGlyph(codePoint);
 				
-				glyph.putToBuffer(x, y, bufferData.dataBuffer);
+				FloatBuffer dataBuffer = bufferData.dataBuffer;
+				glyph.forEachCorner((gx, gy, tx, ty) -> {
+					dataBuffer.put(pos[0] + gx).put(pos[1] + gy).put(tx).put(ty);
+					color[0].putToBuffer(dataBuffer, true);
+				});
+				
 				GuiCommon.putSquareIndices(bufferData.currentIndex, bufferData.indicesBuffer);
-				
 				bufferData.currentIndex += 4;
-				x += (i + 1 < codePointsCount) ? glyph.getKernAdvance(this.codePoints[i + 1]) : glyph.getAdvance();
 				
-				this.codePointsOffsets[i] = x;
+				pos[0] += (i + 1 < codePointsCount) ? glyph.getKernAdvance(this.codePoints[i + 1]) : glyph.getAdvance();
+				this.codePointsOffsets[i] = pos[0];
 				
 			}
 			
-			this.textWidth = x;
+			this.textWidth = pos[0];
 			
 			buffersCodePoints.forEach((textureName, temp) -> {
 				
@@ -247,6 +300,83 @@ public class GuiText extends GuiObject {
 					'>';
 		}
 		
+	}
+	
+	// Effects //
+	
+	protected static abstract class Effect {
+		protected abstract void forEach(Consumer<SingleEffect> consumer);
+		protected abstract Effect groupWith(SingleEffect effect);
+		protected abstract Effect groupWithout(Class<? extends SingleEffect> effectClass);
+	}
+	
+	protected static class GroupEffect extends Effect {
+		
+		private final List<SingleEffect> effects = new ArrayList<>();
+		
+		@Override
+		protected void forEach(Consumer<SingleEffect> consumer) {
+			this.effects.forEach(consumer);
+		}
+		
+		@Override
+		protected Effect groupWith(SingleEffect effect) {
+			for (int count = this.effects.size(), i = 0; i < count; ++i) {
+				SingleEffect eff = this.effects.get(i);
+				if (eff == effect) {
+					// The effect already exists.
+					return this;
+				} else if (eff.getClass() == effect.getClass()) {
+					this.effects.remove(i--);
+				}
+			}
+			this.effects.add(effect);
+			return this;
+		}
+		
+		@Override
+		protected Effect groupWithout(Class<? extends SingleEffect> effectClass) {
+			for (int count = this.effects.size(), i = 0; i < count; ++i) {
+				if (this.effects.get(i).getClass() == effectClass) {
+					this.effects.remove(i--);
+				}
+			}
+			return this.effects.isEmpty() ? null : this;
+		}
+		
+	}
+	
+	protected static abstract class SingleEffect extends Effect {
+		
+		@Override
+		protected void forEach(Consumer<SingleEffect> consumer) {
+			consumer.accept(this);
+		}
+		
+		@Override
+		protected Effect groupWith(SingleEffect effect) {
+			if (effect == this || effect.getClass() == this.getClass()) {
+				return effect;
+			} else {
+				GroupEffect group = new GroupEffect();
+				group.effects.add(this);
+				group.effects.add(effect);
+				return group;
+			}
+		}
+		
+		@Override
+		protected Effect groupWithout(Class<? extends SingleEffect> effectClass) {
+			return this.getClass() == effectClass ? null : this;
+		}
+		
+	}
+	
+	protected static class ColorEffect extends SingleEffect {
+		private final Color color;
+		private ColorEffect(Color color) {
+			this.color = color;
+		}
 	}
 	
 }
