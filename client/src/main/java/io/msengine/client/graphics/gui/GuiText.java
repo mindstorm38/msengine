@@ -341,6 +341,8 @@ public class GuiText extends GuiObject {
 					this.effects.remove(i--);
 				}
 			}
+			// TODO: Maybe return the only one remaining item ? :
+			// return this.effects.isEmpty() ? null : this.effects.size() == 1 ? this.effects.get(0) : this;
 			return this.effects.isEmpty() ? null : this;
 		}
 		
