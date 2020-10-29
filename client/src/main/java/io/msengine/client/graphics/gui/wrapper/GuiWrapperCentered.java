@@ -21,7 +21,7 @@ public class GuiWrapperCentered extends GuiWrapper {
 	public void setCenteredSize(float xOff, float yOff, float width, float height) {
 		float ratio = width / height;
 		this.inner.setAnchor(0, 0);
-		this.inner.setPosition(xOff + (width / 2), yOff + (height / 2));
+		this.inner.setPos(xOff + (width / 2), yOff + (height / 2));
 		if (ratio > this.goalRatio) {
 			this.inner.setSize(width, width / this.goalRatio);
 		} else {

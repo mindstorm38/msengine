@@ -25,6 +25,7 @@ public class GuiText extends GuiObject {
 	protected String text;
 	protected int[] codePoints;
 	protected float[] codePointsOffsets;
+	protected float textWidth;
 	
 	public GuiText(FontFamily family, float size, String text) {
 		this.setFont(family, size);
@@ -95,6 +96,16 @@ public class GuiText extends GuiObject {
 	@Override
 	protected void update() { }
 	
+	@Override
+	public float getAutoWidth() {
+		return this.textWidth;
+	}
+	
+	@Override
+	public float getAutoHeight() {
+		return this.font == null ? 0 : this.font.getSize();
+	}
+	
 	public boolean isTextReady() {
 		return this.font != null && this.text != null && this.font.isValid();
 	}
@@ -105,6 +116,8 @@ public class GuiText extends GuiObject {
 		} else if (this.font != font) {
 			this.font = font;
 			this.updateBuffers = true;
+			// Update Y offset because the new font size can be used with auto height.
+			this.updateYOffset();
 		}
 	}
 	
@@ -188,6 +201,8 @@ public class GuiText extends GuiObject {
 				
 			}
 			
+			this.textWidth = x;
+			
 			buffersCodePoints.forEach((textureName, temp) -> {
 				
 				temp.dataBuffer.flip();
@@ -199,6 +214,9 @@ public class GuiText extends GuiObject {
 				buf.uploadIboData(temp.indicesBuffer, BufferUsage.DYNAMIC_DRAW);
 				
 			});
+			
+			// Update X offset because textSize is updated and can be used through auto width.
+			this.updateXOffset();
 			
 		} finally {
 			

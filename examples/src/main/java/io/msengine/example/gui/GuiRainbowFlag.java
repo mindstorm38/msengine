@@ -36,7 +36,7 @@ public class GuiRainbowFlag extends GuiParent {
 		super.onHeightChanged(height);
 		float h = this.height / COLORS.length;
 		for (int i = 0; i < COLORS.length; ++i) {
-			this.colors[i].setPosition(0, i * h);
+			this.colors[i].setPos(0, i * h);
 			this.colors[i].setSize(width, h);
 		}
 	}

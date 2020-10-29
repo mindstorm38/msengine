@@ -1,7 +1,6 @@
 package io.msengine.example.gui;
 
 import io.msengine.client.graphics.font.FontFamily;
-import io.msengine.client.graphics.font.glyph.GlyphPage;
 import io.msengine.client.graphics.font.truetype.TrueTypeFontFamily;
 import io.msengine.client.graphics.gui.GuiScene;
 import io.msengine.client.graphics.gui.GuiText;
@@ -37,22 +36,23 @@ public class GuiTestScene extends GuiScene {
 	public GuiTestScene() {
 		
 		this.exampleTexBg = new GuiTexture();
-		this.exampleTexBg.setPosition(0, 0);
+		this.exampleTexBg.setPos(0, 0);
 		this.addChild(this.exampleTexBg);
 		
 		this.exampleTexBgCentered = new GuiWrapperCentered(this.exampleTexBg);
 		
 		this.exampleTex = new GuiTexture();
-		this.exampleTex.setPosition(30, 30);
+		this.exampleTex.setPos(30, 30);
 		this.exampleTex.setSize(200, 200);
 		this.addChild(this.exampleTex);
 		
 		this.jetbrainsText = new GuiText("while ((read = stream.read(buf)) != -1) {}");
-		this.jetbrainsText.setPosition(30, 500);
+		this.jetbrainsText.setPos(30, 500);
 		this.addChild(this.jetbrainsText);
 		
 		this.ubuntuText = new GuiText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed nisl commodo, porttitor libero ut, efficitur erat.");
-		this.ubuntuText.setPosition(30, 550);
+		this.ubuntuText.setYPos(550);
+		this.ubuntuText.setXAnchor(0);
 		this.addChild(this.ubuntuText);
 		
 	}
@@ -106,6 +106,7 @@ public class GuiTestScene extends GuiScene {
 	protected void onSceneResized(float width, float height) {
 		super.onSceneResized(width, height);
 		this.exampleTexBgCentered.setCenteredSize(0, 0, width, height);
+		this.ubuntuText.setXPos(width / 2);
 	}
 	
 }

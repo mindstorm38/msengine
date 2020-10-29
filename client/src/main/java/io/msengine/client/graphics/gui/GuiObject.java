@@ -21,7 +21,7 @@ public abstract class GuiObject {
 	private static final int FLAG_VISIBLE   = 0x4;
 	
 	protected float xPos, yPos;
-	protected float width, height;
+	protected float width = SIZE_AUTO, height = SIZE_AUTO;
 	protected float xAnchor = -1, yAnchor = -1;
 	protected float xOffset, yOffset;
 	protected int xIntOffset, yIntOffset;
@@ -165,7 +165,7 @@ public abstract class GuiObject {
 		}
 	}
 	
-	public void setPosition(float xPos, float yPos) {
+	public void setPos(float xPos, float yPos) {
 		this.setXPos(xPos);
 		this.setYPos(yPos);
 	}
@@ -188,11 +188,11 @@ public abstract class GuiObject {
 		if (this.width == width)
 			return;
 		
-		if (width == SIZE_AUTO)
+		/*if (width == SIZE_AUTO)
 			width = this.getAutoWidth();
 		
 		if (width < 0)
-			throw new IllegalArgumentException("Invalid width given : " + width);
+			throw new IllegalArgumentException("Invalid width given : " + width);*/
 		
 		this.width = width;
 		this.updateXOffset();
@@ -205,11 +205,11 @@ public abstract class GuiObject {
 		if (this.height == height)
 			return;
 		
-		if (height == SIZE_AUTO)
+		/*if (height == SIZE_AUTO)
 			height = this.getAutoHeight();
 		
 		if (height < 0)
-			throw new IllegalArgumentException("Invalid height given : " + height);
+			throw new IllegalArgumentException("Invalid height given : " + height);*/
 		
 		this.height = height;
 		this.updateYOffset();
@@ -248,6 +248,22 @@ public abstract class GuiObject {
 	
 	public float getAutoHeight() {
 		return 0;
+	}
+	
+	public boolean isAutoWidth() {
+		return this.width < 0;
+	}
+	
+	public boolean isAutoHeight() {
+		return this.height < 0;
+	}
+	
+	public float getEffectiveWidth() {
+		return this.isAutoWidth() ? this.getAutoWidth() : this.width;
+	}
+	
+	public float getEffectiveHeight() {
+		return this.isAutoHeight() ? this.getAutoHeight() : this.height;
 	}
 	
 	// [ Anchor ] //
@@ -291,7 +307,7 @@ public abstract class GuiObject {
 	 */
 	public void updateXOffset() {
 		
-		this.xOffset = (this.xPos + (this.xAnchor + 1f) * (this.width / -2f));
+		this.xOffset = (this.xPos + (this.xAnchor + 1f) * (this.getEffectiveWidth() / -2f));
 		if (this.parent != null) this.xOffset += this.parent.xOffset;
 		this.xIntOffset = Math.round(this.xOffset);
 		
@@ -302,7 +318,7 @@ public abstract class GuiObject {
 	 */
 	public void updateYOffset() {
 		
-		this.yOffset = (this.yPos + (this.yAnchor + 1f) * (this.height / -2f));
+		this.yOffset = (this.yPos + (this.yAnchor + 1f) * (this.getEffectiveHeight() / -2f));
 		if (this.parent != null) this.yOffset += this.parent.yOffset;
 		this.yIntOffset = Math.round(this.yOffset);
 		
