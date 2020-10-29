@@ -49,7 +49,8 @@ public abstract class GuiObject {
 				this.init();
 			} catch (Exception e) {
 				this.setFlag(FLAG_READY, false);
-				LOGGER.log(Level.WARNING, "Failed to call init() on " + this.getClass() + ", the object no longer ready.", e);
+				LOGGER.log(Level.SEVERE, "Failed to call init() on " + this.getClass() + ", the object no longer ready. " +
+						"Errors in init() must be fixed because they can cause future errors in stop() and render/update methods.", e);
 			}
 		}
 	}
@@ -59,7 +60,8 @@ public abstract class GuiObject {
 			try {
 				this.stop();
 			} catch (Exception e) {
-				LOGGER.log(Level.WARNING, "Failed to call stop() on " + this.getClass() + ", the object no longer ready.", e);
+				LOGGER.log(Level.SEVERE, "Failed to call stop() on " + this.getClass() + ", the object no longer ready. " +
+						"Errors in stop() must be fixed because they can cause memory leaks or alter future calls to init().", e);
 			} finally {
 				this.model = null;
 				this.manager = null;
