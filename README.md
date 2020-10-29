@@ -29,8 +29,8 @@ Each version released on GitLab will be soon available on Maven Central.
 - [ ] Rework GUI (`client.graphics.gui`)
     - [x] Rework base GUI framework classes
     - [x] Rework shaders, buffers and masking
-    - [ ] GUI text box (including TrueType font)
-    - [ ] Re-implement all useful classes from old GUI framework ***(40%)***
+    - [x] GUI text box (including TrueType font)
+    - [ ] Re-implement all useful classes from old GUI framework ***(90%)***
 - [x] Rework event managers :
     - Object event manager `common.util.event.ObjectEventManager`
     - Method event manager `common.util.event.MethodEventManager`
