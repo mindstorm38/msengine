@@ -26,6 +26,28 @@ public class GuiText extends GuiObject {
 	protected int[] codePoints;
 	protected float[] codePointsOffsets;
 	
+	public GuiText(FontFamily family, float size, String text) {
+		this.setFont(family, size);
+		this.setText(text);
+	}
+	
+	public GuiText(Font font, String text) {
+		this.setFont(font);
+		this.setText(text);
+	}
+	
+	public GuiText(FontFamily family, float size) {
+		this.setFont(family, size);
+	}
+	
+	public GuiText(Font font) {
+		this.setFont(font);
+	}
+	
+	public GuiText(String text) {
+		this.setText(text);
+	}
+	
 	@Override
 	protected void init() {
 		this.acquireProgram(GuiProgramText.TYPE);

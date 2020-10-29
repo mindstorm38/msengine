@@ -29,11 +29,10 @@ public class GuiTestScene extends GuiScene {
 	private final GuiTexture exampleTex;
 	private ResTexture2D exampleTexObj;
 	
-	private final GuiTexture fontTex;
-	private FontFamily fontFamily;
-	private ResTexture2D fontTexObj;
-	
-	private final GuiText text;
+	private FontFamily jetbrainsFont;
+	private FontFamily ubuntuFont;
+	private final GuiText jetbrainsText;
+	private final GuiText ubuntuText;
 	
 	public GuiTestScene() {
 		
@@ -48,14 +47,13 @@ public class GuiTestScene extends GuiScene {
 		this.exampleTex.setSize(200, 200);
 		this.addChild(this.exampleTex);
 		
-		this.fontTex = new GuiTexture();
-		this.fontTex.setPosition(300, 30);
-		this.addChild(this.fontTex);
+		this.jetbrainsText = new GuiText("while ((read = stream.read(buf)) != -1) {}");
+		this.jetbrainsText.setPosition(30, 500);
+		this.addChild(this.jetbrainsText);
 		
-		this.text = new GuiText();
-		this.text.setText("while ((read = stream.read(buf)) != -1) {}");
-		this.text.setPosition(30, 500);
-		this.addChild(this.text);
+		this.ubuntuText = new GuiText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed nisl commodo, porttitor libero ut, efficitur erat.");
+		this.ubuntuText.setPosition(30, 550);
+		this.addChild(this.ubuntuText);
 		
 	}
 	
@@ -73,32 +71,11 @@ public class GuiTestScene extends GuiScene {
 			this.exampleTexObj = new ResTexture2D(Texture2D.SETUP_NEAREST, A_EXAMPLE);
 			this.exampleTex.setTextureFull(this.exampleTexObj);
 			
-			this.fontFamily = new TrueTypeFontFamily(A_JETBRAINS_MONO);
-			this.text.setFont(this.fontFamily, 30);
+			this.jetbrainsFont = new TrueTypeFontFamily(A_JETBRAINS_MONO);
+			this.ubuntuFont = new TrueTypeFontFamily(A_UBUNTU_FONT);
 			
-			GlyphPage page = this.fontFamily.getSize(26).getGlyphPage(72);
-			this.fontTex.setTextureFull(page.getTexture());
-			this.fontTex.setSize(page.getTexture().getWidth(), page.getTexture().getHeight());
-			
-			/*System.out.println("Font family: " + this.fontFamily);
-			Font font = this.fontFamily.getSize(26f);
-			System.out.println("Font: " + font);
-			
-			GlyphPage page = font.getGlyphPage(30);
-			System.out.println("Glyph page: " + page);*/
-			
-			/*GlyphPage page2 = font.getGlyphPage(160);
-			System.out.println("Glyph page2: " + page2);
-			
-			GlyphPage page3 = font.getGlyphPage(90);
-			System.out.println("Glyph page3: " + page3);*/
-			
-			/*this.fontTex.setTextureFull(page.getTexture());
-			this.fontTex.setSize(page.getTexture().getWidth(), page.getTexture().getHeight());*/
-			
-			//this.fontTexObj = FontTest.test(16);
-			//this.fontTex.setTextureFull(this.fontTexObj);
-			//this.fontTex.setSize(this.fontTexObj.getWidth(), this.fontTexObj.getHeight());
+			this.jetbrainsText.setFont(this.jetbrainsFont, 30);
+			this.ubuntuText.setFont(this.ubuntuFont, 25);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -117,11 +94,11 @@ public class GuiTestScene extends GuiScene {
 		this.exampleTexObj.close();
 		this.exampleTexObj = null;
 		
-		this.fontFamily.close();
-		this.fontFamily = null;
+		this.jetbrainsFont.close();
+		this.jetbrainsFont = null;
 		
-		//this.fontTexObj.close();
-		//this.fontTexObj = null;
+		this.ubuntuFont.close();
+		this.ubuntuFont = null;
 		
 	}
 	
