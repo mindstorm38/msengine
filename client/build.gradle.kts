@@ -38,7 +38,7 @@ dependencies {
 
 }
 
-configure<PublishingExtension> {
+/*configure<PublishingExtension> {
 
     publications {
         named<MavenPublication>("mavenJar") {
@@ -58,4 +58,4 @@ configure<PublishingExtension> {
         }
     }
 
-}
+}*/

@@ -76,7 +76,7 @@ fun Project.mseLibrary() {
 
                     artifactId = "${rootProject.name}-${project.name}"
 
-                    name.set("${groupId}-${artifactId}")
+                    name.set("MSE - ${artifactId}")
                     description.set(project.description)
                     url.set("https://github.com/mindstorm38/msengine")
 
