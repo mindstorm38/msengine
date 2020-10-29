@@ -28,7 +28,6 @@ public class GuiMaskRectangle extends GuiMask {
 	
 	@Override
 	public void init() {
-		//this.buf = this.getProgram().createBuffer(false, false);
 		this.buf = this.manager.acquireProgram(GuiProgramMain.TYPE).createBuffer(false, false);
 		initBuffers();
 	}

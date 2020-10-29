@@ -32,6 +32,7 @@ public abstract class Font implements AutoCloseable {
 		}
 	}
 	
+	public abstract boolean isScalable();
 	public abstract GlyphPage getGlyphPage(int codePoint);
 	
 	@Override

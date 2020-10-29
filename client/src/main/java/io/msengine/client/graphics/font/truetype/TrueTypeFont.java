@@ -44,6 +44,11 @@ public class TrueTypeFont extends Font {
 	}
 	
 	@Override
+	public boolean isScalable() {
+		return false;
+	}
+	
+	@Override
 	public GlyphPage getGlyphPage(int codePoint) {
 		
 		this.checkValid();

@@ -1,7 +1,6 @@
 package io.msengine.client.graphics.gui.mask;
 
 import io.msengine.client.graphics.gui.GuiManager;
-import io.msengine.client.graphics.gui.render.GuiProgramMain;
 import io.msengine.client.renderer.model.ModelHandler;
 
 public abstract class GuiMask {
@@ -24,10 +23,6 @@ public abstract class GuiMask {
 	public GuiManager getManager() {
 		return this.manager;
 	}
-	
-	/*public GuiProgramMain getProgram() {
-		return this.manager == null ? null : this.manager.getProgram();
-	}*/
 	
 	public ModelHandler getModel() {
 		return this.model;

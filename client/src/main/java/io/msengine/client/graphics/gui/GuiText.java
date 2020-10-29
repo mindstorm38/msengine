@@ -77,7 +77,6 @@ public class GuiText extends GuiObject {
 			this.model.push().translate(this.xOffset, this.yOffset).apply();
 			
 			program.setTextureUnit(0);
-			// this.manager.setTextureUnit(0);
 			Texture.setTextureUnit(0);
 			
 			this.buffers.forEach((textureName, buf) -> {
@@ -86,7 +85,6 @@ public class GuiText extends GuiObject {
 			});
 			
 			Texture.unbindTexture(GL11.GL_TEXTURE_2D);
-			// this.manager.setTextureUnit(null);
 			
 			this.model.pop();
 			
@@ -122,7 +120,6 @@ public class GuiText extends GuiObject {
 	}
 	
 	private GuiBufferArray createTextBufferArray() {
-		// return this.getProgram().createBuffer(false, true);
 		return this.getProgram(GuiProgramText.TYPE).createBuffer(false);
 	}
 	
@@ -143,10 +140,6 @@ public class GuiText extends GuiObject {
 			codePointsPages[i] = page;
 			buffersCodePoints.computeIfAbsent(page.getTextureName(), tex -> new TempBufferData()).codePointsCount++;
 		}
-		
-		// System.out.println("codePoints=" + Arrays.toString(codePoints));
-		// System.out.println("codePointsPages=" + Arrays.toString(codePointsPages));
-		// System.out.println("buffersCodePoints=" + buffersCodePoints);
 		
 		this.buffers.entrySet().removeIf(e -> {
 			if (!buffersCodePoints.containsKey(e.getKey())) {
@@ -184,8 +177,6 @@ public class GuiText extends GuiObject {
 				page = codePointsPages[i];
 				bufferData = buffersCodePoints.get(page.getTextureName());
 				glyph = page.getGlyph(codePoint);
-				
-				// System.out.println("Draw '" + (char) codePoint + "' to " + x + "/" + y);
 				
 				glyph.putToBuffer(x, y, bufferData.dataBuffer);
 				GuiCommon.putSquareIndices(bufferData.currentIndex, bufferData.indicesBuffer);

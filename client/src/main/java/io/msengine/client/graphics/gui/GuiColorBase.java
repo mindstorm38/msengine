@@ -21,7 +21,6 @@ public abstract class GuiColorBase extends GuiObject {
 	@Override
 	protected void init() {
 		this.buf = this.acquireProgram(GuiProgramMain.TYPE).createBufferSep(true, false);
-		// this.buf = this.getProgram().createBufferSep(true, false);
 		this.initBuffers();
 	}
 	

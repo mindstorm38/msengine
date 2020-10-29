@@ -20,7 +20,6 @@ public class GuiTexture extends GuiObject {
 	
 	@Override
 	protected void init() {
-		// this.buf = this.getProgram().createBufferSep(false, true);
 		this.buf = this.acquireProgram(GuiProgramMain.TYPE).createBufferSep(false, true);
 		this.initBuffers();
 	}
@@ -50,10 +49,8 @@ public class GuiTexture extends GuiObject {
 		
 		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
 		program.setTextureUnitAndBind(0, this.textureName);
-		//this.manager.setTextureUnitAndBind(0, this.textureName);
 		this.buf.draw();
 		program.resetTextureUnitAndUnbind();
-		//this.manager.resetTextureUnitAndUnbind();
 		this.model.pop();
 		
 	}
