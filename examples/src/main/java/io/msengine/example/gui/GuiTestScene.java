@@ -86,10 +86,10 @@ public class GuiTestScene extends GuiScene {
 			this.jetbrainsFont = new TrueTypeFontFamily(A_JETBRAINS_MONO);
 			this.ubuntuFont = new TrueTypeFontFamily(A_UBUNTU_FONT);
 			
-			this.jetbrainsText.setFont(this.jetbrainsFont, 30);
+			this.jetbrainsText.setFont(this.jetbrainsFont, 20);
 			this.ubuntuText.setFont(this.ubuntuFont, 25);
 			
-			this.testInput.getText().setFont(this.ubuntuFont, 25);
+			this.testInput.getText().setFont(this.jetbrainsFont, 20);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

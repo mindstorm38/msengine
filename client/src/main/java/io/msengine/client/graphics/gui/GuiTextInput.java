@@ -116,7 +116,7 @@ public class GuiTextInput extends GuiParent implements
 	public void onWindowMouseButtonEvent(Window origin, int button, int action, int mods) {
 		if (button == Window.MOUSE_BUTTON_LEFT && action == Window.ACTION_PRESS) {
 			origin.getCursorPos((x, y) -> {
-				System.out.println("Mouse clicked at: " + x + "/" + y);
+				//System.out.println("Mouse clicked at: " + x + "/" + y);
 				this.setActive(this.isPointOver((float) x, (float) y));
 			});
 		}
@@ -130,12 +130,12 @@ public class GuiTextInput extends GuiParent implements
 	
 	public void setActive(boolean active) {
 		if (this.active != active) {
-			System.out.println("New active: " + active);
+			//System.out.println("New active: " + active);
 			this.active = active;
 			if (active) {
 				this.cursorTick = 0;
 				this.cursor.setVisible(true);
-				this.setCursorPosition(0, true, false);
+				this.setCursorPosition(this.builder.length(), true, false);
 			} else {
 				this.cursor.setVisible(false);
 				this.selection.setVisible(false);
@@ -189,27 +189,34 @@ public class GuiTextInput extends GuiParent implements
 		float scrollPadding = this.scrollPadding;
 		float cursorOffset = this.text.getCodePointOffset(this.cursorIndex - 1);
 		float cursorWidth = this.cursorWidth;
-		float width = this.getRealWidth();
+		float width = this.realWidth;
 		float textPos = this.text.getXPos();
 		
 		if (this.text.getRealWidth() <= (width - cursorWidth * 2)) {
-			this.text.setXPos(cursorWidth);
+			textPos = cursorWidth;
+			this.text.setXPos(textPos);
 		} else {
-			
 			float realOffset = cursorOffset + textPos;
-			
+			float textWidth = this.text.getRealWidth();
 			if (realOffset < scrollPadding) {
 				float newPos = -cursorOffset + scrollPadding;
 				if (textPos < newPos) {
-					this.text.setXPos(Math.min(newPos, cursorWidth));
+					textPos = Math.min(newPos, cursorWidth);
+					this.text.setXPos(textPos);
 				}
 			} else if (realOffset > (width - scrollPadding - cursorWidth)) {
 				float newPos = width - cursorOffset - cursorWidth - scrollPadding;
 				if (textPos > newPos) {
-					this.text.setXPos(Math.max(newPos, width + this.text.getRealWidth() - cursorWidth));
+					textPos = Math.max(newPos, width - textWidth - cursorWidth);
+					this.text.setXPos(textPos);
+				}
+			} else {
+				float newPos = width - textWidth - cursorWidth;
+				if (textPos < newPos) {
+					textPos = newPos;
+					this.text.setXPos(textPos);
 				}
 			}
-			
 		}
 		
 		this.cursor.setXPos(cursorOffset + textPos);
