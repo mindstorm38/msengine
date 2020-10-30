@@ -9,14 +9,14 @@ public class GuiTextureMosaic extends GuiTexture {
 	protected float mosaicOffsetY = 0f;
 	
 	@Override
-	protected void onWidthChanged(float width) {
-		super.onWidthChanged(width);
+	public void onRealWidthChanged() {
+		super.onRealWidthChanged();
 		this.updateTexCoordX();
 	}
 	
 	@Override
-	protected void onHeightChanged(float height) {
-		super.onHeightChanged(height);
+	public void onRealHeightChanged() {
+		super.onRealHeightChanged();
 		this.updateTexCoordY();
 	}
 	
@@ -79,7 +79,7 @@ public class GuiTextureMosaic extends GuiTexture {
 	
 	private void updateTexCoordX() {
 		
-		this.textureWidth = this.width / this.tileWidth;
+		this.textureWidth = this.getRealWidth() / this.tileWidth;
 		this.textureX = (this.textureWidth / -2f) + this.mosaicOffsetX;
 		this.updateTexCoords = true;
 		
@@ -87,7 +87,7 @@ public class GuiTextureMosaic extends GuiTexture {
 	
 	private void updateTexCoordY() {
 		
-		this.textureHeight = this.height / this.tileHeight;
+		this.textureHeight = this.getRealHeight() / this.tileHeight;
 		this.textureY = (this.textureHeight / -2f) + this.mosaicOffsetY;
 		this.updateTexCoords = true;
 		

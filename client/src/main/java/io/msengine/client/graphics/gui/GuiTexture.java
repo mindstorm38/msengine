@@ -59,14 +59,14 @@ public class GuiTexture extends GuiObject {
 	protected void update() { }
 	
 	@Override
-	protected void onWidthChanged(float width) {
-		super.onWidthChanged(width);
+	public void onRealWidthChanged() {
+		super.onRealWidthChanged();
 		this.updateVertices = true;
 	}
 	
 	@Override
-	protected void onHeightChanged(float height) {
-		super.onHeightChanged(height);
+	public void onRealHeightChanged() {
+		super.onRealHeightChanged();
 		this.updateVertices = true;
 	}
 	
@@ -90,7 +90,7 @@ public class GuiTexture extends GuiObject {
 	private void updateVerticesBuffer() {
 		
 		BufferAlloc.allocStackFloat(8, buf -> {
-			GuiCommon.putSquareVertices(buf, this.width, this.height);
+			GuiCommon.putSquareVertices(buf, this.getRealWidth(), this.getRealHeight());
 			buf.flip();
 			this.buf.bindVao();
 			this.buf.uploadVboSubData(this.buf.getPositionIndex(), 0, buf);

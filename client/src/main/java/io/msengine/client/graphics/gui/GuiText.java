@@ -54,6 +54,8 @@ public class GuiText extends GuiObject {
 		this.setText(text);
 	}
 	
+	public GuiText() { }
+	
 	@Override
 	protected void init() {
 		this.acquireProgram(GuiProgramText.TYPE);
@@ -108,6 +110,7 @@ public class GuiText extends GuiObject {
 	
 	@Override
 	public float getAutoHeight() {
+		// System.out.println("auto height for text: " + this + " / " + this.font);
 		return this.font == null ? 0 : this.font.getSize();
 	}
 	
@@ -117,6 +120,8 @@ public class GuiText extends GuiObject {
 		return this.font != null && this.text != null && this.font.isValid();
 	}
 	
+	protected void onFontChanged() { }
+	
 	public void setFont(Font font) {
 		if (!font.isValid()) {
 			throw new IllegalArgumentException("The given font is no longer valid.");
@@ -125,6 +130,8 @@ public class GuiText extends GuiObject {
 			this.updateBuffers = true;
 			// Update Y offset because the new font size can be used with auto height.
 			this.updateYOffset();
+			this.onFontChanged();
+			// System.out.println("setFont new offsets: " + this);
 		}
 	}
 	
@@ -137,6 +144,15 @@ public class GuiText extends GuiObject {
 			this.text = text;
 			this.updateBuffers = true;
 		}
+	}
+	
+	public float getCodePointOffset(int index) {
+		if (this.codePointsOffsets == null || this.codePointsOffsets.length == 0 || index < 0) {
+			return 0;
+		} else if (index >= this.codePointsOffsets.length) {
+			index = this.codePointsOffsets.length - 1;
+		}
+		return this.codePointsOffsets[index];
 	}
 	
 	// Effects //
@@ -223,7 +239,7 @@ public class GuiText extends GuiObject {
 			TempBufferData bufferData;
 			Glyph glyph;
 			
-			float[] pos = {0, 0};
+			float[] pos = {0, this.font.getAscent()};
 			Color[] color = {Color.WHITE};
 			
 			for (int i = 0, codePoint; i < codePointsCount; ++i) {
@@ -240,11 +256,14 @@ public class GuiText extends GuiObject {
 				bufferData = buffersCodePoints.get(page.getTextureName());
 				glyph = page.getGlyph(codePoint);
 				
+				//System.out.print("Writing char '" + (char) codePoint + "': ");
 				FloatBuffer dataBuffer = bufferData.dataBuffer;
 				glyph.forEachCorner((gx, gy, tx, ty) -> {
 					dataBuffer.put(pos[0] + gx).put(pos[1] + gy).put(tx).put(ty);
+					//System.out.print((pos[0] + gx) + "/" + (pos[1] + gy) + "/" + tx + "/" + ty + "   ");
 					color[0].putToBuffer(dataBuffer, true);
 				});
+				//System.out.println();
 				
 				GuiCommon.putSquareIndices(bufferData.currentIndex, bufferData.indicesBuffer);
 				bufferData.currentIndex += 4;
@@ -270,6 +289,7 @@ public class GuiText extends GuiObject {
 			
 			// Update X offset because textSize is updated and can be used through auto width.
 			this.updateXOffset();
+			this.onTextBuffersRecomputed();
 			
 		} finally {
 			
@@ -283,6 +303,8 @@ public class GuiText extends GuiObject {
 		this.updateBuffers = false;
 		
 	}
+	
+	protected void onTextBuffersRecomputed() { }
 	
 	private static class TempBufferData {
 		

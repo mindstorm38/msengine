@@ -33,6 +33,7 @@ public class GuiTestScene extends GuiScene {
 	private FontFamily ubuntuFont;
 	private final GuiText jetbrainsText;
 	private final GuiText ubuntuText;
+	private final GuiDebugInput testInput;
 	
 	public GuiTestScene() {
 		
@@ -45,10 +46,11 @@ public class GuiTestScene extends GuiScene {
 		this.exampleTex = new GuiTexture();
 		this.exampleTex.setPos(30, 30);
 		this.exampleTex.setSize(200, 200);
-		this.addChild(this.exampleTex);
+		//this.addChild(this.exampleTex);
 		
 		this.jetbrainsText = new GuiText("while ((read = stream.read(buf)) != -1) {}");
-		this.jetbrainsText.setPos(30, 500);
+		// this.jetbrainsText.setPos(30, 500);
+		this.jetbrainsText.setAnchor(1, 1);
 		this.addChild(this.jetbrainsText);
 		
 		this.ubuntuText = new GuiText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed nisl commodo, porttitor libero ut, efficitur erat.");
@@ -57,7 +59,13 @@ public class GuiTestScene extends GuiScene {
 		this.ubuntuText.addColorEffect(0, Color.GREEN);
 		this.ubuntuText.addColorEffect(10, Color.RED);
 		this.ubuntuText.addColorEffect(20, Color.BLUE);
-		this.addChild(this.ubuntuText);
+		//this.addChild(this.ubuntuText);
+		
+		this.testInput = new GuiDebugInput();
+		this.testInput.setPos(30, 400);
+		this.testInput.setSize(300, 30);
+		this.testInput.setInputText("party");
+		this.addChild(this.testInput);
 		
 	}
 	
@@ -80,6 +88,8 @@ public class GuiTestScene extends GuiScene {
 			
 			this.jetbrainsText.setFont(this.jetbrainsFont, 30);
 			this.ubuntuText.setFont(this.ubuntuFont, 25);
+			
+			this.testInput.getText().setFont(this.ubuntuFont, 25);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -111,6 +121,7 @@ public class GuiTestScene extends GuiScene {
 		super.onSceneResized(width, height);
 		this.exampleTexBgCentered.setCenteredSize(0, 0, width, height);
 		this.ubuntuText.setXPos(width / 2);
+		this.jetbrainsText.setPos(width - 20, height - 20);
 	}
 	
 }

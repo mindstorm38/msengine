@@ -10,6 +10,8 @@ import io.msengine.common.util.event.MethodEventManager;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.logging.Logger;
 
@@ -25,7 +27,22 @@ public abstract class Window implements AutoCloseable {
     static {
         WindowHandler.init();
     }
-
+    
+    public static final int ACTION_PRESS = GLFW_PRESS;
+    public static final int ACTION_RELEASE = GLFW_RELEASE;
+    public static final int ACTION_REPEAT = GLFW_REPEAT;
+    
+    public static final int MOD_SHIFT = GLFW_MOD_SHIFT;
+    public static final int MOD_CTRL = GLFW_MOD_CONTROL;
+    public static final int MOD_ALT = GLFW_MOD_ALT;
+    public static final int MOD_SUPER = GLFW_MOD_SUPER;
+    public static final int MOD_CAPS_LOCK = GLFW_MOD_CAPS_LOCK;
+    public static final int MOD_NUM_LOCK = GLFW_MOD_NUM_LOCK;
+    
+    public static final int MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT;
+    public static final int MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE;
+    public static final int MOUSE_BUTTON_RIGHT = GLFW_MOUSE_BUTTON_RIGHT;
+    
     // Class //
 
     protected long id;
@@ -63,7 +80,7 @@ public abstract class Window implements AutoCloseable {
         });
 
         glfwSetCharCallback(id, (long window, int codePoint) -> {
-            this.eventManager.fireListeners(WindowCharEventListener.class, l -> l.onWindowCharEvent(this, (char) codePoint));
+            this.eventManager.fireListeners(WindowCharEventListener.class, l -> l.onWindowCharEvent(this, codePoint));
         });
 
         glfwSetFramebufferSizeCallback(id, (long window, int width, int height) -> {
@@ -130,6 +147,15 @@ public abstract class Window implements AutoCloseable {
         }*/
     }
     
+    public void getCursorPos(CursorPosConsumer consumer) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            DoubleBuffer x = stack.mallocDouble(1);
+            DoubleBuffer y = stack.mallocDouble(1);
+            glfwGetCursorPos(this.checkId(), x, y);
+            consumer.accept(x.get(0), y.get(0));
+        }
+    }
+    
     public void setFullscreen(Monitor monitor) {
         
         GLFWVidMode vidMode = monitor.getVideoMode();
@@ -188,9 +214,18 @@ public abstract class Window implements AutoCloseable {
         return glfwGetTime();
     }
     
+    public static boolean hasModifier(int modifiers, int target) {
+        return (modifiers & target) == target;
+    }
+    
     @FunctionalInterface
     public interface SizeConsumer {
         void accept(int width, int height);
+    }
+    
+    @FunctionalInterface
+    public interface CursorPosConsumer {
+        void accept(double x, double y);
     }
 
 }

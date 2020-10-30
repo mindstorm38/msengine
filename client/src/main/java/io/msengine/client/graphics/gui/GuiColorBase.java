@@ -53,14 +53,14 @@ public abstract class GuiColorBase extends GuiObject {
 	protected void update() { }
 	
 	@Override
-	protected void onWidthChanged(float width) {
-		super.onWidthChanged(width);
+	public void onRealWidthChanged() {
+		super.onRealWidthChanged();
 		this.updateVertices = true;
 	}
 	
 	@Override
-	public void onHeightChanged(float height) {
-		super.onHeightChanged(height);
+	public void onRealHeightChanged() {
+		super.onRealHeightChanged();
 		this.updateVertices = true;
 	}
 	
@@ -84,7 +84,7 @@ public abstract class GuiColorBase extends GuiObject {
 	private void updateVerticesBuffer() {
 		
 		BufferAlloc.allocStackFloat(8, buf -> {
-			GuiCommon.putSquareVertices(buf, this.width, this.height);
+			GuiCommon.putSquareVertices(buf, this.realWidth, this.realHeight);
 			buf.flip();
 			this.buf.bindVao();
 			this.buf.uploadVboSubData(this.buf.getPositionIndex(), 0, buf);

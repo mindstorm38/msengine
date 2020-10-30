@@ -4,5 +4,5 @@ import io.msengine.client.window.Window;
 
 @FunctionalInterface
 public interface WindowCharEventListener {
-    void onWindowCharEvent(Window origin, char codePoint);
+    void onWindowCharEvent(Window origin, int codePoint);
 }

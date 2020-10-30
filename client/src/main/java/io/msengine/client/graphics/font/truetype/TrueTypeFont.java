@@ -20,17 +20,13 @@ import static org.lwjgl.stb.STBTruetype.stbtt_GetBakedQuad;
 public class TrueTypeFont extends Font {
 	
 	private final float scale;
-	private final float ascent;
-	private final float descent;
 	private final float lineGap;
 	
 	private final List<GlyphPage> pages = new ArrayList<>();
 	
 	TrueTypeFont(TrueTypeFontFamily family, float size, float scale, float ascent, float descent, float lineGap) {
-		super(family, size);
+		super(family, size, ascent, descent);
 		this.scale = scale;
-		this.ascent = ascent;
-		this.descent = descent;
 		this.lineGap = lineGap;
 	}
 	
