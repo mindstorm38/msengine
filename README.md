@@ -24,7 +24,7 @@ Each version released on GitLab will be soon available on Maven Central.
 - [x] Create tick/frame regulated interfaces
     - `common.logic.TickRegulated`
     - `common.logic.FrameRegulated`
-- [ ] Remove OSF package `common.osf`
+- [x] Deprecate OSF package `common.osf`
 - [x] TrueType fonts support
 - [ ] Rework GUI (`client.graphics.gui`)
     - [x] Rework base GUI framework classes
