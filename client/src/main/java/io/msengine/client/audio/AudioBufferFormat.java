@@ -17,7 +17,7 @@ public class AudioBufferFormat extends Symbol {
 		super(value);
 	}
 	
-	public static AudioBufferFormat from(int value) {
+	private static AudioBufferFormat from(int value) {
 		return new AudioBufferFormat(value);
 	}
 	

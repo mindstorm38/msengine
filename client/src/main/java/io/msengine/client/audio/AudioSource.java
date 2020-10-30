@@ -33,6 +33,14 @@ public class AudioSource implements AutoCloseable {
 		this.setBuffer(buffer.getName());
 	}
 	
+	public void queueBuffer(int bufferName) {
+		alSourceQueueBuffers(this.name, bufferName);
+	}
+	
+	public int unqueueBuffers() {
+		return alSourceUnqueueBuffers(this.name);
+	}
+	
 	public void setRelativePosition(boolean relative) {
 		alSourcei(this.name, AL_SOURCE_RELATIVE, relative ? AL_TRUE : AL_FALSE);
 	}
@@ -75,6 +83,10 @@ public class AudioSource implements AutoCloseable {
 	
 	public void stop() {
 		alSourceStop(this.name);
+	}
+	
+	public void rewind() {
+		alSourceRewind(this.name);
 	}
 	
 	public boolean isPlaying() {
