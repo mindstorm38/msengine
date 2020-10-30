@@ -43,7 +43,7 @@ Each version released on GitLab will be soon available on Maven Central.
     - `common.asset.*`
 - [x] Rework textures (for 1D, 2D, 3D)
 - [ ] Rework options
-- [ ] Work on audio package which was never finished
+- [x] Work on audio package which was never finished
 - [ ] Deprecate uses of `GameLogger` *(use individual named loggers instead)*
     - [x] Create a logger formatter to apply to global loger
 - [ ] Update `AxisAlignedBB`

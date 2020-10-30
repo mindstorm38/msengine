@@ -1,29 +1,64 @@
 package io.msengine.client.audio;
 
-import static org.lwjgl.openal.ALC10.*;
-
-import org.lwjgl.openal.AL;
-import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 
-import io.msengine.common.util.GameNotCreatedException;
-import io.sutil.SingletonAlreadyInstantiatedException;
-
-import static io.msengine.common.util.GameLogger.LOGGER;
+import static org.lwjgl.openal.ALC11.*;
 
 /**
- * 
- * Audio context for the game
- * 
- * Using OpenAL
- * 
- * @author Mindstorm38
- *
+ * Audio context using OpenAL.
+ * @author Théo Rozier
  */
-public class AudioContext {
+public class AudioContext implements AutoCloseable {
 	
-	// Singleton \\
+	private long device;
+	private long context;
+	private ALCCapabilities alcCapabilities;
+	private ALCapabilities alCapabilities;
+	
+	AudioContext(long device, long context, ALCCapabilities alcCapabilities, ALCapabilities alCapabilities) {
+		this.device = device;
+		this.context = context;
+		this.alcCapabilities = alcCapabilities;
+		this.alCapabilities = alCapabilities;
+	}
+	
+	public long getDevice() {
+		return this.device;
+	}
+	
+	public long getContext() {
+		return this.context;
+	}
+	
+	public ALCCapabilities getAlcCapabilities() {
+		return this.alcCapabilities;
+	}
+	
+	public ALCapabilities getAlCapabilities() {
+		return this.alCapabilities;
+	}
+	
+	public boolean isContextCurrent() {
+		return alcGetCurrentContext() == this.context;
+	}
+	
+	@Override
+	public void close() {
+		
+		if (this.context != 0L) {
+			alcDestroyContext(this.context);
+			this.context = 0L;
+		}
+		
+		if (this.device != 0L) {
+			alcCloseDevice(this.device);
+			this.device = 0L;
+		}
+		
+	}
+	
+	/*// Singleton \\
 	
 	private static AudioContext INSTANCE = null;
 	
@@ -57,7 +92,7 @@ public class AudioContext {
 	/**
 	 * Start audio context
 	 */
-	public void start() {
+	/*public void start() {
 		
 		if ( this.device != 0L ) throw new IllegalStateException("Audio context already started");
 		
@@ -80,7 +115,7 @@ public class AudioContext {
 	/**
 	 * Stop audio context
 	 */
-	public void stop() {
+	/*public void stop() {
 		
 		this.checkAudioContextState();
 		
@@ -96,8 +131,8 @@ public class AudioContext {
 	/**
 	 * Check audio context state, throw exception if no context defined
 	 */
-	private void checkAudioContextState() {
+	/*private void checkAudioContextState() {
 		if ( this.context == 0L ) throw new IllegalStateException("Audio context not started !");
-	}
+	}*/
 	
 }

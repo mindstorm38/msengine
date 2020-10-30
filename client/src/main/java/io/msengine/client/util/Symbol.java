@@ -1,5 +1,8 @@
-package io.msengine.client.graphics.util;
+package io.msengine.client.util;
 
+/**
+ * Base class for all class of symbolic constants.
+ */
 public abstract class Symbol {
 
 	public final int value;

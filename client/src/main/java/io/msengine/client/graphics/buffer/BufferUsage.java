@@ -1,6 +1,6 @@
 package io.msengine.client.graphics.buffer;
 
-import io.msengine.client.graphics.util.Symbol;
+import io.msengine.client.util.Symbol;
 
 import static org.lwjgl.opengl.GL15.*;
 

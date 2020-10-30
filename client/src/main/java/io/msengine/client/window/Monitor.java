@@ -33,7 +33,7 @@ public class Monitor {
 	
 	private final long handle;
 	
-	Monitor(long handle) {
+	private Monitor(long handle) {
 		this.handle = handle;
 	}
 	
@@ -51,6 +51,11 @@ public class Monitor {
 	
 	public void setGamma(float gamma) {
 		glfwSetGamma(this.handle, gamma);
+	}
+	
+	@Override
+	public String toString() {
+		return "Monitor<" + this.getName() + ">";
 	}
 	
 }

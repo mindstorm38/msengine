@@ -1,6 +1,6 @@
 package io.msengine.client.graphics.texture.old;
 
-import io.msengine.client.graphics.util.Symbol;
+import io.msengine.client.util.Symbol;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_BGR;
