@@ -4,6 +4,9 @@ import io.msengine.client.graphics.gui.GuiColorSolid;
 import io.msengine.client.graphics.gui.GuiParent;
 import io.msengine.common.util.Color;
 
+/**
+ * A rainbow flag as an example for custom GUI parents.
+ */
 public class GuiRainbowFlag extends GuiParent {
 	
 	private final Color[] COLORS = {
@@ -24,20 +27,20 @@ public class GuiRainbowFlag extends GuiParent {
 	}
 	
 	@Override
-	protected void onWidthChanged(float width) {
-		super.onWidthChanged(width);
+	public void onRealWidthChanged() {
+		super.onRealWidthChanged();
 		for (GuiColorSolid color : this.colors) {
-			color.setWidth(width);
+			color.setWidth(this.realWidth);
 		}
 	}
 	
 	@Override
-	protected void onHeightChanged(float height) {
-		super.onHeightChanged(height);
-		float h = this.height / COLORS.length;
+	public void onRealHeightChanged() {
+		super.onRealHeightChanged();
+		float h = this.realHeight / COLORS.length;
 		for (int i = 0; i < COLORS.length; ++i) {
 			this.colors[i].setPos(0, i * h);
-			this.colors[i].setSize(width, h);
+			this.colors[i].setHeight(h);
 		}
 	}
 	
