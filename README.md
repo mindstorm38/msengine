@@ -20,7 +20,7 @@ Each version released on GitLab will be soon available on Maven Central.
 
 ## Goals for MSEngine 1.1
 - [ ] Deprecate all uses of SUtil
-- [ ] Remove `{client,common}.game` packages
+- [x] Deprecate `{client,common}.game` packages
 - [x] Create tick/frame regulated interfaces
     - `common.logic.TickRegulated`
     - `common.logic.FrameRegulated`
@@ -30,7 +30,7 @@ Each version released on GitLab will be soon available on Maven Central.
     - [x] Rework base GUI framework classes
     - [x] Rework shaders, buffers and masking
     - [x] GUI text box (including TrueType font)
-    - [ ] Re-implement all useful classes from old GUI framework ***(90%)***
+    - [ ] Re-implement all useful classes from old GUI framework ***(98%, missing "Component textures")***
 - [x] Rework event managers :
     - Object event manager `common.util.event.ObjectEventManager`
     - Method event manager `common.util.event.MethodEventManager`
