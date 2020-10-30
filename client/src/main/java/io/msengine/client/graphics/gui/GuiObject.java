@@ -6,6 +6,8 @@ import io.msengine.client.graphics.gui.event.GuiEventManager;
 import io.msengine.client.graphics.gui.render.GuiProgramType;
 import io.msengine.client.graphics.shader.ShaderProgram;
 import io.msengine.client.renderer.model.ModelHandler;
+import io.msengine.client.window.Window;
+import io.msengine.common.util.event.MethodEventManager;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,10 +22,17 @@ public abstract class GuiObject {
 	private static final int FLAG_DISPLAYED = 0x2;
 	private static final int FLAG_VISIBLE   = 0x4;
 	
+	/** The anchor coordinates. */
 	protected float xPos, yPos;
-	protected float width = SIZE_AUTO, height = SIZE_AUTO;
+	/** The anchor relative position in the component, -1 for LEFT/UP, 0 for CENTER, 1 for RIGHT/BOTTOM. */
 	protected float xAnchor = -1, yAnchor = -1;
+	/** The target size, default to automatic size. */
+	protected float width = SIZE_AUTO, height = SIZE_AUTO;
+	/** The real width, can be either target size, or automatic size. */
+	protected float realWidth, realHeight;
+	/** The real top/left coordinates of the component. */
 	protected float xOffset, yOffset;
+	/** The real top/left coordinates of the component rounded to integer. */
 	protected int xIntOffset, yIntOffset;
 	
 	private byte flags = FLAG_VISIBLE; // Visible by default
@@ -108,6 +117,14 @@ public abstract class GuiObject {
 	
 	public GuiManager getManager() {
 		return this.manager;
+	}
+	
+	public Window getWindow() {
+		return this.manager.getWindow();
+	}
+	
+	public MethodEventManager getWindowEventManager() {
+		return this.manager.getWindow().getEventManager();
 	}
 	
 	/*public GuiProgramMain getProgram() {
@@ -260,12 +277,12 @@ public abstract class GuiObject {
 		return this.height < 0;
 	}
 	
-	public float getEffectiveWidth() {
-		return this.isAutoWidth() ? this.getAutoWidth() : this.width;
+	public float getRealWidth() {
+		return this.realWidth;
 	}
 	
-	public float getEffectiveHeight() {
-		return this.isAutoHeight() ? this.getAutoHeight() : this.height;
+	public float getRealHeight() {
+		return this.realHeight;
 	}
 	
 	// [ Anchor ] //
@@ -304,25 +321,51 @@ public abstract class GuiObject {
 	
 	// [ Offset ] //
 	
+	public void onXOffsetChanged() { }
+	public void onYOffsetChanged() { }
+	public void onRealWidthChanged() { }
+	public void onRealHeightChanged() { }
+	
 	/**
-	 * Update the X offset used to render at the right position.
+	 * Update the <u>X offset</u> and <u>real width</u> used to render at the right position.
 	 */
 	public void updateXOffset() {
 		
-		this.xOffset = (this.xPos + (this.xAnchor + 1f) * (this.getEffectiveWidth() / -2f));
-		if (this.parent != null) this.xOffset += this.parent.xOffset;
-		this.xIntOffset = Math.round(this.xOffset);
+		float width = this.isAutoWidth() ? this.getAutoWidth() : this.width;
+		if (this.realWidth != width) {
+			this.realWidth = width;
+			this.onRealWidthChanged();
+		}
+		
+		float off = (this.xPos + (this.xAnchor + 1f) * (width / -2f));
+		if (this.parent != null) off += this.parent.xOffset;
+		
+		if (this.xOffset != off) {
+			this.xOffset = off;
+			this.xIntOffset = Math.round(this.xOffset);
+			this.onXOffsetChanged();
+		}
 		
 	}
 	
 	/**
-	 * Update the Y offset used to render at the right position.
+	 * Update the <u>Y offset</u> and <u>real height</u> used to render at the right position.
 	 */
 	public void updateYOffset() {
 		
-		this.yOffset = (this.yPos + (this.yAnchor + 1f) * (this.getEffectiveHeight() / -2f));
-		if (this.parent != null) this.yOffset += this.parent.yOffset;
-		this.yIntOffset = Math.round(this.yOffset);
+		float height = this.isAutoHeight() ? this.getAutoHeight() : this.height;
+		if (this.realHeight != height) {
+			this.realHeight = height;
+			this.onRealHeightChanged();
+		}
+		
+		float off = (this.yPos + (this.yAnchor + 1f) * (height / -2f));
+		if (this.parent != null) off += this.parent.yOffset;
+		if (this.yOffset != off) {
+			this.yOffset = off;
+			this.yIntOffset = Math.round(this.yOffset);
+			this.onYOffsetChanged();
+		}
 		
 	}
 	
@@ -343,11 +386,11 @@ public abstract class GuiObject {
 	}
 	
 	public float getOppositeXOffset() {
-		return this.xOffset + this.width;
+		return this.xOffset + this.realWidth;
 	}
 	
 	public float getOppositeYOffset() {
-		return this.yOffset + this.height;
+		return this.yOffset + this.realHeight;
 	}
 	
 	/**
@@ -356,13 +399,10 @@ public abstract class GuiObject {
 	 * @param y The point Y.
 	 * @return True if this point is over this object.
 	 */
-	public boolean isPointOver(int x, int y) {
-		
+	public boolean isPointOver(float x, float y) {
 		float xOff = this.xOffset;
 		float yOff = this.yOffset;
-		
-		return x >= xOff && y >= yOff && x < (xOff + this.width) && y < (yOff + this.height);
-		
+		return x >= xOff && y >= yOff && x < (xOff + this.getRealWidth()) && y < (yOff + this.getRealHeight());
 	}
 	
 	// [ Parent ] //
@@ -413,10 +453,11 @@ public abstract class GuiObject {
 	 * @param builder The representation builder.
 	 */
 	protected void buildToString(StringBuilder builder) {
-		builder.append("pos=").append(this.getXPos()).append('/').append(this.getYPos());
-		builder.append(", size=").append(this.getWidth()).append('/').append(this.getHeight());
-		builder.append(", anchor=").append(this.getXAnchor()).append('/').append(this.getYAnchor());
+		builder.append("pos=").append(this.xPos).append('/').append(this.yPos);
+		builder.append(", size=").append(this.width).append('/').append(this.height);
+		builder.append(", anchor=").append(this.xAnchor).append('/').append(this.yAnchor);
 		builder.append(", offset=").append(this.xOffset).append('/').append(this.yOffset);
+		builder.append(", rsize=").append(this.realWidth).append('/').append(this.realHeight);
 	}
 	
 	@Override
