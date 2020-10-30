@@ -135,44 +135,41 @@ public abstract class GuiObject {
 		return this.model;
 	}
 	
-	/**
-	 * @see GuiManager#acquireProgram(GuiProgramType)
-	 */
+	// [ Programs ] //
+	
+	/** * @see GuiManager#acquireProgram(GuiProgramType) */
 	protected <P extends ShaderProgram> P acquireProgram(GuiProgramType<P> type) {
 		return this.manager.acquireProgram(type);
 	}
 	
-	/**
-	 * @see GuiManager#releaseProgram(GuiProgramType)
-	 */
+	/** @see GuiManager#releaseProgram(GuiProgramType) */
 	protected void releaseProgram(GuiProgramType<?> type) {
 		this.manager.releaseProgram(type);
 	}
 	
-	/**
-	 * @see GuiManager#getProgram(GuiProgramType)
-	 */
+	/** @see GuiManager#getProgram(GuiProgramType) */
 	protected <P extends ShaderProgram> P getProgram(GuiProgramType<P> type) {
 		return this.manager.getProgram(type);
 	}
 	
-	/**
-	 * @see GuiManager#useProgram(GuiProgramType)
-	 */
+	/** @see GuiManager#useProgram(GuiProgramType) */
 	protected <P extends ShaderProgram> P useProgram(GuiProgramType<P> type) {
 		return this.manager.useProgram(type);
 	}
 	
 	// [ Position ] //
 	
-	protected void onXPosChanged(float xPos) { }
-	protected void onYPosChanged(float yPos) { }
+	/** Callback method called when {@link #xPos} was changed (using {@link #setXPos(float)}). */
+	protected void onXPosChanged() { }
+	
+	/** Callback method called when {@link #yPos} was changed (using {@link #setYPos(float)}). */
+	protected void onYPosChanged() { }
 	
 	public void setXPos(float xPos) {
 		if (this.xPos != xPos) {
 			this.xPos = xPos;
 			this.updateXOffset();
-			this.onXPosChanged(xPos);
+			this.onXPosChanged();
 		}
 	}
 	
@@ -180,7 +177,7 @@ public abstract class GuiObject {
 		if (this.yPos != yPos) {
 			this.yPos = yPos;
 			this.updateYOffset();
-			this.onYPosChanged(yPos);
+			this.onYPosChanged();
 		}
 	}
 	
@@ -199,8 +196,11 @@ public abstract class GuiObject {
 	
 	// [ Size ] //
 	
-	protected void onWidthChanged(float width) { }
-	protected void onHeightChanged(float height) { }
+	/** Callback method called when preferred {@link #width} was changed (using {@link #setWidth(float)}). */
+	protected void onWidthChanged() { }
+	
+	/** Callback method called when preferred {@link #height} was changed (using {@link #setHeight(float)}). */
+	protected void onHeightChanged() { }
 	
 	public void setWidth(float width) {
 		
@@ -215,7 +215,7 @@ public abstract class GuiObject {
 		
 		this.width = width;
 		this.updateXOffset();
-		this.onWidthChanged(width);
+		this.onWidthChanged();
 		
 	}
 	
@@ -232,7 +232,7 @@ public abstract class GuiObject {
 		
 		this.height = height;
 		this.updateYOffset();
-		this.onHeightChanged(height);
+		this.onHeightChanged();
 		
 	}
 	
@@ -277,24 +277,19 @@ public abstract class GuiObject {
 		return this.height < 0;
 	}
 	
-	public float getRealWidth() {
-		return this.realWidth;
-	}
-	
-	public float getRealHeight() {
-		return this.realHeight;
-	}
-	
 	// [ Anchor ] //
 	
-	protected void onXAnchorChanged(float xAnchor) { }
-	protected void onYAnchorChanged(float yAnchor) { }
+	/** Callback method called when {@link #xAnchor} was changed (using {@link #setXAnchor(float)}). */
+	protected void onXAnchorChanged() { }
+	
+	/** Callback method called when {@link #yAnchor} was changed (using {@link #setYAnchor(float)}). */
+	protected void onYAnchorChanged() { }
 	
 	public void setXAnchor(float xAnchor) {
 		if (this.xAnchor != xAnchor) {
 			this.xAnchor = xAnchor;
 			this.updateXOffset();
-			this.onXAnchorChanged(xAnchor);
+			this.onXAnchorChanged();
 		}
 	}
 	
@@ -302,7 +297,7 @@ public abstract class GuiObject {
 		if (this.yAnchor != yAnchor) {
 			this.yAnchor = yAnchor;
 			this.updateYOffset();
-			this.onYAnchorChanged(yAnchor);
+			this.onYAnchorChanged();
 		}
 	}
 	
@@ -321,13 +316,20 @@ public abstract class GuiObject {
 	
 	// [ Offset ] //
 	
+	/** Callback method called when {@link #xOffset} was changed (using {@link #updateXOffset()}). */
 	public void onXOffsetChanged() { }
+	
+	/** Callback method called when {@link #yOffset} was changed (using {@link #updateYOffset()}). */
 	public void onYOffsetChanged() { }
+	
+	/** Callback method called when {@link #realWidth} was changed (using {@link #updateXOffset()}). */
 	public void onRealWidthChanged() { }
+	
+	/** Callback method called when {@link #realHeight} was changed (using {@link #updateYOffset()}). */
 	public void onRealHeightChanged() { }
 	
 	/**
-	 * Update the <u>X offset</u> and <u>real width</u> used to render at the right position.
+	 * Update the {@link #xOffset} and {@link #realWidth} used to compute the left position of the component.
 	 */
 	public void updateXOffset() {
 		
@@ -349,7 +351,7 @@ public abstract class GuiObject {
 	}
 	
 	/**
-	 * Update the <u>Y offset</u> and <u>real height</u> used to render at the right position.
+	 * Update the {@link #yOffset} and {@link #realHeight} used to compute the top position of the component.
 	 */
 	public void updateYOffset() {
 		
@@ -391,6 +393,22 @@ public abstract class GuiObject {
 	
 	public float getOppositeYOffset() {
 		return this.yOffset + this.realHeight;
+	}
+	
+	public float getXOffsetFromParent() {
+		return this.parent == null ? 0f : (this.xOffset - this.parent.xOffset);
+	}
+	
+	public float getYOffsetFromParent() {
+		return this.parent == null ? 0f : (this.yOffset - this.parent.yOffset);
+	}
+	
+	public float getRealWidth() {
+		return this.realWidth;
+	}
+	
+	public float getRealHeight() {
+		return this.realHeight;
 	}
 	
 	/**

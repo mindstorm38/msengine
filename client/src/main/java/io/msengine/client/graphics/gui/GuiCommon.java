@@ -7,7 +7,7 @@ public final class GuiCommon {
 	
 	/**
 	 * <p>Put indices for drawing a square :<br>
-	 * <code>0/1/3  1/2/3</code></p>
+	 * <code>idx+0/idx+1/idx+3  idx+1/idx+2/idx+3</code></p>
 	 * @param idx The origin index.
 	 * @param buf The buffer containing the indices.
 	 */
