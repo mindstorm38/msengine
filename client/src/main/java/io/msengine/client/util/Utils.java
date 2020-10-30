@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.BufferUtils;
 
+@Deprecated
 public class Utils {
 	
 	public static ByteBuffer getImageBuffer(BufferedImage image, int x, int y, int width, int height) {
