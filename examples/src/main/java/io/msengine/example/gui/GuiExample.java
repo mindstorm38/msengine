@@ -33,7 +33,7 @@ public class GuiExample implements FrameRegulated {
 	private void init() {
 		
 		GameLoggerFormatter.setupRootLogger();
-		Logger.getGlobal().getParent().setLevel(Level.WARNING);
+		Logger.getLogger("").setLevel(Level.WARNING);
 		
 		this.window = new GLWindowBuilder()
 				.withTitle("[MSE] GUI Example")
@@ -56,7 +56,7 @@ public class GuiExample implements FrameRegulated {
 	}
 	
 	private void start() {
-		FrameRegulated.regulateFrames(this, 10, 20);
+		this.regulateFrames(10, 20);
 	}
 	
 	private void stop() {

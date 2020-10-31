@@ -16,10 +16,19 @@ public interface FrameRegulated extends TickRegulated {
 	boolean mustSync();
 	
 	/**
+	 * Start this {@link FrameRegulated} object.
+	 * @param tps Number of ticks per second.
+	 * @param fps Number of frames per second.
+	 */
+	default void regulateFrames(int tps, int fps) {
+		regulateFrames(this, tps, fps);
+	}
+	
+	/**
 	 * Start a {@link FrameRegulated} object.
 	 * @param framed Regulated object.
-	 * @param tps Numbers of ticks per second.
-	 * @param fps Numbers of frames per second.
+	 * @param tps Number of ticks per second.
+	 * @param fps Number of frames per second.
 	 */
 	static void regulateFrames(FrameRegulated framed, int tps, int fps) {
 	

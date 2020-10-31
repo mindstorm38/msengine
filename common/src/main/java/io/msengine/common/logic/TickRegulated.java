@@ -15,9 +15,17 @@ public interface TickRegulated {
 	boolean shouldStop();
 	
 	/**
+	 * Start this {@link TickRegulated object}.
+	 * @param tps Number of ticks per second.
+	 */
+	default void regulateTick(int tps) {
+		regulateTick(this, tps);
+	}
+	
+	/**
 	 * Start a {@link TickRegulated} object.
 	 * @param ticked Regulated object.
-	 * @param tps Numbers of ticks per second.
+	 * @param tps Number of ticks per second.
 	 */
 	static void regulateTick(TickRegulated ticked, int tps) {
 		

@@ -29,7 +29,7 @@ public class GameLoggerFormatter extends Formatter {
 	}
 	
 	public static void setupRootLogger() {
-		for (Handler handler : Logger.getGlobal().getParent().getHandlers()) {
+		for (Handler handler : Logger.getLogger("").getHandlers()) {
 			if (handler.getClass() == ConsoleHandler.class) {
 				handler.setFormatter(new GameLoggerFormatter());
 			}
