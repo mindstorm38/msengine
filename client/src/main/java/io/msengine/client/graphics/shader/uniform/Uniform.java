@@ -2,7 +2,6 @@ package io.msengine.client.graphics.shader.uniform;
 
 import io.msengine.client.graphics.shader.ShaderComponent;
 import io.msengine.client.graphics.shader.ShaderProgram;
-import io.msengine.client.graphics.util.SupportInfo;
 
 public abstract class Uniform extends ShaderComponent {
 	

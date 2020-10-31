@@ -5,6 +5,9 @@ import org.lwjgl.opengl.GLCapabilities;
 
 import java.util.function.Predicate;
 
+/**
+ * Support class for different thread local GL capabilities.
+ */
 public class SupportInfo {
 
 	private final ThreadLocal<Boolean> supported;

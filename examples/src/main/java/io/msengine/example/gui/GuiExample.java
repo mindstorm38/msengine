@@ -46,7 +46,7 @@ public class GuiExample implements FrameRegulated {
 		this.window.show();
 		this.window.makeContextCurrent();
 		
-		DebugOutput.registerIfSupported(this.window.getCapabilities());
+		DebugOutput.registerIfSupported();
 		
 		this.gui.init();
 		this.gui.loadScene("test");

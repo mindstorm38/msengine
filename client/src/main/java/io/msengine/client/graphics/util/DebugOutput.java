@@ -1,6 +1,5 @@
 package io.msengine.client.graphics.util;
 
-import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLDebugMessageCallbackI;
 import org.lwjgl.system.MemoryUtil;
 
@@ -15,8 +14,9 @@ import static org.lwjgl.opengl.GL43.*;
 public class DebugOutput implements GLDebugMessageCallbackI {
 	
 	private static final Logger LOGGER = Logger.getLogger("gl.debug");
-	
 	private static final Map<Integer, Level> LEVEL_ASSOC = new HashMap<>();
+	
+	public static final SupportInfo SUPPORT = new SupportInfo(cap -> cap.GL_KHR_debug || cap.OpenGL43);
 	
 	static {
 		LEVEL_ASSOC.put(GL_DEBUG_SEVERITY_NOTIFICATION, Level.INFO);
@@ -25,12 +25,8 @@ public class DebugOutput implements GLDebugMessageCallbackI {
 		LEVEL_ASSOC.put(GL_DEBUG_SEVERITY_HIGH, Level.SEVERE);
 	}
 	
-	public static boolean isSupported(GLCapabilities cap) {
-		return cap.GL_KHR_debug || cap.OpenGL43;
-	}
-	
-	public static void registerIfSupported(GLCapabilities cap) {
-		if (isSupported(cap)) {
+	public static void registerIfSupported() {
+		if (SUPPORT.isSupported()) {
 			glEnable(GL_DEBUG_OUTPUT);
 			glDebugMessageCallback(new DebugOutput(), 0L);
 		}
