@@ -1,6 +1,7 @@
 package io.msengine.common.util.pool;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public abstract class ObjectPool<T> {
 	
@@ -10,8 +11,8 @@ public abstract class ObjectPool<T> {
 	 * @return Acquired object.
 	 * @throws NoSuchElementException If no more object can be acquired.
 	 */
-	public PoolObject acquire() throws NoSuchElementException {
-		PoolObject obj = this.innerAcquire();
+	public PoolObject<T> acquire() throws NoSuchElementException {
+		PoolObject<T> obj = this.innerAcquire();
 		obj.acq = true;
 		return obj;
 	}
@@ -21,7 +22,7 @@ public abstract class ObjectPool<T> {
 	 * @param obj The pool object belong to this pool.
 	 * @throws IllegalArgumentException If the given object does not belong to this pool.
 	 */
-	public void release(PoolObject obj) throws IllegalArgumentException {
+	public void release(PoolObject<T> obj) throws IllegalArgumentException {
 		if (obj.getPool() != this) {
 			throw new IllegalArgumentException("This object does not belong to this pool.");
 		} else {
@@ -38,7 +39,7 @@ public abstract class ObjectPool<T> {
 	 * @return The object acquired.
 	 * @throws NoSuchElementException If no more object can be acquired.
 	 */
-	protected abstract PoolObject innerAcquire() throws NoSuchElementException;
+	protected abstract PoolObject<T> innerAcquire() throws NoSuchElementException;
 	
 	/**
 	 * Internal method that <i><b>must only be called</b></i> after the obj was checked to
@@ -46,7 +47,7 @@ public abstract class ObjectPool<T> {
 	 * called, the given object is set to not acquired.</b>
 	 * @param obj The object to release.
 	 */
-	protected abstract void innerRelease(PoolObject obj);
+	protected abstract void innerRelease(PoolObject<T> obj);
 	
 	/**
 	 * @return True if an object can be acquired.
@@ -60,12 +61,14 @@ public abstract class ObjectPool<T> {
 		return this.new SynchronizedObjectPool();
 	}
 	
-	public class PoolObject implements AutoCloseable {
+	public static class PoolObject<T> implements AutoCloseable {
 		
+		private final ObjectPool<T> pool;
 		private final T obj;
 		private boolean acq;
 		
-		protected PoolObject(T obj) {
+		protected PoolObject(ObjectPool<T> pool, T obj) {
+			this.pool = Objects.requireNonNull(pool);
 			this.obj = obj;
 			
 		}
@@ -75,12 +78,12 @@ public abstract class ObjectPool<T> {
 		}
 		
 		public ObjectPool<T> getPool() {
-			return ObjectPool.this;
+			return this.pool;
 		}
 		
 		@Override
 		public void close() {
-			ObjectPool.this.release(this);
+			this.pool.release(this);
 		}
 		
 	}
@@ -88,22 +91,22 @@ public abstract class ObjectPool<T> {
 	protected class SynchronizedObjectPool extends ObjectPool<T> {
 		
 		@Override
-		public synchronized PoolObject acquire() throws NoSuchElementException {
+		public synchronized PoolObject<T> acquire() throws NoSuchElementException {
 			return ObjectPool.this.acquire();
 		}
 		
 		@Override
-		public synchronized void release(PoolObject obj) throws IllegalArgumentException {
+		public synchronized void release(PoolObject<T> obj) throws IllegalArgumentException {
 			ObjectPool.this.release(obj);
 		}
 		
 		@Override
-		protected PoolObject innerAcquire() throws NoSuchElementException {
+		protected PoolObject<T> innerAcquire() throws NoSuchElementException {
 			throw new UnsupportedOperationException("This method must not be called in synchronized ObjectPool.");
 		}
 		
 		@Override
-		protected void innerRelease(PoolObject obj) {
+		protected void innerRelease(PoolObject<T> obj) {
 			throw new UnsupportedOperationException("This method must not be called in synchronized ObjectPool.");
 		}
 		

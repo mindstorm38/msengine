@@ -7,12 +7,12 @@ import java.util.function.Supplier;
 
 public class FixedObjectPool<T> extends ObjectPool<T> {
 	
-	private final Queue<PoolObject> pool = new ArrayDeque<>();
+	private final Queue<PoolObject<T>> pool = new ArrayDeque<>();
 	
 	public FixedObjectPool(Supplier<T> provider, int size) {
 		try {
 			for (int i = 0; i < size; ++i) {
-				this.pool.add(this.new PoolObject(provider.get()));
+				this.pool.add(new PoolObject<>(this, provider.get()));
 			}
 		} catch (RuntimeException e) {
 			throw new IllegalArgumentException("The provider caused an exception.", e);
@@ -20,7 +20,7 @@ public class FixedObjectPool<T> extends ObjectPool<T> {
 	}
 	
 	@Override
-	protected PoolObject innerAcquire() throws NoSuchElementException {
+	protected PoolObject<T> innerAcquire() throws NoSuchElementException {
 		if (this.pool.isEmpty()) {
 			throw new NoSuchElementException("No more object in this pool, be careful of objects leaks or increase the max count !");
 		}
@@ -28,7 +28,7 @@ public class FixedObjectPool<T> extends ObjectPool<T> {
 	}
 	
 	@Override
-	protected void innerRelease(PoolObject obj) {
+	protected void innerRelease(PoolObject<T> obj) {
 		this.pool.add(obj);
 	}
 	
