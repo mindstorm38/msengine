@@ -73,8 +73,10 @@ public class AudioContextBuilder {
 			}
 		}
 		
+		long lastContext = alcGetCurrentContext();
 		alcMakeContextCurrent(context);
 		ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+		alcMakeContextCurrent(lastContext);
 		
 		return new AudioContext(device, context, alcCapabilities, alCapabilities);
 		

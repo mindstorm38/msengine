@@ -32,6 +32,13 @@ public class AudioContext implements AutoCloseable {
 		return this.context;
 	}
 	
+	public long checkContext() {
+		if (this.context == 0L) {
+			throw new IllegalStateException("Can't call this method because the " + this.getClass().getSimpleName() + " is already closed.");
+		}
+		return this.context;
+	}
+	
 	public ALCCapabilities getAlcCapabilities() {
 		return this.alcCapabilities;
 	}
@@ -46,9 +53,7 @@ public class AudioContext implements AutoCloseable {
 	 * again.
 	 */
 	public void suspend() {
-		if (this.context != 0L) {
-			alcSuspendContext(this.context);
-		}
+		alcSuspendContext(this.checkContext());
 	}
 	
 	/**
@@ -56,9 +61,14 @@ public class AudioContext implements AutoCloseable {
 	 * to "<b>al*</b>" are applied at once.
 	 */
 	public void process() {
-		if (this.context != 0L) {
-			alcSuspendContext(this.context);
-		}
+		alcSuspendContext(this.checkContext());
+	}
+	
+	/**
+	 * Make this audio context current for this thread (or process for special contexts).
+	 */
+	public void makeContextCurrent() {
+		alcMakeContextCurrent(this.context);
 	}
 	
 	/**
@@ -77,6 +87,14 @@ public class AudioContext implements AutoCloseable {
 		if (!this.isContextCurrent()) {
 			throw new IllegalStateException("The audio context must be the current one.");
 		}
+	}
+	
+	/**
+	 * Make no context current.
+	 * @see #makeContextCurrent()
+	 */
+	public static void detachCurrentContext() {
+		alcMakeContextCurrent(0L);
 	}
 	
 	/**
