@@ -2,7 +2,7 @@
 //  [MSEngine] Client side module
 //
 
-description = "$description - Client side library, containing OpenGL natives."
+description = "MSEngine - Client side library, containing OpenGL natives."
 
 dependencies {
 
