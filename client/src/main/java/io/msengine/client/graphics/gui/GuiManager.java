@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class GuiManager implements WindowFramebufferSizeEventListener, ModelApplyListener {
 	
-	private static final Logger LOGGER = Logger.getLogger("msengine.gui");
+	private static final Logger LOGGER = Logger.getLogger("mse.gui");
 	
 	private final ContextWindow window;
 	private final Map<String, Supplier<GuiScene>> scenes = new HashMap<>();

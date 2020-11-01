@@ -22,7 +22,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 
 public abstract class Window implements AutoCloseable {
 
-    protected static final Logger LOGGER = Logger.getLogger("msengine.window");
+    protected static final Logger LOGGER = Logger.getLogger("mse.window");
 
     static {
         WindowHandler.init();

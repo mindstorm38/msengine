@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 @SuppressWarnings("unchecked")
 public class MethodEventManager {
 
-	private static final Logger LOGGER = Logger.getLogger("msengine.event");
+	private static final Logger LOGGER = Logger.getLogger("mse.event");
 
 	private final HashMap<Class<?>, CopyOnWriteArrayList<?>> eventListeners = new HashMap<>();
 	private final HashSet<Class<?>> allowedClass = new HashSet<>();

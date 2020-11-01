@@ -14,7 +14,7 @@ import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 
 public class ImageUtils {
 	
-	public static void loadImageFromStream(InputStream stream, int initialSize, ImageLoadingConsumer consumer) throws IOException {
+	public static void loadImageFromStream(InputStream stream, int initialSize, boolean free, ImageLoadingConsumer consumer) throws IOException {
 		ByteBuffer buf = BufferAlloc.fromInputStream(stream, initialSize);
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			IntBuffer width = stack.callocInt(1);
@@ -26,10 +26,14 @@ public class ImageUtils {
 			}
 			consumer.accept(buffer, width.get(), height.get());
 		}
-		MemoryUtil.memFree(buf);
+		if (free) MemoryUtil.memFree(buf);
 	}
 	
-	@FunctionalInterface
+	public static void loadImageFromStream(InputStream stream, int initialSize, ImageLoadingConsumer consumer) throws IOException {
+		loadImageFromStream(stream, initialSize, true, consumer);
+	}
+		
+		@FunctionalInterface
 	public interface ImageLoadingConsumer {
 		void accept(ByteBuffer buf, int width, int height);
 	}

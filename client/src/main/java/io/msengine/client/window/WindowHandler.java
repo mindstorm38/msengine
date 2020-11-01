@@ -11,7 +11,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class WindowHandler {
 
-    protected static final Logger LOGGER = Logger.getLogger("msengine.window");
+    protected static final Logger LOGGER = Logger.getLogger("mse.window");
 
     private WindowHandler() {}
 

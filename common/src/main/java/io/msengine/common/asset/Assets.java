@@ -2,6 +2,8 @@ package io.msengine.common.asset;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.function.Predicate;
 
 public abstract class Assets {
 	
@@ -15,6 +17,10 @@ public abstract class Assets {
 	
 	// Class //
 	
+	protected abstract Asset getAssetSimplified(String simplifiedPath);
+	protected abstract InputStream openAssetStreamSimplified(String simplifiedPath);
+	protected abstract List<Asset> listAssetsSimplified(String simplifiedPath, Predicate<String> filter);
+	
 	public Asset getAsset(String path) {
 		return this.getAssetSimplified(simplifyPath(path));
 	}
@@ -23,8 +29,13 @@ public abstract class Assets {
 		return this.openAssetStreamSimplified(simplifyPath(path));
 	}
 	
-	protected abstract Asset getAssetSimplified(String simplifiedPath);
-	protected abstract InputStream openAssetStreamSimplified(String simplifiedPath);
+	public List<Asset> listAssets(String path, Predicate<String> filter) {
+		return this.listAssetsSimplified(simplifyPath(path), filter);
+	}
+	
+	public List<Asset> listAssets(String path) {
+		return this.listAssetsSimplified(simplifyPath(path), null);
+	}
 	
 	public InputStream openAssetStreamExcept(String path) throws IOException {
 		return throwIfNoStream(this.openAssetStream(path));
@@ -51,6 +62,10 @@ public abstract class Assets {
 		} else {
 			return stream;
 		}
+	}
+	
+	public static Predicate<String> getExtensionFilter(String ext) {
+		return str -> str.endsWith(ext);
 	}
 
 }

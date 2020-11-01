@@ -1,10 +1,12 @@
 package io.msengine.common.asset;
 
-import java.io.BufferedReader;
+import io.msengine.common.asset.metadata.CachedMetadata;
+import io.msengine.common.asset.metadata.Metadata;
+import io.msengine.common.asset.metadata.MetadataParseException;
+import io.msengine.common.asset.metadata.MetadataSection;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -12,10 +14,15 @@ public class Asset {
 	
 	private final Assets assets;
 	private final String path;
+	private Metadata meta;
 	
 	Asset(Assets assets, String path) {
 		this.assets = assets;
 		this.path = path;
+	}
+	
+	public String getPath() {
+		return this.path;
 	}
 	
 	/**
@@ -43,42 +50,33 @@ public class Asset {
 	 * @param filter An optional filter to apply to assets list against there path.
 	 * @return Assets list, <b>or null if this asset is no longer valid <i>(not returning an InputStream, this should not happen)</i></b>.
 	 */
-	public List<Asset> getAssets(Predicate<String> filter) {
-		
-		InputStream stream = this.openStream();
-		
-		if (stream == null)
-			return null;
-		
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(this.openStream()))) {
-			
-			List<Asset> assets = new ArrayList<>();
-			String line;
-			Asset asset;
-			
-			while ((line = reader.readLine()) != null) {
-				if (filter == null || filter.test(line)) {
-					asset = this.assets.getAsset(this.path + Assets.simplifyPath(line));
-					if (asset != null) {
-						assets.add(asset);
-					}
-				}
-			}
-			
-			return assets;
-			
-		} catch (IOException e) {
-			return null;
+	public List<Asset> listAssets(Predicate<String> filter) {
+		return this.assets.listAssetsSimplified(this.path, filter);
+	}
+	
+	public List<Asset> listAssets() {
+		return this.listAssets(null);
+	}
+	
+	// Metadata //
+	
+	public Metadata getMetadata() {
+		if (this.meta == null) {
+			Asset metadataAsset = this.assets.getAssetSimplified(this.path + ".meta");
+			this.meta = (metadataAsset == null) ? Metadata.NO_META : new CachedMetadata(metadataAsset);
 		}
-		
+		return this.meta;
 	}
 	
-	public List<Asset> getAssets() {
-		return this.getAssets(null);
+	public <T> T getMetadataSection(MetadataSection<T> section) throws MetadataParseException {
+		return this.getMetadata().getMetadataSection(section);
 	}
 	
-	public static Predicate<String> getExtensionFilter(String ext) {
-		return str -> str.endsWith(ext);
+	// To String //
+	
+	@Override
+	public String toString() {
+		return "Asset<path=" + this.path + ">";
 	}
 	
 }

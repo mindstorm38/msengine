@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public abstract class GuiObject {
 
-	protected static final Logger LOGGER = Logger.getLogger("msengine.gui.object");
+	protected static final Logger LOGGER = Logger.getLogger("mse.gui.object");
 
 	public static final int SIZE_AUTO = -1;
 	

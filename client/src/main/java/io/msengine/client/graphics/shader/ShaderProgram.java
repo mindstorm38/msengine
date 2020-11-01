@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class ShaderProgram implements AutoCloseable {
 
-    private static final Logger LOGGER = Logger.getLogger("shader.program");
+    private static final Logger LOGGER = Logger.getLogger("mse.program");
     
     private Set<Shader> shaders = new HashSet<>();
     private int name;

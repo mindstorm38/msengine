@@ -64,6 +64,10 @@ public class Texture implements AutoCloseable, SamplerBase {
 		glBindTexture(target, 0);
 	}
 	
+	public static int getMaxTextureSize() {
+		return glGetInteger(GL_MAX_TEXTURE_SIZE);
+	}
+	
 	// Class //
 	
 	protected int name;

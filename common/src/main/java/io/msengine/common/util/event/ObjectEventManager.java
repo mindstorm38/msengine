@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 public class ObjectEventManager<E extends ObjectEvent> {
 
-    private static final Logger LOGGER = Logger.getLogger("msengine.event");
+    private static final Logger LOGGER = Logger.getLogger("mse.event");
     private static final Class<?> EVENT_SUPER_CLASS = ObjectEvent.class.getSuperclass();
 
     private final HashMap<Class<?>, List<ObjectEventListener<?>>> listeners = new HashMap<>();
