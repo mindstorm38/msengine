@@ -138,6 +138,10 @@ public class MapTexture2D extends DynTexture2D {
 		
 	}
 	
+	public Map<String, Tile> getTiles() {
+		return this.tiles;
+	}
+	
 	public Tile getTile(String name) {
 		return this.tiles.get(name);
 	}
