@@ -165,14 +165,14 @@ public class MapTexture2D extends DynTexture2D {
 	}
 	
 	public static String extractFileName(String name) {
-		int slashIdx = Math.max(0, name.lastIndexOf('/'));
+		int slashIdx = name.lastIndexOf('/');
 		int pointIdx = name.lastIndexOf('.');
 		if (slashIdx == -1 && pointIdx == -1) {
 			return name;
 		} else if (pointIdx == -1) {
-			return name.substring(slashIdx);
+			return name.substring(slashIdx + 1);
 		} else {
-			return name.substring(slashIdx, pointIdx);
+			return name.substring(slashIdx + 1, pointIdx);
 		}
 	}
 	
