@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -29,7 +28,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	
 	private static final Logger LOGGER = Logger.getLogger("mse.gui");
 	
-	private final ContextWindow window;
+	private ContextWindow window;
+	
 	private final Map<String, Supplier<GuiScene>> scenes = new HashMap<>();
 	private final Map<String, GuiScene> instances = new HashMap<>();
 	
@@ -48,8 +48,8 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	private boolean rendering;
 	private boolean masking;
 	
-	public GuiManager(ContextWindow window) {
-		this.window = Objects.requireNonNull(window, "Missing window.");
+	public GuiManager() {
+		// this.window = Objects.requireNonNull(window, "Missing window.");
 	}
 	
 	public ContextWindow getWindow() {
@@ -72,11 +72,18 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	}
 	
 	/**
-	 * Init the manager, this require a bound OpenGL context
-	 * and a valid window.
-	 * @throws IllegalStateException If the manager window's context is not the current one.
+	 * Init the manager, this require a bound OpenGL context and a valid window.
+	 * @throws IllegalStateException If the manager window's context is not the
+	 *                               current one or the manager is already started.
 	 */
-	public void init() {
+	public void start(ContextWindow window) {
+		
+		if (this.window != null) {
+			throw new IllegalStateException("Already started.");
+		} else if (window == null || !window.isValid()) {
+			throw new IllegalArgumentException("Given window is null or no longer valid.");
+		}
+		
 		/*if (this.program == null) {
 			this.checkWindowContext();
 			this.program = this.createProgram();
@@ -84,24 +91,37 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 			this.updateSceneSizeFromWindow();
 			this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
 		}*/
+		
+		this.window = window;
 		this.checkWindowContext();
 		this.updateSceneSizeFromWindow();
 		this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
+		
 	}
 	
 	/**
 	 * Stop the manager.
+	 * @throws IllegalStateException If the manager is not started.
 	 */
 	public void stop() {
+		
+		if (this.window == null) {
+			throw new IllegalStateException("Not started.");
+		}
+		
 		//if (this.program != null) {
-			this.checkWindowContext();
-			this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
-			this.unloadScene();
-			this.instances.values().forEach(GuiScene::stop);
-			this.instances.clear();
-			//this.program.close();
-			//this.program = null;
+		
+		this.checkWindowContext();
+		this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
+		this.unloadScene();
+		this.instances.values().forEach(GuiScene::stop);
+		this.instances.clear();
+		this.window = null;
+		
+		//this.program.close();
+		//this.program = null;
 		//}
+		
 	}
 	
 	public void render(float alpha) {

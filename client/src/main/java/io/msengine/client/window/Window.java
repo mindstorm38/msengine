@@ -95,6 +95,10 @@ public abstract class Window implements AutoCloseable {
         return this.id;
     }
 
+    public boolean isValid() {
+        return this.id != 0L;
+    }
+    
     public long checkId() {
         if (this.id == 0L) {
             throw new IllegalStateException("Can't call this method because the " + this.getClass().getSimpleName() + " is already closed.");

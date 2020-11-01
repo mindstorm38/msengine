@@ -25,10 +25,12 @@ public class GuiExample implements FrameRegulated {
 		
 	}
 	
+	private final GuiManager gui = new GuiManager();
 	private GLWindow window;
-	private GuiManager gui;
 	
-	private GuiExample() { }
+	private GuiExample() {
+		this.gui.registerScene("test", GuiTestScene::new);
+	}
 	
 	private void init() {
 		
@@ -40,15 +42,12 @@ public class GuiExample implements FrameRegulated {
 				.withVersion(4, 3)
 				.build();
 		
-		this.gui = new GuiManager(this.window);
-		this.gui.registerScene("test", GuiTestScene::new);
-		
 		this.window.show();
 		this.window.makeContextCurrent();
 		
 		DebugOutput.registerIfSupported();
 		
-		this.gui.init();
+		this.gui.start(this.window);
 		this.gui.loadScene("test");
 		
 		glClearColor(0, 0, 0, 1);
