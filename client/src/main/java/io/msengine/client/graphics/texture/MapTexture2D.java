@@ -30,7 +30,7 @@ import static org.lwjgl.opengl.GL11.glTexSubImage2D;
 public class MapTexture2D extends DynTexture2D {
 	
 	private static final Logger LOGGER = Logger.getLogger("mse.maptexture");
-
+	
 	private final Map<String, Tile> tiles = new HashMap<>();
 	private final List<RunningAnimation> animations = new ArrayList<>();
 	
@@ -138,6 +138,10 @@ public class MapTexture2D extends DynTexture2D {
 		
 	}
 	
+	public Tile getTile(String name) {
+		return this.tiles.get(name);
+	}
+	
 	/**
 	 * Update all animation in this map, the texture is
 	 * bound on the current texture unit.
@@ -154,6 +158,18 @@ public class MapTexture2D extends DynTexture2D {
 		this.tiles.clear();
 		this.animations.forEach(RunningAnimation::close);
 		this.animations.clear();
+	}
+	
+	public static String extractFileName(String name) {
+		int slashIdx = Math.max(0, name.lastIndexOf('/'));
+		int pointIdx = name.lastIndexOf('.');
+		if (slashIdx == -1 && pointIdx == -1) {
+			return name;
+		} else if (pointIdx == -1) {
+			return name.substring(slashIdx);
+		} else {
+			return name.substring(slashIdx, pointIdx);
+		}
 	}
 	
 	public class Tile {
