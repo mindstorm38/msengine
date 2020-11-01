@@ -5,12 +5,12 @@ import io.msengine.client.graphics.buffer.IndexedBufferArray;
 public class GuiBufferArray extends IndexedBufferArray {
 	
 	private final int colorBufIdx;
-	private final int texCoordsBufIdx;
+	private final int texCoordBufIdx;
 	
-	public GuiBufferArray(int vao, int[] vbos, int colorBufIdx, int texCoordsBufIdx) {
+	public GuiBufferArray(int vao, int[] vbos, int colorBufIdx, int texCoordBufIdx) {
 		super(vao, vbos);
 		this.colorBufIdx = colorBufIdx;
-		this.texCoordsBufIdx = texCoordsBufIdx;
+		this.texCoordBufIdx = texCoordBufIdx;
 	}
 	
 	public GuiBufferArray(int vao, int[] vbos) {
@@ -25,8 +25,8 @@ public class GuiBufferArray extends IndexedBufferArray {
 		return this.colorBufIdx;
 	}
 	
-	public int getTexCoordsBufIdx() {
-		return this.texCoordsBufIdx;
+	public int getTexCoordBufIdx() {
+		return this.texCoordBufIdx;
 	}
 	
 }

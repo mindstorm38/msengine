@@ -10,7 +10,7 @@ public class GuiTexture extends GuiObject {
 	
 	protected GuiBufferArray buf;
 	protected boolean updateVertices;
-	protected boolean updateTexCoords;
+	protected boolean updateTexCoord;
 	
 	protected int textureName;
 	protected float textureX;
@@ -41,7 +41,7 @@ public class GuiTexture extends GuiObject {
 			this.updateVerticesBuffer();
 		}
 		
-		if (this.updateTexCoords) {
+		if (this.updateTexCoord) {
 			this.updateTexCoordsBuffer();
 		}
 		
@@ -74,7 +74,7 @@ public class GuiTexture extends GuiObject {
 		
 		this.buf.bindVao();
 		this.buf.allocateVboData(this.buf.getPositionIndex(), 8 << 2, BufferUsage.DYNAMIC_DRAW);
-		this.buf.allocateVboData(this.buf.getTexCoordsBufIdx(), 8 << 2, BufferUsage.DYNAMIC_DRAW);
+		this.buf.allocateVboData(this.buf.getTexCoordBufIdx(), 8 << 2, BufferUsage.DYNAMIC_DRAW);
 		
 		BufferAlloc.allocStackInt(this.buf.setIndicesCount(6), buf -> {
 			GuiCommon.putSquareIndices(buf);
@@ -115,11 +115,11 @@ public class GuiTexture extends GuiObject {
 			buf.put(x + w).put(y);
 			buf.flip();
 			this.buf.bindVao();
-			this.buf.uploadVboSubData(this.buf.getTexCoordsBufIdx(), 0, buf);
+			this.buf.uploadVboSubData(this.buf.getTexCoordBufIdx(), 0, buf);
 			
 		});
 		
-		this.updateTexCoords = false;
+		this.updateTexCoord = false;
 		
 	}
 	
@@ -137,7 +137,7 @@ public class GuiTexture extends GuiObject {
 		this.textureY = y;
 		this.textureWidth = width;
 		this.textureHeight = height;
-		this.updateTexCoords = true;
+		this.updateTexCoord = true;
 	}
 	
 	public void resetTextureCoords() {
