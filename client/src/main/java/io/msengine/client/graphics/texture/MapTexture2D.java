@@ -3,6 +3,7 @@ package io.msengine.client.graphics.texture;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import io.msengine.client.graphics.texture.base.TextureSetup;
 import io.msengine.client.graphics.util.ImageUtils;
 import io.msengine.common.asset.Asset;
 import io.msengine.common.asset.metadata.MetadataParseException;
@@ -34,7 +35,33 @@ public class MapTexture2D extends DynTexture2D {
 	private final Map<String, Tile> tiles = new HashMap<>();
 	private final List<RunningAnimation> animations = new ArrayList<>();
 	
-	public void initMapFromAssets(Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
+	public MapTexture2D(TextureSetup setup) {
+		super(setup);
+	}
+	
+	public MapTexture2D(TextureSetup setup, Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
+		super(setup.withUnbind(false));
+		this.buildMapAndUpload(assets, tileNameExtractor);
+		setup.unbind(this);
+	}
+	
+	public MapTexture2D(TextureSetup setup, Collection<Asset> assets) throws IOException {
+		this(setup, assets, MapTexture2D::extractFileName);
+	}
+	
+	public MapTexture2D() {
+		this(SETUP_NEAREST);
+	}
+	
+	public MapTexture2D(Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
+		this(SETUP_NEAREST, assets, tileNameExtractor);
+	}
+	
+	public MapTexture2D(Collection<Asset> assets) throws IOException {
+		this(SETUP_NEAREST, assets);
+	}
+	
+	public void buildMapAndUpload(Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
 		
 		this.checkBound();
 		
@@ -136,6 +163,10 @@ public class MapTexture2D extends DynTexture2D {
 		
 		this.uploadImage();
 		
+	}
+	
+	public void buildMapAndUpload(Collection<Asset> assets) throws IOException {
+		this.buildMapAndUpload(assets, MapTexture2D::extractFileName);
 	}
 	
 	public Map<String, Tile> getTiles() {

@@ -55,11 +55,11 @@ public class DynTexture2D extends Texture2D {
 	}
 	
 	public DynTexture2D(InputStream stream, boolean upload) throws IOException {
-		this(upload ? SETUP_LINEAR_KEEP : SETUP_LINEAR, stream, upload);
+		this(SETUP_LINEAR, stream, upload);
 	}
 	
 	public DynTexture2D(Asset asset, boolean upload) throws IOException {
-		this(upload ? SETUP_LINEAR_KEEP : SETUP_LINEAR, asset, upload);
+		this(SETUP_LINEAR, asset, upload);
 	}
 	
 	// Edition //
