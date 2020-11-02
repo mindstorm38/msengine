@@ -245,7 +245,7 @@ public class MapTexture2D extends DynTexture2D {
 		int heightTilesCount = this.getHeight() / map.getTileHeight();
 		float tileWidth = 1 / (float) widthTilesCount;
 		float tileHeight = 1 / (float) heightTilesCount;
-		System.out.println("tilesCount=" + widthTilesCount + "/" + heightTilesCount);
+		
 		for (int x = 0; x < widthTilesCount; ++x) {
 			for (int y = 0; y < heightTilesCount; ++y) {
 				String name = x + "/" + y;
