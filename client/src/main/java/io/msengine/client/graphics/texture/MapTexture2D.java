@@ -83,7 +83,18 @@ public class MapTexture2D extends DynTexture2D {
 				animation = null;
 			}
 			
-			String name = (tileNameExtractor == null) ? asset.getPath() : tileNameExtractor.apply(asset.getPath());
+			String name;
+			
+			if (tileNameExtractor == null) {
+				name = asset.getPath();
+			} else {
+				name = tileNameExtractor.apply(asset.getPath());
+				if (name == null) {
+					LOGGER.log(Level.WARNING, "The tile name extractor for path '" + asset.getPath() + "' returned null.");
+					continue;
+				}
+			}
+			
 			Animation anim = animation;
 			
 			try {
