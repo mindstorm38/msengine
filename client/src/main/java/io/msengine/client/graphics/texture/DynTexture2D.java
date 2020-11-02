@@ -17,6 +17,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class DynTexture2D extends Texture2D {
 
 	private ByteBuffer buf;
+	private boolean imgBuf;
 	private int width, height;
 
 	public DynTexture2D(TextureSetup setup) {
@@ -86,13 +87,25 @@ public class DynTexture2D extends Texture2D {
 	public int getHeight() {
 		return this.height;
 	}
-
+	
+	/**
+	 * <p>Unsafe internal method to call when {@link #buf} is not
+	 * <code>null</code> and to free the buffer according to
+	 * {@link #imgBuf} flag.</p>
+	 * <p><b>This use different free methods since STB and LWJGL
+	 * may use different low level memory allocators.</b></p>
+	 */
+	protected void freeBuffer() {
+		if (this.imgBuf) ImageUtils.freeImage(this.buf);
+		else MemoryUtil.memFree(this.buf);
+	}
+	
 	/**
 	 * Free the image internal buffer, reset its size to 0.
 	 */
 	public void freeImage() {
 		if (this.buf != null) {
-			MemoryUtil.memFree(this.buf);
+			this.freeBuffer();
 			this.buf = null;
 			this.width = 0;
 			this.height = 0;
@@ -102,16 +115,23 @@ public class DynTexture2D extends Texture2D {
 	/**
 	 * <p><b>UNSAFE!</b> Set inner buffer with its image size.</p>
 	 * @param buf The buffer.
+	 * @param imgBuf Whether or not this buffer was produced by
+	 *               {@link ImageUtils#loadImageFromStream(InputStream, int, boolean, ImageUtils.ImageLoadingConsumer)}.
 	 * @param width Image width.
 	 * @param height Image height.
 	 */
-	protected void setRawBuffer(ByteBuffer buf, int width, int height) {
+	protected void setRawBuffer(ByteBuffer buf, boolean imgBuf, int width, int height) {
 		if (this.buf != null) {
-			MemoryUtil.memFree(this.buf);
+			this.freeBuffer();
 		}
 		this.buf = buf;
+		this.imgBuf = imgBuf;
 		this.width = width;
 		this.height = height;
+	}
+	
+	private void setRawImageBuffer(ByteBuffer buf, int width, int height) {
+		this.setRawBuffer(buf, true, width, height);
 	}
 
 	/**
@@ -135,11 +155,15 @@ public class DynTexture2D extends Texture2D {
 		if (this.buf == null) {
 			this.buf = MemoryUtil.memAlloc(size);
 		} else if (size > this.buf.capacity() || size < (this.buf.capacity() << 2)) {
-			try {
+			if (this.imgBuf) {
+				ByteBuffer buf = MemoryUtil.memAlloc(size);
+				this.buf.clear();
+				MemoryUtil.memCopy(this.buf, buf);
+				ImageUtils.freeImage(this.buf);
+				this.buf = buf;
+				this.imgBuf = false;
+			} else {
 				this.buf = MemoryUtil.memRealloc(this.buf, size);
-			} catch (OutOfMemoryError e) {
-				MemoryUtil.memFree(this.buf);
-				throw e;
 			}
 		} else {
 			this.buf.clear();
@@ -152,7 +176,7 @@ public class DynTexture2D extends Texture2D {
 	}
 	
 	public void allocFromStream(InputStream stream) throws IOException {
-		ImageUtils.loadImageFromStream(stream, 8192, this::setRawBuffer);
+		ImageUtils.loadImageFromStream(stream, 8192, false, this::setRawImageBuffer);
 	}
 	
 	public void allocFromAsset(Asset asset) throws IOException {

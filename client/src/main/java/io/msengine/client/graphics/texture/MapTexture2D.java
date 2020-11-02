@@ -193,9 +193,9 @@ public class MapTexture2D extends DynTexture2D {
 			);
 			
 			if (image.animation != null) {
-				this.animations.add(new RunningAnimation(image.data, x, y, width, height, image.animation));
+				this.animations.add(new RunningAnimation(data, x, y, width, height, image.animation));
 			} else {
-				MemoryUtil.memFree(data);
+				ImageUtils.freeImage(data);
 			}
 			
 			if (++column >= imageSize) {
@@ -245,7 +245,7 @@ public class MapTexture2D extends DynTexture2D {
 		int heightTilesCount = this.getHeight() / map.getTileHeight();
 		float tileWidth = 1 / (float) widthTilesCount;
 		float tileHeight = 1 / (float) heightTilesCount;
-		
+		System.out.println("tilesCount=" + widthTilesCount + "/" + heightTilesCount);
 		for (int x = 0; x < widthTilesCount; ++x) {
 			for (int y = 0; y < heightTilesCount; ++y) {
 				String name = x + "/" + y;
@@ -367,7 +367,7 @@ public class MapTexture2D extends DynTexture2D {
 		@Override
 		public void close() {
 			if (this.data != null) {
-				MemoryUtil.memFree(this.data);
+				ImageUtils.freeImage(this.data);
 				this.data = null;
 			}
 		}
