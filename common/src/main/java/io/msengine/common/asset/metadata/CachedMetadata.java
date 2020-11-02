@@ -2,12 +2,15 @@ package io.msengine.common.asset.metadata;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import io.msengine.common.asset.Asset;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,15 +28,15 @@ public class CachedMetadata implements Metadata {
 		this.asset = Objects.requireNonNull(asset);
 	}
 	
-	public JsonObject getJson() {
+	public JsonObject getJson(boolean refresh) {
 		
-		if (this.cachedJson == null) {
-			try (JsonReader reader = new JsonReader(new InputStreamReader(this.asset.openStreamExcept()))) {
-				this.cachedJson = GSON.fromJson(reader, JsonObject.class);
+		if (this.cachedJson == null || refresh) {
+			try (Reader reader = new InputStreamReader(this.asset.openStreamExcept())) {
+				this.cachedJson = GSON.fromJson(reader, JsonElement.class);
 				if (this.cachedJson == null) {
 					this.cachedJson = new MetadataParseException("Failed to parse json file, not an object.");
 				}
-			} catch (IOException e) {
+			} catch (IOException | JsonSyntaxException e) {
 				this.cachedJson = new MetadataParseException("Failed to parse json file.", e);
 			}
 		}
@@ -56,9 +59,9 @@ public class CachedMetadata implements Metadata {
 		
 		Object cached = this.cachedSections.get(Objects.requireNonNull(section));
 		
-		if (cached == null) {
+		if (cached == null || refresh) {
 			
-			JsonObject json = this.getJson();
+			JsonObject json = this.getJson(refresh);
 			
 			if (json.has(section.getName())) {
 				try {
