@@ -23,8 +23,9 @@ public class FixedObjectPool<T> extends ObjectPool<T> {
 	protected Holder innerAcquire() throws NoSuchElementException {
 		if (this.pool.isEmpty()) {
 			throw new NoSuchElementException("No more object in this pool, be careful of objects leaks or increase the max count !");
+		} else {
+			return this.pool.poll();
 		}
-		return null;
 	}
 	
 	@Override
