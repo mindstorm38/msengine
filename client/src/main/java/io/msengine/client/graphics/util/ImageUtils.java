@@ -25,8 +25,9 @@ public class ImageUtils {
 				throw new IOException("Failed to load image from memory (using STB): " + stbi_failure_reason());
 			}
 			consumer.accept(buffer, width.get(), height.get());
+		} finally {
+			if (free) MemoryUtil.memFree(buf);
 		}
-		if (free) MemoryUtil.memFree(buf);
 	}
 	
 	public static void loadImageFromStream(InputStream stream, int initialSize, ImageLoadingConsumer consumer) throws IOException {

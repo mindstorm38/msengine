@@ -150,6 +150,14 @@ public class DynTexture2D extends Texture2D {
 		this.height = height;
 
 	}
+	
+	public void allocFromStream(InputStream stream) throws IOException {
+		ImageUtils.loadImageFromStream(stream, 8192, this::setRawBuffer);
+	}
+	
+	public void allocFromAsset(Asset asset) throws IOException {
+		this.allocFromStream(Objects.requireNonNull(asset, "Asset is null.").openStreamExcept());
+	}
 
 	public void uploadImage() {
 		if (this.buf == null) {
@@ -158,14 +166,6 @@ public class DynTexture2D extends Texture2D {
 			this.checkBound();
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.buf);
 		}
-	}
-
-	public void allocFromStream(InputStream stream) throws IOException {
-		ImageUtils.loadImageFromStream(stream, 8192, this::setRawBuffer);
-	}
-
-	public void allocFromAsset(Asset asset) throws IOException {
-		this.allocFromStream(Objects.requireNonNull(asset, "Asset is null.").openStreamExcept());
 	}
 
 	// Graphics //

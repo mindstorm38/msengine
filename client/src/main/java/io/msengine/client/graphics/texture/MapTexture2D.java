@@ -1,14 +1,11 @@
 package io.msengine.client.graphics.texture;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import io.msengine.client.graphics.texture.base.TextureSetup;
+import io.msengine.client.graphics.texture.metadata.AnimationInfo;
+import io.msengine.client.graphics.texture.metadata.PredefinedMap;
 import io.msengine.client.graphics.util.ImageUtils;
 import io.msengine.common.asset.Asset;
 import io.msengine.common.asset.metadata.MetadataParseException;
-import io.msengine.common.asset.metadata.MetadataSection;
-import io.msengine.common.util.JsonUtils;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.Closeable;
@@ -39,7 +36,7 @@ public class MapTexture2D extends DynTexture2D {
 		super(setup);
 	}
 	
-	public MapTexture2D(TextureSetup setup, Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
+	/*public MapTexture2D(TextureSetup setup, Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
 		super(setup.withUnbind(false));
 		this.buildMapAndUpload(assets, tileNameExtractor);
 		setup.unbind(this);
@@ -47,37 +44,65 @@ public class MapTexture2D extends DynTexture2D {
 	
 	public MapTexture2D(TextureSetup setup, Collection<Asset> assets) throws IOException {
 		this(setup, assets, MapTexture2D::extractFileName);
-	}
+	}*/
 	
 	public MapTexture2D() {
 		this(SETUP_NEAREST);
 	}
 	
-	public MapTexture2D(Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
+	/*public MapTexture2D(Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
 		this(SETUP_NEAREST, assets, tileNameExtractor);
 	}
 	
 	public MapTexture2D(Collection<Asset> assets) throws IOException {
 		this(SETUP_NEAREST, assets);
+	}*/
+	
+	public Map<String, Tile> getTiles() {
+		return this.tiles;
 	}
 	
-	public void buildMapAndUpload(Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
-		
-		this.checkBound();
-		
+	public Tile getTile(String name) {
+		return this.tiles.get(name);
+	}
+	
+	public Tile newTile(String name, float x, float y, float w, float h) {
+		Tile tile = this.new Tile(x, y, w, h);
+		this.tiles.put(name, tile);
+		return tile;
+	}
+	
+	public void clearTiles() {
 		this.tiles.clear();
 		this.animations.forEach(RunningAnimation::close);
 		this.animations.clear();
+	}
+	
+	/**
+	 * <p>Build this map buffer (of underlying {@link DynTexture2D}) from a group of assets
+	 * by mapping them in a grid. This also support animation metadata.</p>
+	 * <p>Assets that define a {@link AnimationInfo#META_SECTION}, an animation will be added, and
+	 * can be updated with {@link #tick()}.</p>
+	 * <p><b>This method do not upload the result.</b></p>
+	 * @param assets The collection of assets to aggregate.
+	 * @param tileNameExtractor An optional name extract used to name resulting {@link Tile}s objects.
+	 * @throws IOException If the required texture size is too large for the maximum OpenGL texture size.
+	 * @see #buildMapFromAssets(Collection)
+	 * @see #getTile(String)
+	 */
+	public void buildMapFromAssets(Collection<Asset> assets, Function<String, String> tileNameExtractor) throws IOException {
+		
+		this.clearTiles();
 		
 		Map<String, TempImage> images = new HashMap<>();
 		int[] maxTileSize = {0, 0};
 		
 		for (Asset asset : assets) {
 			
-			Animation animation;
+			AnimationInfo animation;
 			
 			try {
-				animation = asset.getMetadataSection(AnimationMetadataSection.INSTANCE);
+				animation = asset.getMetadataSection(AnimationInfo.META_SECTION);
 			} catch (MetadataParseException e) {
 				LOGGER.log(Level.WARNING, "Failed to parse metadata section for MapTexture init, ignoring asset '" + asset + "' metadata.", e);
 				animation = null;
@@ -95,13 +120,13 @@ public class MapTexture2D extends DynTexture2D {
 				}
 			}
 			
-			Animation anim = animation;
+			AnimationInfo anim = animation;
 			
 			try {
 				
 				ImageUtils.loadImageFromStream(asset.openStreamExcept(), 4096, false, (buf, width, height) -> {
 					
-					if (anim != null) height /= anim.framesCount;
+					if (anim != null) height /= anim.getFramesCount();
 					if (width > maxTileSize[0]) maxTileSize[0] = width;
 					if (height > maxTileSize[1]) maxTileSize[1] = height;
 					
@@ -152,12 +177,13 @@ public class MapTexture2D extends DynTexture2D {
 			this.drawImage(x + width, y, width - 1, 0, 1, height, width, data); // Right
 			this.drawImage(x, y - 1, 0, 0, width, 1, width, data); // Top
 			
-			this.tiles.put(imageEntry.getKey(), this.new Tile(
-				(float) x / imageWidth,
-				(float) y / imageHeight,
-				(float) width / imageWidth,
-				(float) height / imageHeight
-			));
+			this.newTile(
+					imageEntry.getKey(),
+					(float) x / imageWidth,
+					(float) y / imageHeight,
+					(float) width / imageWidth,
+					(float) height / imageHeight
+			);
 			
 			if (image.animation != null) {
 				this.animations.add(new RunningAnimation(image.data, x, y, width, height, image.animation));
@@ -172,20 +198,59 @@ public class MapTexture2D extends DynTexture2D {
 			
 		}
 		
-		this.uploadImage();
+	}
+	
+	/**
+	 * Same as {@link #buildMapFromAssets(Collection, Function)}, but with the <code>tileNameExtractor</code>
+	 * argument set to a reference to method {@link #extractFileName(String)}.
+	 * @param assets The collection of assets to aggregate.
+	 * @throws IOException If the required texture size is too large for the maximum OpenGL texture size.
+	 * @see #buildMapFromAssets(Collection, Function)
+	 */
+	public void buildMapFromAssets(Collection<Asset> assets) throws IOException {
+		this.buildMapFromAssets(assets, MapTexture2D::extractFileName);
+	}
+	
+	/**
+	 * <p>Build this map buffer (of underlying {@link DynTexture2D}) from a <i>"predefined map"</i> asset.</p>
+	 * <p><b>This method do not upload the result.</b></p>
+	 * @param predefinedMapAsset The predefined map asset, to be recognized as this it must have a metadata
+	 *                           section {@link PredefinedMap#META_SECTION} describing the tile size.
+	 * @throws IllegalArgumentException If the asset do not define the metadata section.
+	 * @throws IOException If the image can't be read from the asset.
+	 */
+	public void buildMapFromPredefined(Asset predefinedMapAsset) throws IOException, IllegalArgumentException {
 		
-	}
-	
-	public void buildMapAndUpload(Collection<Asset> assets) throws IOException {
-		this.buildMapAndUpload(assets, MapTexture2D::extractFileName);
-	}
-	
-	public Map<String, Tile> getTiles() {
-		return this.tiles;
-	}
-	
-	public Tile getTile(String name) {
-		return this.tiles.get(name);
+		PredefinedMap map;
+		
+		try {
+			map = predefinedMapAsset.getMetadataSection(PredefinedMap.META_SECTION);
+			if (map == null) {
+				throw new IllegalArgumentException("Invalid asset, no predefined map section ('map').");
+			}
+		} catch (MetadataParseException e) {
+			throw new IllegalArgumentException("Invalid asset, failed to parse predefined map section ('map').", e);
+		}
+		
+		this.allocFromAsset(predefinedMapAsset);
+		
+		int widthTilesCount = this.getWidth() / map.getTilesWidth();
+		int heightTilesCount = this.getHeight() / map.getTilesHeight();
+		float tileWidth = 1 / (float) widthTilesCount;
+		float tileHeight = 1 / (float) heightTilesCount;
+		
+		for (int x = 0; x < widthTilesCount; ++x) {
+			for (int y = 0; y < heightTilesCount; ++y) {
+				this.newTile(
+						map.getAlias(x + "/" + y),
+						x * tileWidth,
+						y * tileHeight,
+						tileWidth,
+						tileHeight
+				);
+			}
+		}
+		
 	}
 	
 	/**
@@ -222,7 +287,7 @@ public class MapTexture2D extends DynTexture2D {
 		
 		private final float x, y, width, height;
 		
-		public Tile(float x, float y, float width, float height) {
+		private Tile(float x, float y, float width, float height) {
 			this.x = x;
 			this.y = y;
 			this.width = width;
@@ -263,14 +328,14 @@ public class MapTexture2D extends DynTexture2D {
 		private final int framesCount, tickSpeed;
 		private int tickCounter, frameCounter;
 		
-		private RunningAnimation(ByteBuffer data, int x, int y, int width, int height, Animation animation) {
+		private RunningAnimation(ByteBuffer data, int x, int y, int width, int height, AnimationInfo animation) {
 			this.data = data;
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
-			this.framesCount = animation.framesCount;
-			this.tickSpeed = animation.tickSpeed;
+			this.framesCount = animation.getFramesCount();
+			this.tickSpeed = animation.getTickSpeed();
 		}
 		
 		private void tick() {
@@ -303,57 +368,13 @@ public class MapTexture2D extends DynTexture2D {
 	private static class TempImage {
 		private final ByteBuffer data;
 		private final int width, height;
-		private final Animation animation;
-		public TempImage(ByteBuffer data, int width, int height, Animation animation) {
+		private final AnimationInfo animation;
+		public TempImage(ByteBuffer data, int width, int height, AnimationInfo animation) {
 			this.data = data;
 			this.width = width;
 			this.height = height;
 			this.animation = animation;
 		}
-	}
-	
-	private static class Animation {
-		private final int framesCount;
-		private final int tickSpeed;
-		public Animation(int framesCount, int tickSpeed) {
-			this.framesCount = framesCount;
-			this.tickSpeed = tickSpeed;
-		}
-	}
-	
-	private static class AnimationMetadataSection extends MetadataSection<Animation> {
-		
-		private static final AnimationMetadataSection INSTANCE = new AnimationMetadataSection();
-		
-		private AnimationMetadataSection() {
-			super("animation");
-		}
-		
-		@Override
-		public Animation parse(JsonElement json) throws MetadataParseException {
-			
-			if (!json.isJsonObject()) {
-				throw new MetadataParseException("The animation section must be an object.");
-			}
-			
-			JsonObject sectionJson = json.getAsJsonObject();
-			
-			int framesCount = JsonUtils.getInt(sectionJson, "frames_count", 0);
-			
-			if (framesCount <= 0) {
-				throw new JsonParseException("Invalid 'frames_count' <= 0 for animation section.");
-			}
-			
-			int tickSpeed = JsonUtils.getInt(sectionJson, "tick_speed", 0);
-			
-			if (tickSpeed <= 0) {
-				throw new JsonParseException("Invalid 'tick_speed' <= 0 for animation section.");
-			}
-			
-			return new Animation(framesCount, tickSpeed);
-			
-		}
-		
 	}
 
 }
