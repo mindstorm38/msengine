@@ -18,4 +18,9 @@ public abstract class MetadataSection<T> {
 	
 	public abstract T parse(JsonElement json) throws MetadataParseException;
 	
+	@Override
+	public String toString() {
+		return "MetadataSection<" + this.name + ">";
+	}
+	
 }

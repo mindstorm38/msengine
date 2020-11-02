@@ -66,10 +66,17 @@ public class MapTexture2D extends DynTexture2D {
 		return this.tiles.get(name);
 	}
 	
-	public Tile newTile(String name, float x, float y, float w, float h) {
+	public Tile newTile(String name, float x, float y, float w, float h, String alias) {
 		Tile tile = this.new Tile(x, y, w, h);
 		this.tiles.put(name, tile);
+		if (alias != null) {
+			this.tiles.put(alias, tile);
+		}
 		return tile;
+	}
+	
+	public Tile newTile(String name, float x, float y, float w, float h) {
+		return this.newTile(name, x, y, w, h, null);
 	}
 	
 	public void clearTiles() {
@@ -234,19 +241,21 @@ public class MapTexture2D extends DynTexture2D {
 		
 		this.allocFromAsset(predefinedMapAsset);
 		
-		int widthTilesCount = this.getWidth() / map.getTilesWidth();
-		int heightTilesCount = this.getHeight() / map.getTilesHeight();
+		int widthTilesCount = this.getWidth() / map.getTileWidth();
+		int heightTilesCount = this.getHeight() / map.getTileHeight();
 		float tileWidth = 1 / (float) widthTilesCount;
 		float tileHeight = 1 / (float) heightTilesCount;
 		
 		for (int x = 0; x < widthTilesCount; ++x) {
 			for (int y = 0; y < heightTilesCount; ++y) {
+				String name = x + "/" + y;
 				this.newTile(
-						map.getAlias(x + "/" + y),
+						name,
 						x * tileWidth,
 						y * tileHeight,
 						tileWidth,
-						tileHeight
+						tileHeight,
+						map.getAlias(name)
 				);
 			}
 		}
