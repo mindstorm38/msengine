@@ -30,6 +30,9 @@ public class CachedMetadata implements Metadata {
 		if (this.cachedJson == null) {
 			try (JsonReader reader = new JsonReader(new InputStreamReader(this.asset.openStreamExcept()))) {
 				this.cachedJson = GSON.fromJson(reader, JsonObject.class);
+				if (this.cachedJson == null) {
+					this.cachedJson = new MetadataParseException("Failed to parse json file, not an object.");
+				}
 			} catch (IOException e) {
 				this.cachedJson = new MetadataParseException("Failed to parse json file.", e);
 			}
