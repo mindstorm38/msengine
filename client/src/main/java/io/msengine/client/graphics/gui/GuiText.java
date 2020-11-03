@@ -30,6 +30,7 @@ public class GuiText extends GuiObject {
 	protected int[] codePoints;
 	protected float[] codePointsOffsets;
 	protected float textWidth;
+	protected boolean ignoreDescent;
 	protected Map<Integer, Effect> effects;
 	
 	public GuiText(FontFamily family, float size, String text) {
@@ -110,8 +111,15 @@ public class GuiText extends GuiObject {
 	
 	@Override
 	public float getAutoHeight() {
-		// System.out.println("auto height for text: " + this + " / " + this.font);
-		return this.font == null ? 0 : this.font.getSize();
+		if (this.font == null) {
+			return 0;
+		} else {
+			float height = this.font.getSize();
+			if (this.ignoreDescent) {
+				height += this.font.getDescent();
+			}
+			return height;
+		}
 	}
 	
 	// Text and font //
@@ -160,6 +168,22 @@ public class GuiText extends GuiObject {
 			index = this.codePointsOffsets.length - 1;
 		}
 		return this.codePointsOffsets[index];
+	}
+	
+	// Ignore descent //
+	
+	/**
+	 * Set the "ignore descent" flag that can be used to ignore the font
+	 * descent (numbers of pixels below the baseline) when used automatic
+	 * height for this text. This is useful in some cases when you want
+	 * to have a pretty alignement from borders of another object.
+	 * @param ignoreDescent True to ignore font descent in auto height.
+	 */
+	public void setIgnoreDescent(boolean ignoreDescent) {
+		if (this.ignoreDescent != ignoreDescent) {
+			this.ignoreDescent = ignoreDescent;
+			this.updateYOffset();
+		}
 	}
 	
 	// Effects //
