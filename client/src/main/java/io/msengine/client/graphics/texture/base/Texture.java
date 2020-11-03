@@ -182,6 +182,28 @@ public class Texture implements AutoCloseable, SamplerBase {
 		glTexParameterf(this.target, GL46.GL_TEXTURE_MAX_ANISOTROPY, maxAnisotropy);
 	}
 	
+	// Level parameters //
+	
+	public int getLevelWidth(int level) {
+		this.checkBound();
+		return glGetTexLevelParameteri(this.target, level, GL11.GL_TEXTURE_WIDTH);
+	}
+	
+	public int getLevelHeight(int level) {
+		this.checkBound();
+		return glGetTexLevelParameteri(this.target, level, GL11.GL_TEXTURE_HEIGHT);
+	}
+	
+	public int getLevelDepth(int level) {
+		this.checkBound();
+		return glGetTexLevelParameteri(this.target, level, GL12.GL_TEXTURE_DEPTH);
+	}
+	
+	public int getLevelInternalFormat(int level) {
+		this.checkBound();
+		return glGetTexLevelParameteri(this.target, level, GL11.GL_TEXTURE_INTERNAL_FORMAT);
+	}
+	
 	// Close //
 	
 	@Override

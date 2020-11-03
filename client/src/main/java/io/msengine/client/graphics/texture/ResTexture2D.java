@@ -46,21 +46,33 @@ public class ResTexture2D extends Texture2D {
 	
 	// Last size //
 	
+	/**
+	 * @return Width of the last uploaded level 0.
+	 */
 	public int getWidth() {
 		return this.width;
 	}
 	
+	/**
+	 * @return Height of the last uploaded level 0.
+	 */
 	public int getHeight() {
 		return this.height;
 	}
 	
 	// Upload //
 	
-	public void uploadImageRaw(ByteBuffer buf, int dataFormat, int dataType, int width, int height, int internalFormat) {
+	public void uploadImageRaw(ByteBuffer buf, int level, int dataFormat, int dataType, int width, int height, int internalFormat) {
 		this.checkBound();
-		this.width = width;
-		this.height = height;
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, dataType, buf);
+		if (level == 0) {
+			this.width = width;
+			this.height = height;
+		}
+		glTexImage2D(GL_TEXTURE_2D, level, internalFormat, width, height, 0, dataFormat, dataType, buf);
+	}
+	
+	public void uploadImageRaw(ByteBuffer buf, int dataFormat, int dataType, int width, int height, int internalFormat) {
+		this.uploadImageRaw(buf, 0, dataFormat, dataType, width, height, internalFormat);
 	}
 	
 	public void uploadImageRaw(ByteBuffer buf, int width, int height) {

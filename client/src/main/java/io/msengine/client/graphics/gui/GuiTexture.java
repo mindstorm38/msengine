@@ -3,6 +3,8 @@ package io.msengine.client.graphics.gui;
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
 import io.msengine.client.graphics.gui.render.GuiProgramMain;
+import io.msengine.client.graphics.texture.DynTexture2D;
+import io.msengine.client.graphics.texture.ResTexture2D;
 import io.msengine.client.graphics.texture.base.Texture;
 import io.msengine.client.util.BufferAlloc;
 
@@ -13,10 +15,9 @@ public class GuiTexture extends GuiObject {
 	protected boolean updateTexCoord;
 	
 	protected int textureName;
-	protected float textureX;
-	protected float textureY;
-	protected float textureWidth;
-	protected float textureHeight;
+	protected float texCoordX, texCoordY;
+	protected float texCoordW, texCoordH;
+	protected int autoWidth, autoHeight;
 	
 	@Override
 	protected void init() {
@@ -57,6 +58,16 @@ public class GuiTexture extends GuiObject {
 	
 	@Override
 	protected void update() { }
+	
+	@Override
+	public float getAutoWidth() {
+		return this.autoWidth;
+	}
+	
+	@Override
+	public float getAutoHeight() {
+		return this.autoHeight;
+	}
 	
 	@Override
 	public void onRealWidthChanged() {
@@ -104,10 +115,10 @@ public class GuiTexture extends GuiObject {
 		
 		BufferAlloc.allocStackFloat(8, buf -> {
 			
-			float x = this.textureX;
-			float y = this.textureY;
-			float w = this.textureWidth;
-			float h = this.textureHeight;
+			float x = this.texCoordX;
+			float y = this.texCoordY;
+			float w = this.texCoordW;
+			float h = this.texCoordH;
 			
 			buf.put(x).put(y);
 			buf.put(x).put(y + h);
@@ -123,20 +134,42 @@ public class GuiTexture extends GuiObject {
 		
 	}
 	
+	/**
+	 * Set the raw OpenGL texture name to use for this texture element.
+	 * @param name OpenGL texture name.
+	 */
 	public void setTexture(int name) {
 		this.textureName = name;
 	}
 	
+	/**
+	 * Set the internal texture name from a {@link Texture} wrapper.
+	 * If the wrapper is an instance of {@link DynTexture2D} or a
+	 * {@link ResTexture2D} then the auto width and height of this
+	 * texture are set according to <code>getWidth()</code> and
+	 * <code>getHeight()</code> if the given texture.
+	 * @param texture The texture wrapper (must be internally valid).
+	 */
 	public void setTexture(Texture texture) {
+		
 		texture.checkValid();
 		this.setTexture(texture.getName());
+		
+		if (texture instanceof DynTexture2D) {
+			this.autoWidth = ((DynTexture2D) texture).getWidth();
+			this.autoHeight = ((DynTexture2D) texture).getHeight();
+		} else if (texture instanceof ResTexture2D) {
+			this.autoWidth = ((ResTexture2D) texture).getWidth();
+			this.autoHeight = ((ResTexture2D) texture).getHeight();
+		}
+		
 	}
 	
 	public void setTextureCoords(float x, float y, float width, float height) {
-		this.textureX = x;
-		this.textureY = y;
-		this.textureWidth = width;
-		this.textureHeight = height;
+		this.texCoordX = x;
+		this.texCoordY = y;
+		this.texCoordW = width;
+		this.texCoordH = height;
 		this.updateTexCoord = true;
 	}
 	
@@ -158,8 +191,8 @@ public class GuiTexture extends GuiObject {
 	protected void buildToString(StringBuilder builder) {
 		super.buildToString(builder);
 		builder.append(", tex=").append(this.textureName);
-		builder.append(", texPos=").append(this.textureX).append('/').append(this.textureY);
-		builder.append(", texSize=").append(this.textureWidth).append('/').append(this.textureHeight);
+		builder.append(", texCoord=").append(this.texCoordX).append('/').append(this.texCoordY);
+		builder.append(", texSize=").append(this.texCoordW).append('/').append(this.texCoordH);
 	}
 	
 }

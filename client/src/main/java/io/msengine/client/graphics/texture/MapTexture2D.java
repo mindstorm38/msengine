@@ -6,7 +6,6 @@ import io.msengine.client.graphics.texture.metadata.PredefinedMap;
 import io.msengine.client.graphics.util.ImageUtils;
 import io.msengine.common.asset.Asset;
 import io.msengine.common.asset.metadata.MetadataParseException;
-import org.lwjgl.system.MemoryUtil;
 
 import java.io.Closeable;
 import java.io.IOException;

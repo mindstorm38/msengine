@@ -79,16 +79,16 @@ public class GuiTextureMosaic extends GuiTexture {
 	
 	private void updateTexCoordX() {
 		
-		this.textureWidth = this.getRealWidth() / this.tileWidth;
-		this.textureX = (this.textureWidth / -2f) + this.mosaicOffsetX;
+		this.texCoordW = this.getRealWidth() / this.tileWidth;
+		this.texCoordX = (this.texCoordW / -2f) + this.mosaicOffsetX;
 		this.updateTexCoord = true;
 		
 	}
 	
 	private void updateTexCoordY() {
 		
-		this.textureHeight = this.getRealHeight() / this.tileHeight;
-		this.textureY = (this.textureHeight / -2f) + this.mosaicOffsetY;
+		this.texCoordH = this.getRealHeight() / this.tileHeight;
+		this.texCoordY = (this.texCoordH / -2f) + this.mosaicOffsetY;
 		this.updateTexCoord = true;
 		
 	}
