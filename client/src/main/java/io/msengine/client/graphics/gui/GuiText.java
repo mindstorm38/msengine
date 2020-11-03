@@ -122,6 +122,13 @@ public class GuiText extends GuiObject {
 	
 	protected void onFontChanged() { }
 	
+	public void removeFont() {
+		this.font = null;
+		this.updateBuffers = true;
+		this.updateYOffset();
+		this.onFontChanged();
+	}
+	
 	public void setFont(Font font) {
 		if (!font.isValid()) {
 			throw new IllegalArgumentException("The given font is no longer valid.");
