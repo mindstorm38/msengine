@@ -21,7 +21,6 @@ public class TrueTypeFont extends Font {
 	
 	private final float scale;
 	private final float lineGap;
-	
 	private final List<GlyphPage> pages = new ArrayList<>();
 	
 	TrueTypeFont(TrueTypeFontFamily family, float size, float scale, float ascent, float descent, float lineGap) {
@@ -186,7 +185,7 @@ public class TrueTypeFont extends Font {
 			return null;
 		}
 		
-		FontTexture2D tex = new FontTexture2D(pixels, bitmapSize, bitmapHeight);
+		FontTexture2D tex = new FontTexture2D(this.getFamily().getCustomTextureSetup(), pixels, bitmapSize, bitmapHeight);
 		MemoryUtil.memFree(pixels);
 		
 		Glyph[] glyphs = new Glyph[charData.remaining()];

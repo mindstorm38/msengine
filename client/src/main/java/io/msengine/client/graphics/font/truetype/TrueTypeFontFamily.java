@@ -2,6 +2,8 @@ package io.msengine.client.graphics.font.truetype;
 
 import io.msengine.client.graphics.font.Font;
 import io.msengine.client.graphics.font.FontFamily;
+import io.msengine.client.graphics.font.FontTexture2D;
+import io.msengine.client.graphics.texture.base.TextureSetup;
 import io.msengine.client.util.BufferAlloc;
 import io.msengine.common.asset.Asset;
 import org.lwjgl.stb.STBTTFontinfo;
@@ -29,6 +31,8 @@ public class TrueTypeFontFamily extends FontFamily {
 	private final int ascent;
 	private final int descent;
 	private final int lineGap;
+	
+	private TextureSetup customTextureSetup;
 	
 	public TrueTypeFontFamily(ByteBuffer data) throws IOException {
 		
@@ -66,12 +70,20 @@ public class TrueTypeFontFamily extends FontFamily {
 		this(asset.openStreamExcept());
 	}
 	
+	public void setCustomGlyphPageSetup(TextureSetup setup) {
+		this.customTextureSetup = setup;
+	}
+	
 	ByteBuffer getData() {
 		return this.data;
 	}
 	
 	STBTTFontinfo getInfo() {
 		return this.info;
+	}
+	
+	TextureSetup getCustomTextureSetup() {
+		return this.customTextureSetup == null ? FontTexture2D.SETUP_FONT_DEFAULT : this.customTextureSetup;
 	}
 	
 	@Override
