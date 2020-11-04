@@ -1,20 +1,25 @@
 package io.msengine.common.util.phys;
 
-public class AxisAlignedBB {
+public class AABB3d {
 
 	private double minX, minY, minZ;
 	private double maxX, maxY, maxZ;
 	
-	public AxisAlignedBB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+	public AABB3d(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		this.setPosition(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
-	public AxisAlignedBB() {
-		this.setPosition(0, 0, 0, 0, 0, 0);
+	public AABB3d() {
+		this.setPositionUnsafe(0, 0, 0, 0, 0, 0);
 	}
 	
-	public AxisAlignedBB(AxisAlignedBB bb) {
-		this.setPosition(bb);
+	public AABB3d(AABB3d bb) {
+		this.minX = bb.minX;
+		this.minY = bb.minY;
+		this.minZ = bb.minZ;
+		this.maxX = bb.maxX;
+		this.maxY = bb.maxY;
+		this.maxZ = bb.maxZ;
 	}
 	
 	public double getMinX() {
@@ -77,7 +82,7 @@ public class AxisAlignedBB {
 		
 	}
 	
-	public void setPosition(AxisAlignedBB bb) {
+	public void setPosition(AABB3d bb) {
 		this.setPositionUnsafe(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
 	}
 	
@@ -138,11 +143,11 @@ public class AxisAlignedBB {
 		return this.minX < x2 && this.maxX > x1 && this.minY < y2 && this.maxY > y1 && this.minZ < z2 && this.maxZ > z1;
 	}
 	
-	public boolean intersects(AxisAlignedBB other) {
+	public boolean intersects(AABB3d other) {
 		return this.intersects(other.minX, other.minY, other.minZ, other.maxX, other.maxY, other.maxZ);
 	}
 	
-	public double calcOffsetX(AxisAlignedBB other, double offsetX) {
+	public double calcOffsetX(AABB3d other, double offsetX) {
 		
 		if (other.maxY > this.minY && other.minY < this.maxY && other.maxZ > this.minZ && other.minZ < this.maxZ) {
 			
@@ -170,7 +175,7 @@ public class AxisAlignedBB {
 		
 	}
 	
-	public double calcOffsetY(AxisAlignedBB other, double offsetY) {
+	public double calcOffsetY(AABB3d other, double offsetY) {
 		
 		if (other.maxX > this.minX && other.minX < this.maxX && other.maxZ > this.minZ && other.minZ < this.maxZ) {
 			
@@ -198,7 +203,7 @@ public class AxisAlignedBB {
 		
 	}
 	
-	public double calcOffsetZ(AxisAlignedBB other, double offsetZ) {
+	public double calcOffsetZ(AABB3d other, double offsetZ) {
 		
 		if (other.maxX > this.minX && other.minX < this.maxX && other.maxY > this.minY && other.minY < this.maxY) {
 			
