@@ -62,11 +62,11 @@ public final class MathHelper {
 		return (value < min) ? min : (value > max) ? max : value;
     }
     
-    public static float lerp(float to, float from, float alpha) {
+    public static float lerp(float from, float to, float alpha) {
 		return (to == from) ? to : ((to - from) * alpha) + from;
 	}
 	
-	public static double lerp(double to, double from, float alpha) {
+	public static double lerp(double from, double to, float alpha) {
 		return (to == from) ? to : (( to - from) * alpha) + from;
 	}
 	
