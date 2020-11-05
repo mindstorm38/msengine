@@ -160,6 +160,16 @@ public abstract class Window implements AutoCloseable {
         }
     }
     
+    public int getKey(int key) {
+        // Id is not checked to minimize overhead
+        return glfwGetKey(this.id, key);
+    }
+    
+    public int getMouseButton(int button) {
+        // Id is not checked to minimize overhead
+        return glfwGetMouseButton(this.id, button);
+    }
+    
     public void setFullscreen(Monitor monitor) {
         
         GLFWVidMode vidMode = monitor.getVideoMode();
