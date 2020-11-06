@@ -44,8 +44,9 @@ public class GuiStdProgramBase extends StdShaderProgram implements GuiStdProgram
 	}
 	
 	@Override
-	public void setModelMatrix(Matrix4f mat) {
+	public void uploadModelMatrix(Matrix4f mat) {
 		this.modelMatrixUniform.set(mat);
+		this.modelMatrixUniform.upload();
 	}
 	
 }

@@ -12,7 +12,7 @@ public class SamplerUniform extends Uniform {
 	}
 	
 	@Override
-	public void upload() {
+	protected void innerUpload() {
 		GL20.glUniform1i(this.location, this.unit);
 	}
 	

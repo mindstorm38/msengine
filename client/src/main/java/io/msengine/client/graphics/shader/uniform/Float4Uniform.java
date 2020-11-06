@@ -30,7 +30,7 @@ public class Float4Uniform extends FloatBufferUniform {
 	}
 	
 	@Override
-	public void upload() {
+	protected void innerUpload() {
 		GL20.glUniform4fv(this.location, this.buffer);
 	}
 	

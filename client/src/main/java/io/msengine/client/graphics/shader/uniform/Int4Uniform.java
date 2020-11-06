@@ -25,7 +25,7 @@ public class Int4Uniform extends IntBufferUniform {
 	}
 	
 	@Override
-	public void upload() {
+	protected void innerUpload() {
 		GL20.glUniform4iv(this.location, this.buffer);
 	}
 	

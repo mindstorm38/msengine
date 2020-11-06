@@ -6,7 +6,6 @@ public interface GuiStdProgram {
 	
 	/**
 	 * Set the projection matrix for the vertex transformation.
-	 * If the program is in use, the matrix must also be uploaded.
 	 * @param mat The projection matrix.
 	 */
 	void setProjectionMatrix(Matrix4f mat);
@@ -19,10 +18,9 @@ public interface GuiStdProgram {
 	void uploadProjectionMatrix();
 	
 	/**
-	 * Set and upload <i>(if the program is currently used)</i> the model matrix
-	 * for the vertex transformation.
+	 * Set and upload the model matrix for the vertex transformation.
 	 * @param mat The model matrix.
 	 */
-	void setModelMatrix(Matrix4f mat);
+	void uploadModelMatrix(Matrix4f mat);
 
 }

@@ -16,7 +16,7 @@ public class FloatMatrix3Uniform extends FloatBufferUniform {
 	}
 	
 	@Override
-	public void upload() {
+	protected void innerUpload() {
 		GL20.glUniformMatrix3fv(this.location, false, this.buffer);
 	}
 	

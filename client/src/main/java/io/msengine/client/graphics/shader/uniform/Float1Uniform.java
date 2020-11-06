@@ -12,7 +12,7 @@ public class Float1Uniform extends Uniform {
 	}
 	
 	@Override
-	public void upload() {
+	protected void innerUpload() {
 		GL20.glUniform1f(this.location, this.x);
 	}
 	

@@ -2,7 +2,6 @@ package io.msengine.client.graphics.shader;
 
 import io.msengine.client.graphics.shader.uniform.SamplerUniform;
 import io.msengine.client.graphics.shader.uniform.Uniform;
-import io.msengine.common.util.Color;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +27,7 @@ public class ShaderProgram implements AutoCloseable {
     
     private Set<Shader> shaders = new HashSet<>();
     private int name;
+    private boolean used;
     
     private List<ShaderComponent> components;
 
@@ -58,6 +58,7 @@ public class ShaderProgram implements AutoCloseable {
     }
     
     /**
+     * <b>This method is slow, do not use frequently.</b>
      * @return True if this program is currently used in the render pipeline.
      */
     public boolean isUsed() {
@@ -223,7 +224,7 @@ public class ShaderProgram implements AutoCloseable {
     // Using //
     
     public void use() {
-        this.checkLinked();
+        // this.checkLinked();
         glUseProgram(this.name);
     }
     
@@ -259,6 +260,11 @@ public class ShaderProgram implements AutoCloseable {
     @Override
     public int hashCode() {
         return this.name;
+    }
+    
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "<name=" + this.name + ">";
     }
     
     // Attrib utils //

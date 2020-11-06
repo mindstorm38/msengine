@@ -39,8 +39,10 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	
 	private final Map<GuiProgramType<?>, ProgramTracker> programs = new HashMap<>();
 	private final List<GuiStdProgram> stdPrograms = new ArrayList<>();
+	
 	private GuiProgramType<?> currentProgramType;
 	private ShaderProgram currentProgram;
+	private GuiStdProgram currentStdProgram;
 	
 	//private GuiProgramMain program;
 	private GuiScene currentScene;
@@ -149,6 +151,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 				ShaderProgram.release();
 				this.currentProgramType = null;
 				this.currentProgram = null;
+				this.currentStdProgram = null;
 			}
 			
 			this.unmask();
@@ -294,9 +297,11 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	 */
 	private static class ProgramTracker {
 		private final ShaderProgram program;
+		private final GuiStdProgram stdProgram; // Only set when the program is GUI-STD compatible
 		private int uses = 1;
 		private ProgramTracker(ShaderProgram program) {
 			this.program = program;
+			this.stdProgram = (program instanceof GuiStdProgram) ? ((GuiStdProgram) program) : null;
 		}
 	}
 	
@@ -323,11 +328,9 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 			tracker.program.link();
 			this.programs.put(type, tracker);
 			
-			if (tracker.program instanceof GuiStdProgram) {
-				GuiStdProgram stdProgram = (GuiStdProgram) tracker.program;
-				stdProgram.setProjectionMatrix(this.projectionMatrix);
-				stdProgram.setModelMatrix(this.model.current());
-				this.stdPrograms.add(stdProgram);
+			if (tracker.stdProgram != null) {
+				tracker.stdProgram.setProjectionMatrix(this.projectionMatrix);
+				this.stdPrograms.add(tracker.stdProgram);
 			}
 			
 		} else {
@@ -394,11 +397,12 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 		}
 		ShaderProgram program = tracker.program;
 		program.use();
-		if (program instanceof GuiStdProgram) {
-			((GuiStdProgram) program).uploadProjectionMatrix();
+		if (tracker.stdProgram != null) {
+			tracker.stdProgram.uploadProjectionMatrix();
 		}
 		this.currentProgramType = type;
 		this.currentProgram = program;
+		this.currentStdProgram = tracker.stdProgram;
 		return (P) program;
 	}
 	
@@ -512,8 +516,10 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	
 	@Override
 	public void modelApply(Matrix4f model) {
-		this.stdPrograms.forEach(p -> p.setModelMatrix(model));
-		// this.program.setModelMatrix(model);
+		if (this.currentStdProgram != null) {
+			this.currentStdProgram.uploadModelMatrix(model);
+			// this.stdPrograms.forEach(p -> p.uploadModelMatrix(model));
+		}
 	}
 	
 }

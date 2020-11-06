@@ -16,7 +16,7 @@ public class Int1Uniform extends Uniform {
 	}
 	
 	@Override
-	public void upload() {
+	protected void innerUpload() {
 		GL20.glUniform1i(this.location, this.x);
 	}
 	

@@ -23,25 +23,35 @@ public abstract class Uniform extends ShaderComponent {
 		return this.location;
 	}
 	
+	/**
+	 * No longer use, too slow.
+	 */
+	@Deprecated
 	public void uploadIfUsed() {
 		if (this.isProgramUsed()) {
-			this.upload();
+			this.innerUpload();
 			this.changed = false;
 		}
 	}
 	
 	public void uploadIfChanged() {
 		if (this.changed) {
-			this.uploadIfUsed();
+			this.upload();
+			// this.uploadIfUsed();
 		}
+	}
+	
+	public void upload() {
+		this.innerUpload();
+		this.changed = false;
 	}
 	
 	protected void setChanged() {
 		this.changed = true;
-		this.uploadIfUsed();
+		// this.uploadIfUsed();
 	}
 	
-	public abstract void upload();
+	protected abstract void innerUpload();
 	
 	@Override
 	public void close() { }

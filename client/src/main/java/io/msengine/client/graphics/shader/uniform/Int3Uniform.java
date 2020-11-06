@@ -19,7 +19,7 @@ public class Int3Uniform extends Uniform {
 	}
 	
 	@Override
-	public void upload() {
+	protected void innerUpload() {
 		GL20.glUniform3f(this.location, this.x, this.y, this.z);
 	}
 	

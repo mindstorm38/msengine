@@ -138,6 +138,9 @@ public class Texture implements AutoCloseable, SamplerBase {
 		return this.name != 0 && glGetInteger(this.targetVar) == this.name;
 	}
 	
+	/**
+	 * <b>This method is slow, do not call it frequently.</b>
+	 */
 	public void checkBound() {
 		if (!this.isBound()) {
 			throw new IllegalStateException("This texture must be bound.");
