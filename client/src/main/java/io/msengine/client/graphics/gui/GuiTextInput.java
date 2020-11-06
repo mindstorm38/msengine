@@ -30,9 +30,11 @@ public class GuiTextInput extends GuiParent implements
 	private final StringBuilder builder = new StringBuilder();
 	
 	private int cursorIndex;
-	private int cursorTick;
-	private int cursorBlinkDelay = 10;
 	private float cursorWidth = 1;
+	
+	// In ms
+	private long cursorLastBlink;
+	private int cursorBlinkDelay = 500;
 	
 	private int selectionIndex;
 	private float scrollPadding = 10;
@@ -82,7 +84,23 @@ public class GuiTextInput extends GuiParent implements
 	
 	@Override
 	protected void update() {
+		
 		super.update();
+		
+		if (this.active) {
+			
+			long lastBlink = this.cursorLastBlink;
+			long current = System.currentTimeMillis();
+			
+			if (lastBlink == 0) {
+				this.cursorLastBlink = current;
+			} else if (current - lastBlink >= this.cursorBlinkDelay) {
+				this.cursorLastBlink = current;
+				this.cursor.setVisible(!this.cursor.isVisible());
+			}
+			
+		}
+		
 	}
 	
 	@Override
@@ -133,7 +151,7 @@ public class GuiTextInput extends GuiParent implements
 			//System.out.println("New active: " + active);
 			this.active = active;
 			if (active) {
-				this.cursorTick = 0;
+				this.cursorLastBlink = 0;
 				this.cursor.setVisible(true);
 				this.setCursorPosition(this.builder.length(), true, false);
 			} else {
@@ -307,7 +325,7 @@ public class GuiTextInput extends GuiParent implements
 	public void setCursorPosition(int index, boolean updateCursor, boolean select) {
 		if (this.cursorIndex != index) {
 			this.cursorIndex = index;
-			this.cursorTick = 0;
+			this.cursorLastBlink = 0;
 			if (!select) {
 				this.resetSelectionToCursor(false);
 			}
@@ -331,8 +349,10 @@ public class GuiTextInput extends GuiParent implements
 		if (this.selectionIndex != this.cursorIndex) {
 			if (this.cursorIndex < this.selectionIndex) {
 				this.builder.delete(this.cursorIndex, this.selectionIndex);
+				this.resetSelectionToCursor(true);
 			} else {
 				this.builder.delete(this.selectionIndex, this.cursorIndex);
+				this.setCursorPosition(this.selectionIndex, true, false);
 			}
 			if (updateText) {
 				this.updateText();

@@ -51,6 +51,7 @@ public class GuiTestScene extends GuiScene {
 		this.jetbrainsText = new GuiText("while ((read = stream.read(buf)) != -1) {}");
 		// this.jetbrainsText.setPos(30, 500);
 		this.jetbrainsText.setAnchor(1, 1);
+		this.jetbrainsText.setIgnoreDescent(true);
 		this.addChild(this.jetbrainsText);
 		
 		this.ubuntuText = new GuiText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed nisl commodo, porttitor libero ut, efficitur erat.");
