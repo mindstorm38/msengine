@@ -158,12 +158,34 @@ public abstract class BufferArray implements AutoCloseable {
 	public abstract void draw(int primitiveType);
 	
 	/**
+	 * Draw buffer elements in specified range, this range is not checked
+	 * against interne buffer indices or vertices count.
+	 * @param primitiveType OpenGL primitive type.
+	 * @param offset The first element (indices or vertices) to render.
+	 * @param count The number of elements to render.
+	 */
+	public abstract void draw(int primitiveType, int offset, int count);
+	
+	/**
 	 * Draw buffer elements using the default primitive type (triangle).
 	 * @see #draw(int)
 	 * @see #DEFAULT_PRIMITIVE_TYPE
 	 */
 	public void draw() {
 		this.draw(DEFAULT_PRIMITIVE_TYPE);
+	}
+	
+	/**
+	 * Draw buffer elements in specified range, this range is not checked
+	 * against interne buffer indices or vertices count. This method
+	 * use the default primitive type (triangle).
+	 * @param offset The first element (indices or vertices) to render.
+	 * @param count The number of elements to render.
+	 * @see #draw(int, int, int)
+	 * @see #DEFAULT_PRIMITIVE_TYPE
+	 */
+	public void draw(int offset, int count) {
+		this.draw(DEFAULT_PRIMITIVE_TYPE, offset, count);
 	}
 	
 	@Override

@@ -83,6 +83,15 @@ public class IndexedBufferArray extends BufferArray {
 	}
 	
 	@Override
+	public void draw(int primitiveType, int offset, int count) {
+		if (this.indicesCount != 0) {
+			this.bindVao();
+			glDrawElements(primitiveType, count, GL_UNSIGNED_INT, offset);
+			unbindVao();
+		}
+	}
+	
+	@Override
 	public void close() {
 		
 		super.close();
