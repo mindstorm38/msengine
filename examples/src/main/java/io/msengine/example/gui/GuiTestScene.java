@@ -46,7 +46,7 @@ public class GuiTestScene extends GuiScene {
 		this.exampleTex = new GuiTexture();
 		this.exampleTex.setPos(30, 30);
 		this.exampleTex.setSize(200, 200);
-		//this.addChild(this.exampleTex);
+		this.addChild(this.exampleTex);
 		
 		this.jetbrainsText = new GuiText("while ((read = stream.read(buf)) != -1) {}");
 		// this.jetbrainsText.setPos(30, 500);

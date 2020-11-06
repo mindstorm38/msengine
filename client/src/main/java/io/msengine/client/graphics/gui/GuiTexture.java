@@ -11,7 +11,7 @@ import io.msengine.client.util.BufferAlloc;
 public class GuiTexture extends GuiObject {
 	
 	protected GuiBufferArray buf;
-	protected boolean updateVertices;
+	// protected boolean updateVertices;
 	protected boolean updateTexCoord;
 	
 	protected int textureName;
@@ -38,9 +38,9 @@ public class GuiTexture extends GuiObject {
 		if (this.textureName == 0)
 			return;
 		
-		if (this.updateVertices) {
+		/*if (this.updateVertices) {
 			this.updateVerticesBuffer();
-		}
+		}*/
 		
 		if (this.updateTexCoord) {
 			this.updateTexCoordsBuffer();
@@ -48,7 +48,7 @@ public class GuiTexture extends GuiObject {
 		
 		GuiProgramMain program = this.useProgram(GuiProgramMain.TYPE);
 		
-		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
+		this.model.push().translate(this.xIntOffset, this.yIntOffset).scale(this.realWidth, this.realHeight).apply();
 		program.setTextureUnitAndBind(0, this.textureName);
 		this.buf.draw();
 		program.resetTextureUnitAndUnbind();
@@ -72,19 +72,19 @@ public class GuiTexture extends GuiObject {
 	@Override
 	public void onRealWidthChanged() {
 		super.onRealWidthChanged();
-		this.updateVertices = true;
+		//this.updateVertices = true;
 	}
 	
 	@Override
 	public void onRealHeightChanged() {
 		super.onRealHeightChanged();
-		this.updateVertices = true;
+		//this.updateVertices = true;
 	}
 	
 	private void initBuffers() {
 		
 		this.buf.bindVao();
-		this.buf.allocateVboData(this.buf.getPositionIndex(), 8 << 2, BufferUsage.DYNAMIC_DRAW);
+		// this.buf.allocateVboData(this.buf.getPositionIndex(), 8 << 2, BufferUsage.DYNAMIC_DRAW);
 		this.buf.allocateVboData(this.buf.getTexCoordBufIdx(), 8 << 2, BufferUsage.DYNAMIC_DRAW);
 		
 		BufferAlloc.allocStackInt(this.buf.setIndicesCount(6), buf -> {
@@ -93,15 +93,22 @@ public class GuiTexture extends GuiObject {
 			this.buf.uploadIboData(buf, BufferUsage.STATIC_DRAW);
 		});
 		
-		this.updateVerticesBuffer();
+		BufferAlloc.allocStackFloat(8, buf -> {
+			GuiCommon.putSquareVertices(buf, 1, 1);
+			buf.flip();
+			this.buf.bindVao();
+			this.buf.uploadVboData(this.buf.getPositionIndex(), buf, BufferUsage.STATIC_DRAW);
+		});
+		
+		//this.updateVerticesBuffer();
 		this.updateTexCoordsBuffer();
 		
 	}
 	
-	private void updateVerticesBuffer() {
+	/*private void updateVerticesBuffer() {
 		
 		BufferAlloc.allocStackFloat(8, buf -> {
-			GuiCommon.putSquareVertices(buf, this.getRealWidth(), this.getRealHeight());
+			GuiCommon.putSquareVertices(buf, 1, 1);
 			buf.flip();
 			this.buf.bindVao();
 			this.buf.uploadVboSubData(this.buf.getPositionIndex(), 0, buf);
@@ -109,7 +116,7 @@ public class GuiTexture extends GuiObject {
 		
 		this.updateVertices = false;
 		
-	}
+	}*/
 	
 	private void updateTexCoordsBuffer() {
 		
