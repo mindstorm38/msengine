@@ -1,6 +1,6 @@
 package io.msengine.client.graphics.gui;
 
-import io.msengine.client.graphics.gui.event.GuiTextInputChangedEvent;
+import io.msengine.client.graphics.gui.event.GuiEvent;
 import io.msengine.client.window.Window;
 import io.msengine.client.window.listener.WindowCharEventListener;
 import io.msengine.client.window.listener.WindowKeyEventListener;
@@ -185,13 +185,13 @@ public class GuiTextInput extends GuiParent implements
 		this.builder.delete(0, this.builder.length());
 		this.builder.append(text);
 		this.text.setText(text);
-		this.fireEvent(new GuiTextInputChangedEvent(text));
+		this.fireEvent(new ChangedEvent(text));
 	}
 	
 	public void updateText() {
 		String text = this.getInputText();
 		this.text.setText(text);
-		this.fireEvent(new GuiTextInputChangedEvent(text));
+		this.fireEvent(new ChangedEvent(text));
 	}
 	
 	// Internal utilities //
@@ -390,6 +390,22 @@ public class GuiTextInput extends GuiParent implements
 		protected void onFontChanged() {
 			super.onFontChanged();
 			GuiTextInput.this.onTextSizeChanged();
+		}
+		
+	}
+	
+	// Event class //
+	
+	public static class ChangedEvent extends GuiEvent {
+		
+		private final String value;
+		
+		public ChangedEvent(String value) {
+			this.value = value;
+		}
+		
+		public String getValue() {
+			return this.value;
 		}
 		
 	}
