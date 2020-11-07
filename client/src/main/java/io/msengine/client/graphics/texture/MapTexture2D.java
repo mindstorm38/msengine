@@ -65,7 +65,7 @@ public class MapTexture2D extends DynTexture2D {
 		return this.tiles.get(name);
 	}
 	
-	public Tile newTile(String name, float x, float y, float w, float h, String alias) {
+	protected Tile newTile(String name, float x, float y, float w, float h, String alias) {
 		Tile tile = this.new Tile(x, y, w, h);
 		this.tiles.put(name, tile);
 		if (alias != null) {
@@ -76,6 +76,12 @@ public class MapTexture2D extends DynTexture2D {
 	
 	public Tile newTile(String name, float x, float y, float w, float h) {
 		return this.newTile(name, x, y, w, h, null);
+	}
+	
+	public Tile newPixelTile(String name, int x, int y, int w, int h) {
+		float width = this.getWidth();
+		float height = this.getHeight();
+		return this.newTile(name, (float) x / width, (float) y / height, (float) w / width, (float) h / height);
 	}
 	
 	public void clearTiles() {
