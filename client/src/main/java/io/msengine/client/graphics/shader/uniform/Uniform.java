@@ -46,7 +46,7 @@ public abstract class Uniform extends ShaderComponent {
 		this.changed = false;
 	}
 	
-	protected void setChanged() {
+	public void setChanged() {
 		this.changed = true;
 		// this.uploadIfUsed();
 	}

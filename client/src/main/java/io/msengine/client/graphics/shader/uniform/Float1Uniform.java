@@ -7,8 +7,10 @@ public class Float1Uniform extends Uniform {
 	private float x;
 	
 	public void set(float x) {
-		this.x = x;
-		this.setChanged();
+		if (this.x != x) {
+			this.x = x;
+			this.setChanged();
+		}
 	}
 	
 	@Override

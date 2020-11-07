@@ -8,10 +8,12 @@ public class Int3Uniform extends Uniform {
 	private int x, y, z;
 	
 	public void set(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.setChanged();
+		if (this.x != x || this.y != y || this.z != z) {
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.setChanged();
+		}
 	}
 	
 	public void set(Vector3i vec) {

@@ -8,9 +8,11 @@ public class Int2Uniform extends Uniform {
 	private int x, y;
 	
 	public void set(int x, int y) {
-		this.x = x;
-		this.y = y;
-		this.setChanged();
+		if (this.x != x || this.y != y) {
+			this.x = x;
+			this.y = y;
+			this.setChanged();
+		}
 	}
 	
 	public void set(Vector2i vec) {

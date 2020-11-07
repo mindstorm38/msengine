@@ -7,8 +7,10 @@ public class Int1Uniform extends Uniform {
 	private int x;
 	
 	public void set(int x) {
-		this.x = x;
-		this.setChanged();
+		if (this.x != x) {
+			this.x = x;
+			this.setChanged();
+		}
 	}
 	
 	public void set(boolean b) {

@@ -8,9 +8,11 @@ public class Float2Uniform extends Uniform {
 	private float x, y;
 	
 	public void set(float x, float y) {
-		this.x = x;
-		this.y = y;
-		this.setChanged();
+		if (this.x != x || this.y != y) {
+			this.x = x;
+			this.y = y;
+			this.setChanged();
+		}
 	}
 	
 	public void set(Vector2f vec) {

@@ -9,10 +9,12 @@ public class Float3Uniform extends Uniform {
 	private float x, y, z;
 	
 	public void set(float x, float y, float z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.setChanged();
+		if (this.x != x || this.y != y || this.z != z) {
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.setChanged();
+		}
 	}
 	
 	public void set(Vector3f vec) {

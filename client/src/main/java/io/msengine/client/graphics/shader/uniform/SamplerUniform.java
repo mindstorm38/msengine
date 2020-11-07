@@ -7,8 +7,10 @@ public class SamplerUniform extends Uniform {
 	private int unit;
 	
 	public void setTextureUnit(int unit) {
-		this.unit = unit;
-		this.setChanged();
+		if (this.unit != unit) {
+			this.unit = unit;
+			this.setChanged();
+		}
 	}
 	
 	@Override

@@ -65,17 +65,17 @@ public class GuiProgramMain extends GuiStdProgramBase {
 	
 	public void setGlobalColor(Color color) {
 		this.globalColorUniform.set(color);
-		this.globalColorUniform.upload();
+		this.globalColorUniform.uploadIfChanged();
 	}
 	
 	// Texture //
 	
 	public void setTextureUnit(Integer unitOrNull) {
 		this.textureEnabledUniform.set(unitOrNull != null);
-		this.textureEnabledUniform.upload();
+		this.textureEnabledUniform.uploadIfChanged();
 		if (unitOrNull != null) {
 			this.textureSampler.setTextureUnit(unitOrNull);
-			this.textureSampler.upload();
+			this.textureSampler.uploadIfChanged();
 		}
 	}
 	

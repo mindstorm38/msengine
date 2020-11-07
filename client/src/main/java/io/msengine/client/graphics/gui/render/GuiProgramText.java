@@ -51,7 +51,7 @@ public class GuiProgramText extends GuiStdProgramBase {
 	
 	public void setTextureUnit(int unit) {
 		this.textureSampler.setTextureUnit(unit);
-		this.textureSampler.upload();
+		this.textureSampler.uploadIfChanged();
 	}
 	
 	// Buffer //
