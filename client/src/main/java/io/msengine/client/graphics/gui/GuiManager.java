@@ -124,6 +124,7 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 			
 			Blending.enable();
 			Blending.transparency();
+			glDisable(GL_DEPTH_TEST);
 			
 			this.currentScene.render(alpha);
 			
