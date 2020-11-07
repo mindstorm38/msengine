@@ -84,6 +84,18 @@ public class GuiTextureExtended extends GuiObject {
 		return this.currentState == null ? 0 : this.currentState.getAutoHeight() * this.scale;
 	}
 	
+	@Override
+	public void onRealWidthChanged() {
+		super.onRealWidthChanged();
+		this.updateBuffers = true;
+	}
+	
+	@Override
+	public void onRealHeightChanged() {
+		super.onRealHeightChanged();
+		this.updateBuffers = true;
+	}
+	
 	protected void updateTextureBuffers() {
 		
 		//
@@ -109,7 +121,7 @@ public class GuiTextureExtended extends GuiObject {
 		
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			
-			int statesCount = this.states.values().size();
+			int statesCount = this.states.size();
 			
 			FloatBuffer data = stack.mallocFloat(statesCount * 100);
 			IntBuffer indices = stack.mallocInt(statesCount * 54);

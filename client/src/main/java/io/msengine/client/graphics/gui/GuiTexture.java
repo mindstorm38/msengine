@@ -9,8 +9,6 @@ import io.msengine.client.graphics.texture.ResTexture2D;
 import io.msengine.client.graphics.texture.base.Texture;
 import io.msengine.client.util.BufferAlloc;
 
-import static org.lwjgl.opengl.GL20.glVertexAttrib4f;
-
 public class GuiTexture extends GuiObject {
 	
 	protected GuiBufferArray buf;
