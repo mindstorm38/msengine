@@ -8,9 +8,6 @@ import io.msengine.client.graphics.texture.MapTexture2D;
 import io.msengine.client.graphics.texture.ResTexture2D;
 import io.msengine.client.graphics.texture.base.Texture;
 import io.msengine.client.util.BufferAlloc;
-import io.msengine.common.util.Color;
-
-import static org.lwjgl.opengl.GL20.glVertexAttrib4f;
 
 public class GuiTextureExtended extends GuiObject {
 	
@@ -19,6 +16,7 @@ public class GuiTextureExtended extends GuiObject {
 	protected int texName, texWidth, texHeight;
 	protected float texCoordX, texCoordY, texCoordW, texCoordH;
 	protected int borderLeft, borderTop, borderRight, borderBottom;
+	protected int scale = 1;
 	
 	protected boolean updateBuffers;
 	
@@ -93,13 +91,13 @@ public class GuiTextureExtended extends GuiObject {
 		//
 		
 		this.buf.bindVao();
-		System.out.println("updateTextureBuffers");
+		
 		BufferAlloc.allocStackFloat(100, buf -> {
 			
 			int width = (int) this.realWidth;
 			int height = (int) this.realHeight;
-			System.out.println(" -> size: " + width + "/" + height);
 			
+			// Number of tex coord per pixel
 			float widthRatio = this.texCoordW / this.texWidth;
 			float heightRatio = this.texCoordH / this.texHeight;
 			
@@ -108,10 +106,10 @@ public class GuiTextureExtended extends GuiObject {
 			float texRight = widthRatio * this.borderRight;
 			float texBottom = heightRatio * this.borderBottom;
 			
-			int left = this.borderLeft;
-			int top = this.borderTop;
-			int right = this.borderRight;
-			int bottom = this.borderBottom;
+			int left = this.borderLeft * this.scale;
+			int top = this.borderTop * this.scale;
+			int right = this.borderRight * this.scale;
+			int bottom = this.borderBottom * this.scale;
 			
 			int x1 = +left;
 			int x2 = width - right;
@@ -122,12 +120,12 @@ public class GuiTextureExtended extends GuiObject {
 			
 			float tx0 = this.texCoordX;
 			float tx1 = this.texCoordX + texLeft;
-			float tx2 = widthRatio * x2;
+			float tx2 = this.texCoordX + (widthRatio * x2 / this.scale);
 			float tx3 = this.texCoordX + this.texCoordW - texRight;
 			float tx4 = this.texCoordX + this.texCoordW;
 			float ty0 = this.texCoordY;
 			float ty1 = this.texCoordY + texTop;
-			float ty2 = heightRatio * y2;
+			float ty2 = this.texCoordY + (heightRatio * y2 / this.scale);
 			float ty3 = this.texCoordY + this.texCoordH - texBottom;
 			float ty4 = this.texCoordY + this.texCoordH;
 			
@@ -242,6 +240,19 @@ public class GuiTextureExtended extends GuiObject {
 		this.borderBottom = bottom;
 		this.updateBuffers = true;
 		this.updateOffsets();
+	}
+	
+	public int getScale() {
+		return this.scale;
+	}
+	
+	public void setScale(int scale) {
+		if (scale < 1) {
+			throw new IllegalArgumentException("Invalid scale, must be a non-null positive integer.");
+		} else if (this.scale != scale) {
+			this.scale = scale;
+			this.updateBuffers = true;
+		}
 	}
 	
 }
