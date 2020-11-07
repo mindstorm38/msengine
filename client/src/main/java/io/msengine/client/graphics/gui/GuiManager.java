@@ -44,15 +44,14 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	private ShaderProgram currentProgram;
 	private GuiStdProgram currentStdProgram;
 	
-	//private GuiProgramMain program;
 	private GuiScene currentScene;
+	
+	private final Map<GuiSingleton<?>, SingletonTracker> commonSingletons = new HashMap<>();
 	
 	private boolean rendering;
 	private boolean masking;
 	
-	public GuiManager() {
-		// this.window = Objects.requireNonNull(window, "Missing window.");
-	}
+	public GuiManager() { }
 	
 	public ContextWindow getWindow() {
 		return this.window;
@@ -86,14 +85,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 			throw new IllegalArgumentException("Given window is null or no longer valid.");
 		}
 		
-		/*if (this.program == null) {
-			this.checkWindowContext();
-			this.program = this.createProgram();
-			this.program.link();
-			this.updateSceneSizeFromWindow();
-			this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
-		}*/
-		
 		this.window = window;
 		this.checkWindowContext();
 		this.updateSceneSizeFromWindow();
@@ -111,18 +102,12 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 			throw new IllegalStateException("Not started.");
 		}
 		
-		//if (this.program != null) {
-		
 		this.checkWindowContext();
 		this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
 		this.unloadScene();
 		this.instances.values().forEach(GuiScene::stop);
 		this.instances.clear();
 		this.window = null;
-		
-		//this.program.close();
-		//this.program = null;
-		//}
 		
 	}
 	
@@ -139,11 +124,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 			
 			Blending.enable();
 			Blending.transparency();
-			
-			/*this.program.use();
-			this.program.setTextureUnit(null);
-			this.program.setGlobalColor(Color.WHITE);
-			this.program.uploadProjectionMatrix();*/
 			
 			this.currentScene.render(alpha);
 			
@@ -348,13 +328,11 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	 */
 	public void releaseProgram(GuiProgramType<?> type) {
 		ProgramTracker tracker = this.programs.get(type);
-		if (tracker != null) {
-			if (--tracker.uses <= 0) {
-				tracker.program.close();
-				this.programs.remove(type);
-				if (tracker.program instanceof GuiStdProgram) {
-					this.stdPrograms.remove(tracker.program);
-				}
+		if (tracker != null && --tracker.uses <= 0) {
+			tracker.program.close();
+			this.programs.remove(type);
+			if (tracker.program instanceof GuiStdProgram) {
+				this.stdPrograms.remove(tracker.program);
 			}
 		}
 	}
@@ -406,14 +384,32 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 		return (P) program;
 	}
 	
-	// Rendering variables //
+	// Common singletons //
 	
-	/*
-	 * @return The shader program used when rendering.
-	 */
-	/*public GuiProgramMain getProgram() {
-		return this.program;
-	}*/
+	private static class SingletonTracker {
+		private final Object obj;
+		private int uses;
+		public SingletonTracker(Object obj) {
+			this.obj = obj;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T acquireSingleton(GuiSingleton<T> def) {
+		SingletonTracker singleton = this.commonSingletons.computeIfAbsent(def, d -> new SingletonTracker(d.supply(this)));
+		singleton.uses++;
+		return (T) singleton.obj;
+	}
+	
+	public void releaseSingleton(GuiSingleton<?> def) {
+		SingletonTracker singleton = this.commonSingletons.get(def);
+		if (singleton != null && --singleton.uses <= 0) {
+			def.releaseRaw(singleton.obj);
+			this.commonSingletons.remove(def);
+		}
+	}
+	
+	// Rendering variables //
 	
 	/**
 	 * @return The model (for model matrix) used when rendering.
@@ -428,27 +424,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	public Color getGlobalColor() {
 		return this.globalColor;
 	}
-	
-	/**
-	 * Upload the global color to the program uniform.
-	 */
-	/*public void setGlobalColor(Color color) {
-		this.program.setGlobalColor(color);
-	}
-	
-	public void setTextureUnit(Integer unit) {
-		this.program.setTextureUnit(unit);
-	}
-	
-	public void setTextureUnitAndBind(int unit, int name) {
-		this.setTextureUnit(unit);
-		Texture.bindTexture(unit, GL_TEXTURE_2D, name);
-	}
-	
-	public void resetTextureUnitAndUnbind() {
-		this.setTextureUnit(null);
-		Texture.unbindTexture(GL_TEXTURE_2D);
-	}*/
 	
 	public void mask(GuiMask[] masks) {
 		
@@ -495,7 +470,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 		this.projectionMatrix.identity();
 		this.projectionMatrix.ortho(0, width, height, 0, 1024, -1024);
 		this.stdPrograms.forEach(p -> p.setProjectionMatrix(this.projectionMatrix));
-		// this.program.setProjectionMatrix(this.projectionMatrix);
 		
 		if (this.currentScene != null) {
 			this.currentScene.setSceneSize(width, height);
@@ -518,7 +492,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	public void modelApply(Matrix4f model) {
 		if (this.currentStdProgram != null) {
 			this.currentStdProgram.uploadModelMatrix(model);
-			// this.stdPrograms.forEach(p -> p.uploadModelMatrix(model));
 		}
 	}
 	
