@@ -296,7 +296,7 @@ public class GuiText extends GuiObject {
 				});
 				//System.out.println();
 				
-				GuiCommon.putSquareIndices(bufferData.currentIndex, bufferData.indicesBuffer);
+				GuiCommon.putSquareIndices(bufferData.indicesBuffer, bufferData.currentIndex);
 				bufferData.currentIndex += 4;
 				
 				pos[0] += (i + 1 < codePointsCount) ? glyph.getKernAdvance(this.codePoints[i + 1]) : glyph.getAdvance();

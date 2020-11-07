@@ -4,9 +4,12 @@ import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
 import io.msengine.client.graphics.gui.render.GuiProgramMain;
 import io.msengine.client.graphics.texture.DynTexture2D;
+import io.msengine.client.graphics.texture.MapTexture2D;
 import io.msengine.client.graphics.texture.ResTexture2D;
 import io.msengine.client.graphics.texture.base.Texture;
 import io.msengine.client.util.BufferAlloc;
+
+import static org.lwjgl.opengl.GL20.glVertexAttrib4f;
 
 public class GuiTexture extends GuiObject {
 	
@@ -17,7 +20,7 @@ public class GuiTexture extends GuiObject {
 	protected int textureName;
 	protected float texCoordX, texCoordY;
 	protected float texCoordW, texCoordH;
-	protected int autoWidth, autoHeight;
+	protected float autoWidth, autoHeight;
 	
 	@Override
 	protected void init() {
@@ -35,7 +38,7 @@ public class GuiTexture extends GuiObject {
 	@Override
 	protected void render(float alpha) {
 		
-		if (this.textureName == 0)
+		if (this.textureName <= 0)
 			return;
 		
 		/*if (this.updateVertices) {
@@ -141,6 +144,11 @@ public class GuiTexture extends GuiObject {
 		
 	}
 	
+	/** Remove the current internal texture, this will cause this object to be invisible */
+	public void removeTexture() {
+		this.textureName = 0;
+	}
+	
 	/**
 	 * Set the raw OpenGL texture name to use for this texture element.
 	 * @param name OpenGL texture name.
@@ -165,9 +173,11 @@ public class GuiTexture extends GuiObject {
 		if (texture instanceof DynTexture2D) {
 			this.autoWidth = ((DynTexture2D) texture).getWidth();
 			this.autoHeight = ((DynTexture2D) texture).getHeight();
+			this.updateOffsets();
 		} else if (texture instanceof ResTexture2D) {
 			this.autoWidth = ((ResTexture2D) texture).getWidth();
 			this.autoHeight = ((ResTexture2D) texture).getHeight();
+			this.updateOffsets();
 		}
 		
 	}
@@ -192,6 +202,15 @@ public class GuiTexture extends GuiObject {
 	public void setTextureFull(Texture texture) {
 		this.setTexture(texture);
 		this.resetTextureCoords();
+	}
+	
+	public void setTextureTile(MapTexture2D.Tile tile) {
+		MapTexture2D map = tile.getMap();
+		map.checkValid();
+		this.setTexture(map.getName());
+		this.setTextureCoords(tile.getX(), tile.getY(), tile.getWidth(), tile.getHeight());
+		this.autoWidth = map.getWidth() * tile.getWidth();
+		this.autoHeight = map.getHeight() * tile.getHeight();
 	}
 	
 	@Override

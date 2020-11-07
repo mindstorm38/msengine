@@ -36,9 +36,6 @@ public class GuiProgramMain extends GuiStdProgramBase {
 		this.attribColor = this.getAttribLocation("color");
 		this.attribTexCoord = this.getAttribLocation("tex_coord");
 		
-		setAttribDefault(this.attribColor, 1, 1, 1, 1);
-		setAttribDefault(this.attribTexCoord, 0, 0);
-		
 	}
 	
 	@Override
@@ -46,7 +43,25 @@ public class GuiProgramMain extends GuiStdProgramBase {
 		super.use();
 		this.setGlobalColor(Color.WHITE);
 		this.setTextureUnit(null);
+		this.resetColorAttrib();
+		this.setTexCoordAttrib(0, 0);
 	}
+	
+	// Attribs //
+	
+	public void resetColorAttrib() {
+		setAttribDefault(this.attribColor, 1, 1, 1, 1);
+	}
+	
+	public void setColorAttrib(Color color) {
+		setAttribDefault(this.attribColor, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+	}
+	
+	public void setTexCoordAttrib(float u, float v) {
+		setAttribDefault(this.attribTexCoord, u, v);
+	}
+	
+	// Color //
 	
 	public void setGlobalColor(Color color) {
 		this.globalColorUniform.set(color);
@@ -76,6 +91,13 @@ public class GuiProgramMain extends GuiStdProgramBase {
 	
 	// Buffer //
 	
+	/**
+	 * Create a buffer array with one buffer containing these components :
+	 * <code>position (2f), color (4f, if <u>color</u>), texCoord (2f, if <u>tex</u>)</code>.
+	 * @param color Enable color attribute.
+	 * @param tex Enable tex coord attribute.
+	 * @return The buffer array.
+	 */
 	public GuiBufferArray createBuffer(boolean color, boolean tex) {
 		return BufferArray.newBuilder(GuiBufferArray::new)
 				.newBuffer()
@@ -89,6 +111,17 @@ public class GuiProgramMain extends GuiStdProgramBase {
 				.build();
 	}
 	
+	/**
+	 * Create a buffer array with 1 to 3 buffers <i>(depending on arguments)</i> :
+	 * <ul>
+	 *     <li>0. position (2f)</li>
+	 *     <li>1. color (4f, if <u>color</u>)</li>
+	 *     <li>2. texCoord (2f, if <u>tex</u>)</li>
+	 * </ul>
+	 * @param color Enable color buffer and attribute.
+	 * @param tex Enable tex coord buffer and attribute.
+	 * @return The buffer array.
+	 */
 	public GuiBufferArray createBufferSep(boolean color, boolean tex) {
 		return BufferArray.newBuilder((vao, vbos) -> new GuiBufferArray(vao, vbos, color ? 1 : 0, tex ? (color ? 2 : 1) : 0))
 				.newBuffer().withAttrib(this.attribPosition, DataType.FLOAT, 2).build()

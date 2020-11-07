@@ -3,6 +3,7 @@ package io.msengine.client.graphics.gui.render;
 import io.msengine.client.graphics.buffer.BufferArray;
 import io.msengine.client.graphics.shader.uniform.SamplerUniform;
 import io.msengine.client.graphics.util.DataType;
+import io.msengine.common.util.Color;
 
 public class GuiProgramText extends GuiStdProgramBase {
 	
@@ -25,10 +26,28 @@ public class GuiProgramText extends GuiStdProgramBase {
 		this.attribColor = this.getAttribLocation("color");
 		this.attribTexCoord = this.getAttribLocation("tex_coord");
 		
-		setAttribDefault(this.attribColor, 1, 1, 1, 1);
-		setAttribDefault(this.attribTexCoord, 0, 0);
-		
 	}
+	
+	@Override
+	public void use() {
+		super.use();
+		this.resetColorAttrib();
+		this.setTexCoordAttrib(0, 0);
+	}
+	
+	public void resetColorAttrib() {
+		setAttribDefault(this.attribColor, 1, 1, 1, 1);
+	}
+	
+	public void setColorAttrib(Color color) {
+		setAttribDefault(this.attribColor, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+	}
+	
+	public void setTexCoordAttrib(float u, float v) {
+		setAttribDefault(this.attribTexCoord, u, v);
+	}
+	
+	// Texture //
 	
 	public void setTextureUnit(int unit) {
 		this.textureSampler.setTextureUnit(unit);
