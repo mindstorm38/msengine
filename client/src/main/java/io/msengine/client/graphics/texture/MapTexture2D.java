@@ -81,7 +81,11 @@ public class MapTexture2D extends DynTexture2D {
 	public Tile newPixelTile(String name, int x, int y, int w, int h) {
 		float width = this.getWidth();
 		float height = this.getHeight();
-		return this.newTile(name, (float) x / width, (float) y / height, (float) w / width, (float) h / height);
+		if (width == 0 || height == 0) {
+			throw new UnsupportedOperationException("Can't use this method before allocated a texture with at least 1 pixel in each coordinate.");
+		} else {
+			return this.newTile(name, (float) x / width, (float) y / height, (float) w / width, (float) h / height);
+		}
 	}
 	
 	public void clearTiles() {
