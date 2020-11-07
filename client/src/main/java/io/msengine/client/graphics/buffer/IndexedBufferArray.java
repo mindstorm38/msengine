@@ -84,7 +84,7 @@ public class IndexedBufferArray extends BufferArray {
 	
 	@Override
 	public void draw(int primitiveType, int offset, int count) {
-		if (this.indicesCount != 0) {
+		if (count >= 0) {
 			this.bindVao();
 			// Shift to shift integers instead of bytes
 			glDrawElements(primitiveType, count, GL_UNSIGNED_INT, offset << 2);

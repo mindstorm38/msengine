@@ -41,7 +41,7 @@ public class VerticesBufferArray extends BufferArray {
 	
 	@Override
 	public void draw(int primitiveType, int offset, int count) {
-		if (this.verticesCount != 0) {
+		if (count >= 0) {
 			this.bindVao();
 			glDrawArrays(primitiveType, offset, count);
 			unbindVao();

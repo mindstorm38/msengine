@@ -112,7 +112,7 @@ public class GuiTextureExtended extends GuiObject {
 			int statesCount = this.states.values().size();
 			
 			FloatBuffer data = stack.mallocFloat(statesCount * 100);
-			IntBuffer indices = stack.mallocInt(this.buf.setIndicesCount(statesCount * 54));
+			IntBuffer indices = stack.mallocInt(statesCount * 54);
 			
 			int width = (int) this.realWidth;
 			int height = (int) this.realHeight;
