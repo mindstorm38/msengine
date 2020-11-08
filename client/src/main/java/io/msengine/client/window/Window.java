@@ -211,6 +211,12 @@ public abstract class Window implements AutoCloseable {
         return this.id != 0L && glfwWindowShouldClose(this.id);
     }
 
+    public void setShouldClose(boolean shouldClose) {
+        if (this.id != 0L) {
+            glfwSetWindowShouldClose(this.id, shouldClose);
+        }
+    }
+    
     @Override
     public void close() {
         if (this.id != 0L) {
