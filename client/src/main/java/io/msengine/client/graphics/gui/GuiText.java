@@ -193,11 +193,13 @@ public class GuiText extends GuiObject {
 			this.effects = new HashMap<>();
 		}
 		this.effects.compute(at, (at_, current) -> (current == null) ? effect : current.groupWith(effect));
+		this.updateBuffers = true;
 	}
 	
 	protected void removeEffect(int at, Class<? extends SingleEffect> effectClass) {
 		if (this.effects != null) {
 			this.effects.compute(at, (at_, current) -> (current == null) ? null : current.groupWithout(effectClass));
+			this.updateBuffers = true;
 		}
 	}
 	
