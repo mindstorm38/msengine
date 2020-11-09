@@ -107,6 +107,9 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 		this.unloadScene();
 		this.instances.values().forEach(GuiScene::stop);
 		this.instances.clear();
+		// Release remaining singletons
+		this.commonSingletons.forEach((s, tracker) -> s.releaseRaw(tracker.obj));
+		this.commonSingletons.clear();
 		this.window = null;
 		
 	}
