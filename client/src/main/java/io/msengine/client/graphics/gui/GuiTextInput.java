@@ -1,8 +1,8 @@
 package io.msengine.client.graphics.gui;
 
 import io.msengine.client.graphics.gui.event.GuiEvent;
-import io.msengine.client.graphics.gui.nmask.GuiMask;
-import io.msengine.client.graphics.gui.nmask.GuiMaskRect;
+import io.msengine.client.graphics.gui.mask.GuiMask;
+import io.msengine.client.graphics.gui.mask.GuiMaskRect;
 import io.msengine.client.window.Window;
 import io.msengine.client.window.listener.WindowCharEventListener;
 import io.msengine.client.window.listener.WindowKeyEventListener;

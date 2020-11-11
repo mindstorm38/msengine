@@ -1,6 +1,5 @@
 package io.msengine.client.graphics.gui;
 
-import io.msengine.client.graphics.gui.mask.GuiMask;
 import io.msengine.client.graphics.gui.render.GuiProgramType;
 import io.msengine.client.graphics.gui.render.GuiProgramMain;
 import io.msengine.client.graphics.gui.render.GuiStdProgram;
@@ -49,7 +48,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	private final Map<GuiSingleton<?>, SingletonTracker> commonSingletons = new HashMap<>();
 	
 	private boolean rendering;
-	private boolean masking;
 	
 	public GuiManager() { }
 	
@@ -123,7 +121,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 		if (this.currentScene != null/* && this.program != null*/) {
 			
 			this.rendering = true;
-			this.masking = false;
 			
 			Blending.enable();
 			Blending.transparency();
@@ -138,7 +135,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 				this.currentStdProgram = null;
 			}
 			
-			this.unmask();
 			this.rendering = false;
 			
 		}
@@ -374,9 +370,9 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 		if (tracker == null) {
 			throw new IllegalArgumentException("Invalid program type '" + type.getName() + "', must be acquired first.");
 		}
-		if (current != null) {
-			ShaderProgram.release();
-		}
+		/*if (current != null) {
+			ShaderProgram.release();  // FIXME: Useless because of .use() after.
+		}*/
 		ShaderProgram program = tracker.program;
 		program.use();
 		if (tracker.stdProgram != null) {
@@ -427,44 +423,6 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	 */
 	public Color getGlobalColor() {
 		return this.globalColor;
-	}
-	
-	public void mask(GuiMask[] masks) {
-		
-		if (!this.rendering) {
-			throw new IllegalStateException("Masking is only available");
-		}
-		
-		if (this.masking) {
-			throw new IllegalStateException("Already masking");
-		}
-		
-		this.masking = true;
-		// this.program.setTextureUnit(null);
-		
-		glEnable(GL_STENCIL_TEST);
-		
-		glStencilMask(1);
-		glStencilFunc(GL_ALWAYS, 1, 1);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		glColorMask(false, false, false, false);
-		
-		for (GuiMask mask : masks) {
-			mask.draw();
-		}
-		
-		glStencilMask(1);
-		glStencilFunc(GL_EQUAL, 1, 1);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-		glColorMask(true, true, true, true);
-		
-	}
-	
-	public void unmask() {
-		if (this.rendering && this.masking) {
-			glDisable(GL_STENCIL_TEST);
-			this.masking = false;
-		}
 	}
 	
 	// Scene Size //

@@ -1,4 +1,4 @@
-package io.msengine.client.graphics.gui.nmask;
+package io.msengine.client.graphics.gui.mask;
 
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.buffer.IndexedBufferArray;
