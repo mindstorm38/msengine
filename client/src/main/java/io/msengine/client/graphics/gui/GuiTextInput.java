@@ -1,6 +1,8 @@
 package io.msengine.client.graphics.gui;
 
 import io.msengine.client.graphics.gui.event.GuiEvent;
+import io.msengine.client.graphics.gui.nmask.GuiMask;
+import io.msengine.client.graphics.gui.nmask.GuiMaskRect;
 import io.msengine.client.window.Window;
 import io.msengine.client.window.listener.WindowCharEventListener;
 import io.msengine.client.window.listener.WindowKeyEventListener;
@@ -26,6 +28,7 @@ public class GuiTextInput extends GuiParent implements
 	private final InnerText text;
 	private final GuiColorSolid cursor;
 	private final GuiColorSolid selection;
+	private final GuiMaskRect mask;
 	
 	private final StringBuilder builder = new StringBuilder();
 	
@@ -57,6 +60,9 @@ public class GuiTextInput extends GuiParent implements
 		this.selection.setAnchor(-1, 0);
 		this.addChild(this.selection);
 		
+		this.mask = new GuiMaskRect();
+		this.addChild(this.mask);
+		
 		this.updateCursor();
 		
 	}
@@ -79,7 +85,9 @@ public class GuiTextInput extends GuiParent implements
 	
 	@Override
 	protected void render(float alpha) {
-		super.render(alpha);
+		try (GuiMask.MaskTracker ignored = this.mask.mask()) {
+			super.render(alpha);
+		}
 	}
 	
 	@Override
@@ -104,11 +112,18 @@ public class GuiTextInput extends GuiParent implements
 	}
 	
 	@Override
+	public void onRealWidthChanged() {
+		super.onRealWidthChanged();
+		this.mask.setWidth(this.realWidth);
+	}
+	
+	@Override
 	public void onRealHeightChanged() {
 		super.onRealHeightChanged();
 		this.text.setYPos(this.realHeight / 2f);
 		this.cursor.setYPos(this.realHeight / 2f);
 		this.selection.setYPos(this.realHeight / 2f);
+		this.mask.setHeight(this.realHeight);
 	}
 	
 	@Override

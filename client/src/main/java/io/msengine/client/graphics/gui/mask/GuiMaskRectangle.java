@@ -2,7 +2,6 @@ package io.msengine.client.graphics.gui.mask;
 
 import io.msengine.client.graphics.gui.GuiCommon;
 import io.msengine.client.graphics.gui.render.GuiProgramMain;
-import io.msengine.client.graphics.gui.render.GuiStdProgram;
 import io.msengine.client.util.BufferAlloc;
 import io.msengine.client.graphics.buffer.BufferUsage;
 import io.msengine.client.graphics.gui.render.GuiBufferArray;
