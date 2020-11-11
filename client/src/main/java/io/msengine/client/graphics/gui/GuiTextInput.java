@@ -286,10 +286,22 @@ public class GuiTextInput extends GuiParent implements
 		
 		if (key == GLFW.GLFW_KEY_LEFT) {
 			// Move Cursor Left
-			this.moveCursorTo(this.cursorIndex > 0, this.cursorIndex - 1, shift);
+			if (this.cursorIndex == this.selectionIndex || shift) {
+				this.moveCursorTo(this.cursorIndex > 0, this.cursorIndex - 1, shift);
+			} else if (this.cursorIndex < this.selectionIndex) {
+				this.resetSelectionToCursor(true);
+			} else {
+				this.setCursorPosition(this.selectionIndex, true, false);
+			}
 		} else if (key == GLFW.GLFW_KEY_RIGHT) {
 			// Move Cursor Right
-			this.moveCursorTo(this.cursorIndex < this.builder.length(), this.cursorIndex + 1, shift);
+			if (this.cursorIndex == this.selectionIndex || shift) {
+				this.moveCursorTo(this.cursorIndex < this.builder.length(), this.cursorIndex + 1, shift);
+			} else if (this.cursorIndex < this.selectionIndex) {
+				this.setCursorPosition(this.selectionIndex, true, false);
+			} else {
+				this.resetSelectionToCursor(true);
+			}
 		} else if (key == GLFW.GLFW_KEY_HOME) {
 			// Move Cursor at Start
 			this.moveCursorTo(this.cursorIndex != 0, 0, shift);
@@ -313,6 +325,7 @@ public class GuiTextInput extends GuiParent implements
 			if (!this.deleteSelection(true)) {
 				if (this.cursorIndex < this.builder.length()) {
 					this.builder.deleteCharAt(this.cursorIndex);
+					this.resetCursorBlink();
 					this.updateText();
 				}
 				this.resetSelectionToCursor(true);
@@ -340,17 +353,25 @@ public class GuiTextInput extends GuiParent implements
 	public void setCursorPosition(int index, boolean updateCursor, boolean select) {
 		if (this.cursorIndex != index) {
 			this.cursorIndex = index;
-			this.cursorLastBlink = 0;
 			if (!select) {
 				this.resetSelectionToCursor(false);
 			}
 			if (updateCursor) {
 				this.updateCursor();
 			}
-			if (!this.cursor.isVisible()) {
-				this.cursor.setVisible(true);
-			}
+			this.resetCursorBlink();
 		}
+	}
+	
+	public void resetCursorBlink() {
+		this.cursorLastBlink = 0;
+		if (!this.cursor.isVisible()) {
+			this.cursor.setVisible(true);
+		}
+	}
+	
+	public boolean isSelecting() {
+		return this.selectionIndex != this.cursorIndex;
 	}
 	
 	private void resetSelectionToCursor(boolean updateCursor) {
