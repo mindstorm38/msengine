@@ -448,6 +448,15 @@ public abstract class GuiObject {
 	// [ Utils ] //
 	
 	/**
+	 * Build an event listener to call this object's <code>manager.loadScene(sceneIdentifier)</code>.
+	 * @param sceneIdentifier The scene identifier.
+	 * @return The event listener.
+	 */
+	protected GuiEventListener<?> buildLoadSceneListener(String sceneIdentifier) {
+		return (e) -> this.manager.loadScene(sceneIdentifier);
+	}
+	
+	/**
 	 * Build the toString() representation, this must be of the format <b><code>ClassName&lt;prop1=val, prop2=val, ...&gt;</code></b>.
 	 * This method may be overridden.
 	 * @param builder The representation builder.
