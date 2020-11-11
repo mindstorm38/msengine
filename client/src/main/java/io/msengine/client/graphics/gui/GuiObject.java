@@ -203,37 +203,19 @@ public abstract class GuiObject {
 	protected void onHeightChanged() { }
 	
 	public void setWidth(float width) {
-		
-		if (this.width == width)
-			return;
-		
-		/*if (width == SIZE_AUTO)
-			width = this.getAutoWidth();
-		
-		if (width < 0)
-			throw new IllegalArgumentException("Invalid width given : " + width);*/
-		
-		this.width = width;
-		this.updateXOffset();
-		this.onWidthChanged();
-		
+		if (this.width != width) {
+			this.width = width;
+			this.updateXOffset();
+			this.onWidthChanged();
+		}
 	}
 	
 	public void setHeight(float height) {
-		
-		if (this.height == height)
-			return;
-		
-		/*if (height == SIZE_AUTO)
-			height = this.getAutoHeight();
-		
-		if (height < 0)
-			throw new IllegalArgumentException("Invalid height given : " + height);*/
-		
-		this.height = height;
-		this.updateYOffset();
-		this.onHeightChanged();
-		
+		if (this.height != height) {
+			this.height = height;
+			this.updateYOffset();
+			this.onHeightChanged();
+		}
 	}
 	
 	public void setSize(float width, float height) {

@@ -10,16 +10,37 @@ public class GuiScene extends GuiParent {
 	protected void loaded() {}
 	protected void unloaded() {}
 	
+	public GuiScene() {
+		this.width = 0;
+		this.height = 0;
+	}
+	
 	@Override
 	public void updateXOffset() {
+		
 		// Overridden to ignore offsets recalculation (default to 0)
+		
+		if (this.realWidth != this.width) {
+			this.realWidth = this.width;
+			this.onRealWidthChanged();
+		}
+		
 		this.children.forEach(GuiObject::updateXOffset);
+		
 	}
 	
 	@Override
 	public void updateYOffset() {
+		
 		// Overridden to ignore offsets recalculation (default to 0)
+		
+		if (this.realHeight != this.height) {
+			this.realHeight = this.height;
+			this.onRealHeightChanged();
+		}
+		
 		this.children.forEach(GuiObject::updateYOffset);
+		
 	}
 	
 	void setSceneSize(int width, int height) {
@@ -30,12 +51,21 @@ public class GuiScene extends GuiParent {
 	}
 	
 	/**
-	 * Use this method insteadof adding a listener for {@link GuiSceneResizedEvent} event when listening in the scene itself.<br>
-	 * <i>This method is called before firing {@link GuiSceneResizedEvent}.</i>
+	 * <p>Use this method insteadof adding a listener for {@link GuiSceneResizedEvent} event when listening in the scene itself.</p>
+	 * <p><i>This method is called before firing {@link GuiSceneResizedEvent}.</i></p>
+	 * <p>This method is still compatible with {@link #onRealWidthChanged()} (equals to {@link #onWidthChanged()}) and
+	 * {@link #onRealHeightChanged()} (equals to {@link #onHeightChanged()}), <b>prefer these method because this method
+	 * can be deprecated in future versions</b>.</p>
 	 * @param width The new scene width.
 	 * @param height The new scene height.
 	 */
 	protected void onSceneResized(float width, float height) { }
+	
+	@Override
+	public final void onXOffsetChanged() { }
+	
+	@Override
+	public final void onYOffsetChanged() { }
 	
 	@Override
 	public void setVisible(boolean visible) {
