@@ -429,11 +429,11 @@ public abstract class GuiObject {
 		return this.eventManager;
 	}
 
-	public <E extends GuiEvent> void addEventListener(Class<E> clazz, GuiEventListener<E> listener) {
+	public <E extends GuiEvent> void addEventListener(Class<E> clazz, GuiEventListener<? super E> listener) {
 		this.getEventManager().addEventListener(clazz, listener);
 	}
 
-	public <E extends GuiEvent> void removeEventListener(Class<E> clazz, GuiEventListener<E> listener) {
+	public <E extends GuiEvent> void removeEventListener(Class<E> clazz, GuiEventListener<? super E> listener) {
 		if (this.eventManager != null) {
 			this.eventManager.removeEventListener(clazz, listener);
 		}
@@ -452,7 +452,7 @@ public abstract class GuiObject {
 	 * @param sceneIdentifier The scene identifier.
 	 * @return The event listener.
 	 */
-	protected GuiEventListener<?> buildLoadSceneListener(String sceneIdentifier) {
+	protected GuiEventListener<GuiEvent> buildLoadSceneListener(String sceneIdentifier) {
 		return (e) -> this.manager.loadScene(sceneIdentifier);
 	}
 	

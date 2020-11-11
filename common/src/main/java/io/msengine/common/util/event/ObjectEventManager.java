@@ -16,11 +16,11 @@ public class ObjectEventManager<E extends ObjectEvent> {
 
     private final HashMap<Class<?>, List<ObjectEventListener<?>>> listeners = new HashMap<>();
 
-    public <T extends E> void addEventListener(Class<T> clazz, ObjectEventListener<T> listener) {
+    public <T extends E> void addEventListener(Class<T> clazz, ObjectEventListener<? super T> listener) {
         this.listeners.computeIfAbsent(clazz, cl -> new CopyOnWriteArrayList<>()).add(listener);
     }
 
-    public <T extends E> void removeEventListener(Class<T> clazz, ObjectEventListener<T> listener) {
+    public <T extends E> void removeEventListener(Class<T> clazz, ObjectEventListener<? super T> listener) {
         List<ObjectEventListener<?>> group = this.listeners.get(clazz);
         if (group != null) {
             group.remove(listener);
