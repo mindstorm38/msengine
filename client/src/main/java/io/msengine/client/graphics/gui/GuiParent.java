@@ -47,7 +47,7 @@ public class GuiParent extends GuiObject {
 		}
 	}
 	
-	@Override
+	/*@Override
 	public void updateXOffset() {
 		super.updateXOffset();
 		this.children.forEach(GuiObject::updateXOffset);
@@ -56,6 +56,18 @@ public class GuiParent extends GuiObject {
 	@Override
 	public void updateYOffset() {
 		super.updateYOffset();
+		this.children.forEach(GuiObject::updateYOffset);
+	}*/
+	
+	@Override
+	public void onXShapeChanged() {
+		super.onXShapeChanged();
+		this.children.forEach(GuiObject::updateXOffset);
+	}
+	
+	@Override
+	protected void onYShapeChanged() {
+		super.onYShapeChanged();
 		this.children.forEach(GuiObject::updateYOffset);
 	}
 	

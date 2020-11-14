@@ -304,7 +304,10 @@ public abstract class GuiObject {
 		return this.yAnchor;
 	}
 	
+	/** Callback method called when {@link #xSupAnchor} was changed (using {@link #setXSupAnchor(float)}). */
 	protected void onXSupAnchorChanged() { }
+	
+	/** Callback method called when {@link #ySupAnchor} was changed (using {@link #setYSupAnchor(float)}). */
 	protected void onYSupAnchorChanged() { }
 	
 	public void setXSupAnchor(float xSupAnchor) {
@@ -339,25 +342,34 @@ public abstract class GuiObject {
 	// [ Offset ] //
 	
 	/** Callback method called when {@link #xOffset} was changed (using {@link #updateXOffset()}). */
-	public void onXOffsetChanged() { }
+	protected void onXOffsetChanged() { }
 	
 	/** Callback method called when {@link #yOffset} was changed (using {@link #updateYOffset()}). */
-	public void onYOffsetChanged() { }
+	protected void onYOffsetChanged() { }
 	
 	/** Callback method called when {@link #realWidth} was changed (using {@link #updateXOffset()}). */
-	public void onRealWidthChanged() { }
+	protected void onRealWidthChanged() { }
 	
 	/** Callback method called when {@link #realHeight} was changed (using {@link #updateYOffset()}). */
-	public void onRealHeightChanged() { }
+	protected void onRealHeightChanged() { }
+	
+	/** Callback method called when either {@link #xOffset} or {@link #realWidth} has changed (using {@link #updateXOffset()}). */
+	protected void onXShapeChanged() { }
+	
+	/** Callback method called when either {@link #yOffset} or {@link #realHeight} has changed (using {@link #updateYOffset()}). */
+	protected void onYShapeChanged() { }
 	
 	/**
 	 * Update the {@link #xOffset} and {@link #realWidth} used to compute the left position of the component.
 	 */
 	public void updateXOffset() {
 		
+		boolean changed = false;
+		
 		float width = this.isAutoWidth() ? this.getAutoWidth() : this.width;
 		if (this.realWidth != width) {
 			this.realWidth = width;
+			changed = true;
 			this.onRealWidthChanged();
 		}
 		
@@ -369,7 +381,12 @@ public abstract class GuiObject {
 		if (this.xOffset != off) {
 			this.xOffset = off;
 			this.xIntOffset = Math.round(this.xOffset);
+			changed = true;
 			this.onXOffsetChanged();
+		}
+		
+		if (changed) {
+			this.onXShapeChanged();
 		}
 		
 	}
@@ -379,9 +396,12 @@ public abstract class GuiObject {
 	 */
 	public void updateYOffset() {
 		
+		boolean changed = false;
+		
 		float height = this.isAutoHeight() ? this.getAutoHeight() : this.height;
 		if (this.realHeight != height) {
 			this.realHeight = height;
+			changed = true;
 			this.onRealHeightChanged();
 		}
 		
@@ -393,7 +413,12 @@ public abstract class GuiObject {
 		if (this.yOffset != off) {
 			this.yOffset = off;
 			this.yIntOffset = Math.round(this.yOffset);
+			changed = true;
 			this.onYOffsetChanged();
+		}
+		
+		if (changed) {
+			this.onYShapeChanged();
 		}
 		
 	}
