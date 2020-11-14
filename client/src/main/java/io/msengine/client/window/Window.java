@@ -88,6 +88,14 @@ public abstract class Window implements AutoCloseable {
             this.fbHeight = height;
             this.eventManager.fireListeners(WindowFramebufferSizeEventListener.class, l -> l.onWindowFramebufferSizeChangedEvent(this, width, height));
         });
+    
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer width = stack.mallocInt(1);
+            IntBuffer height = stack.mallocInt(1);
+            glfwGetFramebufferSize(this.id, width, height);
+            this.fbWidth = width.get(0);
+            this.fbHeight = height.get(0);
+        }
 
     }
 
