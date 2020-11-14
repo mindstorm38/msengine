@@ -22,10 +22,18 @@ public abstract class GuiObject {
 	private static final int FLAG_DISPLAYED = 0x2;
 	private static final int FLAG_VISIBLE   = 0x4;
 	
+	public static final float LEFT = -1f;
+	public static final float UP = -1f;
+	public static final float CENTER = 0f;
+	public static final float RIGHT = 1f;
+	public static final float BOTTOM = 1f;
+	
 	/** The anchor coordinates. */
 	protected float xPos, yPos;
 	/** The anchor relative position in the component, -1 for LEFT/UP, 0 for CENTER, 1 for RIGHT/BOTTOM. */
-	protected float xAnchor = -1, yAnchor = -1;
+	protected float xAnchor = LEFT, yAnchor = UP;
+	/** The anchor to the parent. */
+	protected float xSupAnchor = LEFT, ySupAnchor = UP;
 	/** The target size, default to automatic size. */
 	protected float width = SIZE_AUTO, height = SIZE_AUTO;
 	/** The real width, can be either target size, or automatic size. */
@@ -296,6 +304,38 @@ public abstract class GuiObject {
 		return this.yAnchor;
 	}
 	
+	protected void onXSupAnchorChanged() { }
+	protected void onYSupAnchorChanged() { }
+	
+	public void setXSupAnchor(float xSupAnchor) {
+		if (this.xSupAnchor != xSupAnchor) {
+			this.xSupAnchor = xSupAnchor;
+			this.updateXOffset();
+			this.onXAnchorChanged();
+		}
+	}
+	
+	public void setYSupAnchor(float ySupAnchor) {
+		if (this.ySupAnchor != ySupAnchor) {
+			this.ySupAnchor = ySupAnchor;
+			this.updateYOffset();
+			this.onYAnchorChanged();
+		}
+	}
+	
+	public void setSupAnchor(float xSupAnchor, float ySupAnchor) {
+		this.setXSupAnchor(xSupAnchor);
+		this.setYSupAnchor(ySupAnchor);
+	}
+	
+	public float getXSupAnchor() {
+		return this.xSupAnchor;
+	}
+	
+	public float getYSupAnchor() {
+		return this.ySupAnchor;
+	}
+	
 	// [ Offset ] //
 	
 	/** Callback method called when {@link #xOffset} was changed (using {@link #updateXOffset()}). */
@@ -321,8 +361,10 @@ public abstract class GuiObject {
 			this.onRealWidthChanged();
 		}
 		
-		float off = (this.xPos + (this.xAnchor + 1f) * (width / -2f));
-		if (this.parent != null) off += this.parent.xOffset;
+		float off = this.xPos + (this.xAnchor + 1f) * (width / -2f);
+		if (this.parent != null) {
+			off += this.parent.xOffset + (this.xSupAnchor + 1f) * (this.parent.realWidth / 2f);
+		}
 		
 		if (this.xOffset != off) {
 			this.xOffset = off;
@@ -343,8 +385,11 @@ public abstract class GuiObject {
 			this.onRealHeightChanged();
 		}
 		
-		float off = (this.yPos + (this.yAnchor + 1f) * (height / -2f));
-		if (this.parent != null) off += this.parent.yOffset;
+		float off = this.yPos + (this.yAnchor + 1f) * (height / -2f);
+		if (this.parent != null) {
+			off += this.parent.yOffset + (this.ySupAnchor + 1f) * (this.parent.realHeight / 2f);
+		}
+		
 		if (this.yOffset != off) {
 			this.yOffset = off;
 			this.yIntOffset = Math.round(this.yOffset);

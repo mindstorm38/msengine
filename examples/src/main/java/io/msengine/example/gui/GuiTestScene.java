@@ -49,7 +49,8 @@ public class GuiTestScene extends GuiScene {
 		this.addChild(this.exampleTex);
 		
 		this.jetbrainsText = new GuiText("while ((read = stream.read(buf)) != -1) {}");
-		// this.jetbrainsText.setPos(30, 500);
+		this.jetbrainsText.setPos(-20, -20);
+		this.jetbrainsText.setSupAnchor(1, 1);
 		this.jetbrainsText.setAnchor(1, 1);
 		this.jetbrainsText.setIgnoreDescent(true);
 		this.addChild(this.jetbrainsText);
@@ -57,10 +58,11 @@ public class GuiTestScene extends GuiScene {
 		this.ubuntuText = new GuiText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed nisl commodo, porttitor libero ut, efficitur erat.");
 		this.ubuntuText.setYPos(550);
 		this.ubuntuText.setXAnchor(0);
+		this.ubuntuText.setXSupAnchor(0);
 		this.ubuntuText.addColorEffect(0, Color.GREEN);
 		this.ubuntuText.addColorEffect(10, Color.RED);
 		this.ubuntuText.addColorEffect(20, Color.BLUE);
-		//this.addChild(this.ubuntuText);
+		this.addChild(this.ubuntuText);
 		
 		this.testInput = new GuiDebugInput();
 		this.testInput.setPos(30, 400);
@@ -121,8 +123,8 @@ public class GuiTestScene extends GuiScene {
 	protected void onSceneResized(float width, float height) {
 		super.onSceneResized(width, height);
 		this.exampleTexBgCentered.setCenteredSize(0, 0, width, height);
-		this.ubuntuText.setXPos(width / 2);
-		this.jetbrainsText.setPos(width - 20, height - 20);
+		// this.ubuntuText.setXPos(width / 2);
+		// this.jetbrainsText.setPos(width - 20, height - 20);
 	}
 	
 }
