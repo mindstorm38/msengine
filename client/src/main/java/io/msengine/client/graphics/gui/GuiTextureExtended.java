@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class GuiTextureExtended extends GuiObject {
 	
+	public static final String DEFAULT_STATE = "default";
+	
 	protected GuiBufferArray buf;
 	protected boolean updateBuffers;
 	protected int scale = 1;
@@ -23,17 +25,10 @@ public class GuiTextureExtended extends GuiObject {
 	protected final Map<String, StateTracker> states = new HashMap<>();
 	protected StateTracker currentState;
 	
-	/*protected int texName, texWidth, texHeight;
-	protected float texCoordX, texCoordY, texCoordW, texCoordH;
-	protected int borderLeft, borderTop, borderRight, borderBottom;*/
-	
 	@Override
 	protected void init() {
 		this.buf = this.acquireProgram(GuiProgramMain.TYPE).createBuffer(false, true);
 		this.updateTextureBuffers();
-		/*if (this.isTextureValid()) {
-			this.updateTextureBuffers();
-		}*/
 	}
 	
 	@Override
@@ -53,13 +48,6 @@ public class GuiTextureExtended extends GuiObject {
 		
 		if (tracker == null || !tracker.state.isTextureValid())
 			return;
-		
-		/*if (!this.isTextureValid())
-			return;
-		
-		if (this.updateBuffers) {
-			this.updateTextureBuffers();
-		}*/
 		
 		GuiProgramMain program = this.useProgram(GuiProgramMain.TYPE);
 		
@@ -250,10 +238,39 @@ public class GuiTextureExtended extends GuiObject {
 		this.updateBuffers = true;
 	}
 	
+	public void addStateAndSet(String name, State state) {
+		this.addState(name, state);
+		this.setState(name);
+	}
+	
 	public void removeState(String name) {
-		if (this.states.remove(name) == this.currentState) {
-			this.currentState = null;
+		StateTracker removed = this.states.remove(name);
+		if (removed != null) {
 			this.updateBuffers = true;
+			if (removed == this.currentState) {
+				this.currentState = null;
+			}
+		}
+	}
+	
+	public void clearStates() {
+		if (!this.states.isEmpty()) {
+			this.states.clear();
+			this.updateBuffers = true;
+			if (this.currentState != null) {
+				this.currentState = null;
+			}
+		}
+	}
+	
+	/**
+	 * Set a state to be the single state and set it.
+	 * @param state The unique state.
+	 */
+	public void setState(State state) {
+		if (this.states.size() != 1 || !this.states.containsKey(DEFAULT_STATE)) {
+			this.states.clear();
+			this.addStateAndSet(DEFAULT_STATE, state);
 		}
 	}
 	
@@ -278,6 +295,10 @@ public class GuiTextureExtended extends GuiObject {
 		return new State().setTextureTile(tile);
 	}
 	
+	public static State newState() {
+		return new State();
+	}
+	
 	public static class State {
 		
 		protected int texName, texWidth, texHeight;
@@ -297,7 +318,6 @@ public class GuiTextureExtended extends GuiObject {
 			if (this.texWidth != textureWidth || this.texHeight != textureHeight) {
 				this.texWidth = textureWidth;
 				this.texHeight = textureHeight;
-				//this.updateBuffers = true;
 			}
 			return this;
 		}
@@ -323,7 +343,6 @@ public class GuiTextureExtended extends GuiObject {
 			this.texCoordY = y;
 			this.texCoordW = width;
 			this.texCoordH = height;
-			//this.updateBuffers = true;
 			return this;
 		}
 		
@@ -344,68 +363,9 @@ public class GuiTextureExtended extends GuiObject {
 			this.borderTop = top;
 			this.borderRight = right;
 			this.borderBottom = bottom;
-			//this.updateBuffers = true;
-			//this.updateOffsets();
 			return this;
 		}
 		
 	}
-	
-	/*public boolean isTextureValid() {
-		return this.texName > 0;
-	}
-	
-	public void removeTexture() {
-		this.texName = 0;
-	}
-	
-	public void setTexture(int textureName, int textureWidth, int textureHeight) {
-		this.texName = textureName;
-		if (this.texWidth != textureWidth || this.texHeight != textureHeight) {
-			this.texWidth = textureWidth;
-			this.texHeight = textureHeight;
-			this.updateBuffers = true;
-		}
-	}
-	
-	public void setTexture(Texture texture, int textureWidth, int textureHeight) {
-		texture.checkValid();
-		this.setTexture(texture.getName(), textureWidth, textureHeight);
-	}
-	
-	public void setTexture(ResTexture2D texture) {
-		this.setTexture(texture, texture.getWidth(), texture.getHeight());
-	}
-	
-	public void setTexture(DynTexture2D texture) {
-		this.setTexture(texture, texture.getWidth(), texture.getHeight());
-	}
-	
-	public void setTextureCoords(float x, float y, float width, float height) {
-		this.texCoordX = x;
-		this.texCoordY = y;
-		this.texCoordW = width;
-		this.texCoordH = height;
-		this.updateBuffers = true;
-	}
-	
-	public void resetTextureCoords() {
-		this.setTextureCoords(0, 0, 1, 1);
-	}
-	
-	public void setTextureTile(MapTexture2D.Tile tile) {
-		MapTexture2D map = tile.getMap();
-		this.setTexture(map, (int) (map.getWidth() * tile.getWidth()), (int) (map.getHeight() * tile.getHeight()));
-		this.setTextureCoords(tile.getX(), tile.getY(), tile.getWidth(), tile.getHeight());
-	}
-	
-	public void setBorders(int left, int top, int right, int bottom) {
-		this.borderLeft = left;
-		this.borderTop = top;
-		this.borderRight = right;
-		this.borderBottom = bottom;
-		this.updateBuffers = true;
-		this.updateOffsets();
-	}*/
 	
 }
