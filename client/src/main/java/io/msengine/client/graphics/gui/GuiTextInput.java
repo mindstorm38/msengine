@@ -3,6 +3,7 @@ package io.msengine.client.graphics.gui;
 import io.msengine.client.graphics.font.Font;
 import io.msengine.client.graphics.font.FontFamily;
 import io.msengine.client.graphics.gui.event.GuiEvent;
+import io.msengine.client.graphics.gui.event.GuiEventListener;
 import io.msengine.client.graphics.gui.mask.GuiMask;
 import io.msengine.client.graphics.gui.mask.GuiMaskRect;
 import io.msengine.client.window.Window;
@@ -463,6 +464,14 @@ public class GuiTextInput extends GuiParent implements
 	}
 	
 	// Event class //
+	
+	public void addChangedEventListener(GuiEventListener<? super ChangedEvent> listener) {
+		this.addEventListener(ChangedEvent.class, listener);
+	}
+	
+	public void addActiveEventListener(GuiEventListener<? super ActiveEvent> listener) {
+		this.addEventListener(ActiveEvent.class, listener);
+	}
 	
 	public static class ChangedEvent extends GuiEvent {
 		
