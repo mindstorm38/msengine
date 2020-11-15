@@ -175,6 +175,7 @@ public class GuiTextInput extends GuiParent implements
 				this.cursor.setVisible(false);
 				this.selection.setVisible(false);
 			}
+			this.fireEvent(new ActiveEvent(active));
 		}
 	}
 	
@@ -473,6 +474,20 @@ public class GuiTextInput extends GuiParent implements
 		
 		public String getValue() {
 			return this.value;
+		}
+		
+	}
+	
+	public static class ActiveEvent extends GuiEvent {
+		
+		private final boolean active;
+		
+		public ActiveEvent(boolean active) {
+			this.active = active;
+		}
+		
+		public boolean isActive() {
+			return this.active;
 		}
 		
 	}
