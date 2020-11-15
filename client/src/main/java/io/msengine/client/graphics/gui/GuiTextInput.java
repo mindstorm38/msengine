@@ -1,5 +1,7 @@
 package io.msengine.client.graphics.gui;
 
+import io.msengine.client.graphics.font.Font;
+import io.msengine.client.graphics.font.FontFamily;
 import io.msengine.client.graphics.gui.event.GuiEvent;
 import io.msengine.client.graphics.gui.mask.GuiMask;
 import io.msengine.client.graphics.gui.mask.GuiMaskRect;
@@ -33,7 +35,6 @@ public class GuiTextInput extends GuiParent implements
 	private final StringBuilder builder = new StringBuilder();
 	
 	private int cursorIndex;
-	private float cursorWidth = 1;
 	
 	// In ms
 	private long cursorLastBlink;
@@ -47,17 +48,21 @@ public class GuiTextInput extends GuiParent implements
 	public GuiTextInput() {
 		
 		this.text = new InnerText();
-		this.text.setAnchor(-1, 0);
+		this.text.setYAnchor(0);
+		this.text.setYSupAnchor(0);
 		this.addChild(this.text);
 		
 		this.cursor = new GuiColorSolid(DEFAULT_CURSOR_COLOR);
 		this.cursor.setVisible(false);
 		this.cursor.setAnchor(0, 0);
+		this.cursor.setYSupAnchor(0);
+		this.cursor.setWidth(1);
 		this.addChild(this.cursor);
 		
 		this.selection = new GuiColorSolid(DEFAULT_SELECTION_COLOR);
 		this.selection.setVisible(false);
-		this.selection.setAnchor(-1, 0);
+		this.selection.setYAnchor(0);
+		this.selection.setYSupAnchor(0);
 		this.addChild(this.selection);
 		
 		this.mask = new GuiMaskRect();
@@ -120,9 +125,6 @@ public class GuiTextInput extends GuiParent implements
 	@Override
 	public void onRealHeightChanged() {
 		super.onRealHeightChanged();
-		this.text.setYPos(this.realHeight / 2f);
-		this.cursor.setYPos(this.realHeight / 2f);
-		this.selection.setYPos(this.realHeight / 2f);
 		this.mask.setHeight(this.realHeight);
 	}
 	
@@ -176,6 +178,27 @@ public class GuiTextInput extends GuiParent implements
 		}
 	}
 	
+	// Properties //
+	
+	public int getCursorBlinkDelay() {
+		return this.cursorBlinkDelay;
+	}
+	
+	public void setCursorBlinkDelay(int delay) {
+		this.cursorBlinkDelay = delay;
+	}
+	
+	public float getScrollPadding() {
+		return this.scrollPadding;
+	}
+	
+	public void setScrollPadding(float padding) {
+		if (padding != this.scrollPadding) {
+			this.scrollPadding = padding;
+			this.updateCursor();
+		}
+	}
+	
 	// Access children //
 	
 	public GuiText getText() {
@@ -188,6 +211,14 @@ public class GuiTextInput extends GuiParent implements
 	
 	public GuiColorSolid getSelection() {
 		return this.selection;
+	}
+	
+	public void setTextFont(Font font) {
+		this.text.setFont(font);
+	}
+	
+	public void setTextFont(FontFamily family, float size) {
+		this.text.setFont(family, size);
 	}
 	
 	// Text //
@@ -213,7 +244,7 @@ public class GuiTextInput extends GuiParent implements
 	
 	protected void onTextSizeChanged() {
 		float textHeight = this.text.getRealHeight();
-		this.cursor.setSize(this.cursorWidth, textHeight);
+		this.cursor.setHeight(textHeight);
 		this.selection.setHeight(textHeight);
 	}
 	
@@ -221,7 +252,7 @@ public class GuiTextInput extends GuiParent implements
 		
 		float scrollPadding = this.scrollPadding;
 		float cursorOffset = this.text.getCodePointOffset(this.cursorIndex - 1);
-		float cursorWidth = this.cursorWidth;
+		float cursorWidth = this.cursor.getWidth();
 		float width = this.realWidth;
 		float textPos = this.text.getXPos();
 		
@@ -423,8 +454,8 @@ public class GuiTextInput extends GuiParent implements
 		}
 		
 		@Override
-		protected void onFontChanged() {
-			super.onFontChanged();
+		protected void onRealHeightChanged() {
+			super.onRealHeightChanged();
 			GuiTextInput.this.onTextSizeChanged();
 		}
 		
