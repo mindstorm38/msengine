@@ -37,6 +37,13 @@ public abstract class GuiMask extends GuiObject {
 	protected abstract void stopMask();
 	protected abstract void draw();
 	
+	@Override
+	protected boolean updateCursorOver(float x, float y) {
+		super.updateCursorOver(x, y);
+		// Do not block the mouse for neighbors behind the mask.
+		return false;
+	}
+	
 	/**
 	 * Use this mask, the returned tracker is a manager singleton and implement {@link AutoCloseable},
 	 * so this method can be used with <code>try-with-resource</code> block like :

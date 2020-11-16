@@ -79,6 +79,38 @@ public class GuiParent extends GuiObject {
 		}
 	}
 	
+	@Override
+	protected boolean updateCursorOver(float x, float y) {
+		
+		boolean over = false;
+		GuiObject child;
+		
+		for (int i = this.children.size() - 1; i >= 0; --i) {
+			child = this.children.get(i);
+			if (over) {
+				child.setCursorOver(false);
+			} else {
+				over = child.updateCursorOver(x, y);
+			}
+		}
+		
+		if (over) {
+			this.setCursorOver(true);
+			return true;
+		} else {
+			return super.updateCursorOver(x, y);
+		}
+		
+	}
+	
+	@Override
+	protected void updateCursorNotOver() {
+		if (this.isCursorOver()) {
+			this.children.forEach(child -> child.setCursorOver(false));
+			this.setCursorOver(false);
+		}
+	}
+	
 	public boolean hasChild(GuiObject child) {
 		return this.children.contains(child);
 	}

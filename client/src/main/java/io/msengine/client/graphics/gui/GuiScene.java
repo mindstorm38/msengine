@@ -107,4 +107,9 @@ public class GuiScene extends GuiParent {
 		throw new UnsupportedOperationException("Can't add a scene to a GuiParent.");
 	}
 	
+	@Override
+	public boolean isPointOver(float x, float y) {
+		return true;
+	}
+	
 }

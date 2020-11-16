@@ -76,16 +76,16 @@ public class GuiTextInput extends GuiParent implements
 	@Override
 	protected void init() {
 		super.init();
-		this.getWindowEventManager().addEventListener(WindowCharEventListener.class, this);
-		this.getWindowEventManager().addEventListener(WindowKeyEventListener.class, this);
-		this.getWindowEventManager().addEventListener(WindowMouseButtonEventListener.class, this);
+		this.getWindow().addEventListener(WindowCharEventListener.class, this);
+		this.getWindow().addEventListener(WindowKeyEventListener.class, this);
+		this.getWindow().addEventListener(WindowMouseButtonEventListener.class, this);
 	}
 	
 	@Override
 	protected void stop() {
-		this.getWindowEventManager().removeEventListener(WindowCharEventListener.class, this);
-		this.getWindowEventManager().removeEventListener(WindowKeyEventListener.class, this);
-		this.getWindowEventManager().removeEventListener(WindowMouseButtonEventListener.class, this);
+		this.getWindow().removeEventListener(WindowCharEventListener.class, this);
+		this.getWindow().removeEventListener(WindowKeyEventListener.class, this);
+		this.getWindow().removeEventListener(WindowMouseButtonEventListener.class, this);
 		super.stop();
 	}
 	
@@ -141,7 +141,7 @@ public class GuiTextInput extends GuiParent implements
 	
 	@Override
 	public void onWindowKeyEvent(Window origin, int key, int scanCode, int action, int mods) {
-		if (this.active) {
+		if (this.mustRender() && this.active) {
 			if (action == Window.ACTION_PRESS || action == Window.ACTION_REPEAT) {
 				this.handleKeyEvent(key, mods);
 			}
@@ -150,11 +150,12 @@ public class GuiTextInput extends GuiParent implements
 	
 	@Override
 	public void onWindowMouseButtonEvent(Window origin, int button, int action, int mods) {
-		if (button == Window.MOUSE_BUTTON_LEFT && action == Window.ACTION_PRESS) {
-			origin.getCursorPos((x, y) -> {
+		if (this.mustRender() && button == Window.MOUSE_BUTTON_LEFT && action == Window.ACTION_PRESS) {
+			this.setActive(this.isCursorOver());
+			/*origin.getCursorPos((x, y) -> {
 				//System.out.println("Mouse clicked at: " + x + "/" + y);
 				this.setActive(this.isPointOver((float) x, (float) y));
-			});
+			});*/
 		}
 	}
 	

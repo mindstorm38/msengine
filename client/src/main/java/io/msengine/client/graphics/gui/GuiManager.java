@@ -9,6 +9,8 @@ import io.msengine.client.renderer.model.ModelApplyListener;
 import io.msengine.client.renderer.model.ModelHandler;
 import io.msengine.client.window.ContextWindow;
 import io.msengine.client.window.Window;
+import io.msengine.client.window.listener.WindowCursorEnterEventListener;
+import io.msengine.client.window.listener.WindowCursorPositionEventListener;
 import io.msengine.client.window.listener.WindowFramebufferSizeEventListener;
 import io.msengine.common.util.Color;
 import org.joml.Matrix4f;
@@ -23,7 +25,11 @@ import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class GuiManager implements WindowFramebufferSizeEventListener, ModelApplyListener {
+public class GuiManager implements
+		WindowFramebufferSizeEventListener,
+		WindowCursorPositionEventListener,
+		WindowCursorEnterEventListener,
+		ModelApplyListener {
 	
 	private static final Logger LOGGER = Logger.getLogger("mse.gui");
 	
@@ -86,7 +92,9 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 		this.window = window;
 		this.checkWindowContext();
 		this.updateSceneSizeFromWindow();
-		this.window.getEventManager().addEventListener(WindowFramebufferSizeEventListener.class, this);
+		this.window.addEventListener(WindowFramebufferSizeEventListener.class, this);
+		this.window.addEventListener(WindowCursorPositionEventListener.class, this);
+		this.window.addEventListener(WindowCursorEnterEventListener.class, this);
 		
 	}
 	
@@ -101,7 +109,9 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 		}
 		
 		this.checkWindowContext();
-		this.window.getEventManager().removeEventListener(WindowFramebufferSizeEventListener.class, this);
+		this.window.removeEventListener(WindowFramebufferSizeEventListener.class, this);
+		this.window.removeEventListener(WindowCursorPositionEventListener.class, this);
+		this.window.removeEventListener(WindowCursorEnterEventListener.class, this);
 		this.unloadScene();
 		this.instances.values().forEach(GuiScene::stop);
 		this.instances.clear();
@@ -447,6 +457,24 @@ public class GuiManager implements WindowFramebufferSizeEventListener, ModelAppl
 	public void onWindowFramebufferSizeChangedEvent(Window origin, int width, int height) {
 		if (origin == this.window) {
 			this.updateSceneSize(width, height);
+		}
+	}
+	
+	@Override
+	public void onWindowCursorPositionEvent(Window origin, double x, double y) {
+		if (this.currentScene != null) {
+			this.currentScene.updateCursorOver((float) x, (float) y);
+		}
+	}
+	
+	@Override
+	public void onWindowCursorEnterEvent(Window origin, boolean entered) {
+		if (this.currentScene != null) {
+			if (!entered) {
+				this.currentScene.updateCursorNotOver();
+			} else {
+				this.window.getCursorPos((x, y) -> this.currentScene.updateCursorOver((float) x, (float) y));
+			}
 		}
 	}
 	

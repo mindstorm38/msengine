@@ -1,6 +1,8 @@
 package io.msengine.client.window;
 
 import io.msengine.client.window.listener.WindowCharEventListener;
+import io.msengine.client.window.listener.WindowCursorEnterEventListener;
+import io.msengine.client.window.listener.WindowCursorPositionEventListener;
 import io.msengine.client.window.listener.WindowFramebufferSizeEventListener;
 import io.msengine.client.window.listener.WindowKeyEventListener;
 import io.msengine.client.window.listener.WindowMouseButtonEventListener;
@@ -11,7 +13,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.logging.Logger;
 
@@ -59,6 +60,8 @@ public abstract class Window implements AutoCloseable {
         this.eventManager.addAllowedClass(WindowKeyEventListener.class);
         this.eventManager.addAllowedClass(WindowMouseButtonEventListener.class);
         this.eventManager.addAllowedClass(WindowMousePositionEventListener.class);
+        this.eventManager.addAllowedClass(WindowCursorPositionEventListener.class);
+        this.eventManager.addAllowedClass(WindowCursorEnterEventListener.class);
         this.eventManager.addAllowedClass(WindowScrollEventListener.class);
 
         glfwSetKeyCallback(id, (long window, int key, int scanCode, int action, int mods) -> {
@@ -68,7 +71,7 @@ public abstract class Window implements AutoCloseable {
         glfwSetMouseButtonCallback(id, (long window, int button, int action, int mods) -> {
             this.eventManager.fireListeners(WindowMouseButtonEventListener.class, l -> l.onWindowMouseButtonEvent(this, button, action, mods));
         });
-
+        
         glfwSetScrollCallback(id, (long window, double xOffset, double yOffset) -> {
             this.eventManager.fireListeners(WindowScrollEventListener.class, l -> l.onWindowScrollEvent(this, xOffset, yOffset));
         });
@@ -76,9 +79,16 @@ public abstract class Window implements AutoCloseable {
         glfwSetCursorPosCallback(id, (long window, double x, double y) -> {
             int ix = (int) x;
             int iy = (int) y;
+            float fx = (float) x;
+            float fy = (float) y;
             this.eventManager.fireListeners(WindowMousePositionEventListener.class, l -> l.onWindowMousePositionEvent(this, ix, iy));
+            this.eventManager.fireListeners(WindowCursorPositionEventListener.class, l -> l.onWindowCursorPositionEvent(this, fx, fy));
         });
 
+        glfwSetCursorEnterCallback(id, (long window, boolean entered) -> {
+            this.eventManager.fireListeners(WindowCursorEnterEventListener.class, l -> l.onWindowCursorEnterEvent(this, entered));
+        });
+        
         glfwSetCharCallback(id, (long window, int codePoint) -> {
             this.eventManager.fireListeners(WindowCharEventListener.class, l -> l.onWindowCharEvent(this, codePoint));
         });
@@ -116,6 +126,14 @@ public abstract class Window implements AutoCloseable {
 
     public MethodEventManager getEventManager() {
         return this.eventManager;
+    }
+    
+    public <A> void addEventListener(Class<A> clazz, A listener) {
+        this.eventManager.addEventListener(clazz, listener);
+    }
+    
+    public <A> void removeEventListener(Class<A> clazz, A listener) {
+        this.eventManager.removeEventListener(clazz, listener);
     }
 
     // Real methods //

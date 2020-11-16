@@ -18,9 +18,10 @@ public abstract class GuiObject {
 
 	public static final int SIZE_AUTO = -1;
 	
-	private static final int FLAG_READY     = 0x1;
-	private static final int FLAG_DISPLAYED = 0x2;
-	private static final int FLAG_VISIBLE   = 0x4;
+	private static final int FLAG_READY      = 0x1;
+	private static final int FLAG_DISPLAYED  = 0x2;
+	private static final int FLAG_VISIBLE    = 0x4;
+	private static final int FLAG_CURSOR_OVER = 0x8;
 	
 	public static final float LEFT = -1f;
 	public static final float UP = -1f;
@@ -87,28 +88,34 @@ public abstract class GuiObject {
 		}
 	}
 	
+	// [ Flags ] //
+	
 	public boolean isReady() {
 		return this.hasFlag(FLAG_READY);
-	}
-	
-	void setDisplayed(boolean displayed) {
-		this.setFlag(FLAG_DISPLAYED, displayed);
 	}
 	
 	public boolean isDisplayed() {
 		return this.hasFlag(FLAG_DISPLAYED);
 	}
 	
-	public void setVisible(boolean visible) {
-		this.setFlag(FLAG_VISIBLE, visible);
+	void setDisplayed(boolean displayed) {
+		this.setFlag(FLAG_DISPLAYED, displayed);
 	}
 	
 	public boolean isVisible() {
 		return this.hasFlag(FLAG_VISIBLE);
 	}
 	
+	public void setVisible(boolean visible) {
+		this.setFlag(FLAG_VISIBLE, visible);
+	}
+	
 	public boolean mustRender() {
 		return this.hasFlag(FLAG_READY | FLAG_DISPLAYED | FLAG_VISIBLE);
+	}
+	
+	public boolean isCursorOver() {
+		return this.hasFlag(FLAG_CURSOR_OVER);
 	}
 	
 	private void setFlag(int mask, boolean enabled) {
@@ -123,6 +130,8 @@ public abstract class GuiObject {
 		return (this.flags & mask) == mask;
 	}
 	
+	// [ Programs ] //
+	
 	public GuiManager getManager() {
 		return this.manager;
 	}
@@ -131,13 +140,13 @@ public abstract class GuiObject {
 		return this.manager.getWindow();
 	}
 	
+	/**
+	 * @deprecated Use {@link #getWindow()} instead and use direct methods like {@link Window#addEventListener(Class, Object)}
+	 */
+	@Deprecated
 	public MethodEventManager getWindowEventManager() {
 		return this.manager.getWindow().getEventManager();
 	}
-	
-	/*public GuiProgramMain getProgram() {
-		return this.manager == null ? null : this.manager.getProgram();
-	}*/
 	
 	public ModelHandler getModel() {
 		return this.model;
@@ -463,8 +472,45 @@ public abstract class GuiObject {
 		return this.realHeight;
 	}
 	
+	// [ Mouse over ] //
+	
+	protected void onMouseOverChanged(boolean over) { }
+	
 	/**
-	 * Utility method to compute if a point is over this object, mostly used to mouse over detection.
+	 * Set internal "cursor over" flag and fire callbacks and event if values has changed.
+	 * @param over True if the mouse if over.
+	 */
+	protected void setCursorOver(boolean over) {
+		if (this.hasFlag(FLAG_CURSOR_OVER) != over) {
+			this.setFlag(FLAG_CURSOR_OVER, over);
+			this.onMouseOverChanged(over);
+			this.fireEvent(new MouseOverEvent(over));
+		}
+	}
+	
+	/**
+	 * Update the internal "cursor over" flag according to {@link #isPointOver(float, float)}.
+	 * @param x The mouse x pos.
+	 * @param y The mouse y pos.
+	 * @return True if this object is blocking the mouse for neighbors children behind it.
+	 */
+	protected boolean updateCursorOver(float x, float y) {
+		boolean over = this.isPointOver(x, y);
+		this.setCursorOver(over);
+		return over;
+	}
+	
+	/**
+	 * <p>Force this element (and all elements in if this object is a parent) to set mouse over flag to false.</p>
+	 * <p>This method is called by the manager when the cursor leaves the window boundaries.</p>
+	 */
+	protected void updateCursorNotOver() {
+		this.setCursorOver(false);
+	}
+	
+	/**
+	 * <p>Utility method to compute if a point is over this object, mostly used to mouse over detection.</p>
+	 * <p>This method is used to compute "over" status of objects and can be overridden for specific bounds.</p>
 	 * @param x The point X.
 	 * @param y The point Y.
 	 * @return True if this point is over this object.
@@ -472,7 +518,7 @@ public abstract class GuiObject {
 	public boolean isPointOver(float x, float y) {
 		float xOff = this.xOffset;
 		float yOff = this.yOffset;
-		return x >= xOff && y >= yOff && x < (xOff + this.getRealWidth()) && y < (yOff + this.getRealHeight());
+		return x >= xOff && y >= yOff && x < (xOff + this.realWidth) && y < (yOff + this.realHeight);
 	}
 	
 	// [ Parent ] //
@@ -512,6 +558,22 @@ public abstract class GuiObject {
 	public void fireEvent(GuiEvent event) {
 		if (this.eventManager != null) {
 			this.eventManager.fireGuiEvent(this, event);
+		}
+	}
+	
+	// [ Common events ] //
+	
+	public void addMouseOverEventListener(GuiEventListener<? super MouseOverEvent> listener) {
+		this.addEventListener(MouseOverEvent.class, listener);
+	}
+	
+	public static class MouseOverEvent extends GuiEvent {
+		private final boolean over;
+		public MouseOverEvent(boolean over) {
+			this.over = over;
+		}
+		public boolean isMouseOver() {
+			return this.over;
 		}
 	}
 

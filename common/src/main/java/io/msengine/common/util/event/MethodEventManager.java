@@ -16,9 +16,6 @@ public class MethodEventManager {
 
 	private final HashMap<Class<?>, CopyOnWriteArrayList<?>> eventListeners = new HashMap<>();
 	private final HashSet<Class<?>> allowedClass = new HashSet<>();
-	/*private final HashSet<Class<?>> firingListeners = new HashSet<>();
-	private final HashMap<Class<?>, List<?>> toAddListeners = new HashMap<>();
-	private final HashMap<Class<?>, List<?>> toRemoveListeners = new HashMap<>();*/
 	
 	public MethodEventManager(Class<?>...allowedClasses) {
 		Collections.addAll(this.allowedClass, allowedClasses);
@@ -61,15 +58,6 @@ public class MethodEventManager {
 	
 	public <A> void addEventListener(Class<A> clazz, A listener) {
 		this.getListenerGroup(clazz).add(listener);
-
-		/*List<A> group = this.getListenerGroup(clazz);
-		
-		if (this.firingListeners.contains(clazz)) {
-			((List<A>) this.toAddListeners.computeIfAbsent(clazz, cl -> new ArrayList<>())).add(listener);
-		} else {
-			group.add(listener);
-		}*/
-		
 	}
 	
 	public <A> void addEventListener(A listener) {
@@ -83,14 +71,6 @@ public class MethodEventManager {
 		if (group != null) {
 			group.remove(listener);
 		}
-
-		/*List<A> group = this.getListenerGroup(clazz);
-		
-		if (this.firingListeners.contains(clazz)) {
-			((List<A>) this.toRemoveListeners.computeIfAbsent(clazz, cl -> new ArrayList<>())).add(listener);
-		} else {
-			group.remove(listener);
-		}*/
 		
 	}
 
@@ -107,38 +87,9 @@ public class MethodEventManager {
 		if (group != null) {
 			group.forEach(l -> isolatedListenerCall(l, listenerCaller));
 		}
-
-		/*List<A> toAddList = (List<A>) this.toAddListeners.get(listenerClass);
-		List<A> toRemoveList = (List<A>) this.toRemoveListeners.get(listenerClass);
-		
-		if (toAddList != null && !toAddList.isEmpty()) {
-			
-			group.addAll(toAddList);
-			toAddList.clear();
-			
-		}
-		
-		if (toRemoveList != null && !toRemoveList.isEmpty()) {
-			
-			group.removeAll(toRemoveList);
-			toRemoveList.clear();
-			
-		}
-		
-		this.firingListeners.add(listenerClass);
-		
-		group.forEach((l) -> {
-			
-			try {
-				listenerCaller.accept(l);
-			} catch (RuntimeException ignored) {}
-			
-		});
-		
-		this.firingListeners.remove(listenerClass);*/
 		
 	}
-
+	
 	private static <L> void isolatedListenerCall(L listener, Consumer<L> listenerCaller) {
 		try {
 			listenerCaller.accept(listener);
