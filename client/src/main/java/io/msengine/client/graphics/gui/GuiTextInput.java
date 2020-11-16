@@ -377,6 +377,11 @@ public class GuiTextInput extends GuiParent implements
 			this.selectAll();
 		} else if (key == GLFW.GLFW_KEY_C && ctrl) {
 			this.copySelectionToClipboard();
+		} else if (key == GLFW.GLFW_KEY_X && ctrl) {
+			if (this.isSelecting()) {
+				this.copySelectionToClipboard();
+				this.deleteSelection(true);
+			}
 		} else if (key == GLFW.GLFW_KEY_ESCAPE) {
 			this.setActive(false);
 		}
