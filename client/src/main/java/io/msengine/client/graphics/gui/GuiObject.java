@@ -472,9 +472,9 @@ public abstract class GuiObject {
 		return this.realHeight;
 	}
 	
-	// [ Mouse over ] //
+	// [ Cursor over ] //
 	
-	protected void onMouseOverChanged(boolean over) { }
+	protected void onCursorOverChanged(boolean over) { }
 	
 	/**
 	 * Set internal "cursor over" flag and fire callbacks and event if values has changed.
@@ -483,7 +483,7 @@ public abstract class GuiObject {
 	protected void setCursorOver(boolean over) {
 		if (this.hasFlag(FLAG_CURSOR_OVER) != over) {
 			this.setFlag(FLAG_CURSOR_OVER, over);
-			this.onMouseOverChanged(over);
+			this.onCursorOverChanged(over);
 			this.fireEvent(new MouseOverEvent(over));
 		}
 	}
