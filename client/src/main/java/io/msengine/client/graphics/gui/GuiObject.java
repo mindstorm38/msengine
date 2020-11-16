@@ -502,7 +502,7 @@ public abstract class GuiObject {
 	
 	/**
 	 * <p>Force this element (and all elements in if this object is a parent) to set mouse over flag to false.</p>
-	 * <p>This method is called by the manager when the cursor leaves the window boundaries.</p>
+	 * <p>This method is called by the manager when the cursor leaves the window boundaries or when the scene is unloaded.</p>
 	 */
 	protected void updateCursorNotOver() {
 		this.setCursorOver(false);

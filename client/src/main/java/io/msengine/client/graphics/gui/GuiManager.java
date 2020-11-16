@@ -167,7 +167,8 @@ public class GuiManager implements
 	}
 	
 	/**
-	 * Internal method to get scene instance.
+	 * <p>Internal method to get scene instance <b>(Window context must be checked)</b>.</p>
+	 * <p>This method may build and initialize ({@link GuiScene#innerInit(GuiManager)} the scene.</p>
 	 * @param identifier The scene identifier.
 	 * @return A cached scene instance, or a newly created one if none is cached.
 	 */
@@ -196,6 +197,7 @@ public class GuiManager implements
 			throw new IllegalArgumentException("The scene '" + identifier + "' provider returned null.");
 		
 		this.instances.put(identifier, scene);
+		scene.innerInit(this);
 		return scene;
 		
 	}
@@ -224,6 +226,7 @@ public class GuiManager implements
 		}
 		
 		if (this.currentScene != null) {
+			this.currentScene.updateCursorNotOver();
 			this.currentScene.setDisplayed(false);
 			this.currentScene.unloaded();
 			if (oncePreviousStopped != null) {
@@ -235,14 +238,13 @@ public class GuiManager implements
 		
 		if (scene != null) {
 			
-			scene.innerInit(this);
-			scene.loaded();
-			
 			// Not calling updateSceneSizeFromWindow() because we
 			// don't need to update the renderer.
 			this.window.getFramebufferSize(scene::setSceneSize);
 			
+			scene.loaded();
 			scene.setDisplayed(true);
+			this.updateSceneCursorFromWindow();
 			
 		}
 		
@@ -460,6 +462,12 @@ public class GuiManager implements
 		}
 	}
 	
+	// Scene Cursor //
+	
+	private void updateSceneCursorFromWindow() {
+		this.window.getCursorPos((x, y) -> this.currentScene.updateCursorOver((float) x, (float) y));
+	}
+	
 	@Override
 	public void onWindowCursorPositionEvent(Window origin, double x, double y) {
 		if (this.currentScene != null) {
@@ -473,10 +481,12 @@ public class GuiManager implements
 			if (!entered) {
 				this.currentScene.updateCursorNotOver();
 			} else {
-				this.window.getCursorPos((x, y) -> this.currentScene.updateCursorOver((float) x, (float) y));
+				this.updateSceneCursorFromWindow();
 			}
 		}
 	}
+	
+	// Shader Model Projection //
 	
 	@Override
 	public void modelApply(Matrix4f model) {
