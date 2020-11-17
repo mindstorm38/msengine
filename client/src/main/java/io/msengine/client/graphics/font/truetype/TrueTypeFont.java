@@ -4,6 +4,7 @@ import io.msengine.client.graphics.font.Font;
 import io.msengine.client.graphics.font.FontTexture2D;
 import io.msengine.client.graphics.font.glyph.Glyph;
 import io.msengine.client.graphics.font.glyph.GlyphPage;
+import io.msengine.client.graphics.texture.base.Texture;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.system.MemoryStack;
@@ -21,6 +22,7 @@ public class TrueTypeFont extends Font {
 	
 	private final float scale;
 	private final float lineGap;
+	private final float oversampling = 1f;
 	private final List<GlyphPage> pages = new ArrayList<>();
 	
 	TrueTypeFont(TrueTypeFontFamily family, float size, float scale, float ascent, float descent, float lineGap) {
@@ -84,10 +86,13 @@ public class TrueTypeFont extends Font {
 		
 		// System.out.println("### buildGlyphPage for codePoint=" + codePoint + ", min=" + minCodePoint + ", max=" + maxCodePoint);
 		
+		final float os = this.oversampling;
+		final float osSize = this.getSize() * os;
+		
 		// It's useless to have more maximum code points than the maximum min->max range.
-		final int codePoints = Math.min(128, maxCodePoint - minCodePoint + 1);
-		final int rawBitmapSize = (int) (this.getSize() * 6); // TODO: Maybe fix the UNPACK_ALIGNMENT parameter instead ?
-		final int bitmapSize = rawBitmapSize + ((4 - (rawBitmapSize & 3)) & 3); // Padded for texture store
+		final int codePoints = Math.min(512, maxCodePoint - minCodePoint + 1);
+		final int rawBitmapSize = (int) (osSize * 10); // TODO: Maybe fix the UNPACK_ALIGNMENT parameter instead ?
+		final int bitmapSize = Math.min(rawBitmapSize + ((4 - (rawBitmapSize & 3)) & 3), Texture.getMaxTextureSize()); // Padded for texture store
 		
 		// System.out.println("codePoints=" + codePoints);
 		// System.out.println("bitmapSize=" + bitmapSize);
@@ -124,7 +129,7 @@ public class TrueTypeFont extends Font {
 		
 		while (true) {
 			
-			int res = stbtt_BakeFontBitmap(family.getData(), this.getSize(), pixels, bitmapSize, bitmapSize, refCodePoint, charData);
+			int res = stbtt_BakeFontBitmap(family.getData(), osSize, pixels, bitmapSize, bitmapSize, refCodePoint, charData);
 			
 			// System.out.println("res=" + res);
 			
@@ -214,9 +219,9 @@ public class TrueTypeFont extends Font {
 						refCodePoint + i,
 						aq.s0(), aq.t0(),
 						aq.s1(), aq.t1(),
-						aq.x0(), aq.y0(),
-						aq.x1(), aq.y1(),
-						bc.xadvance()
+						aq.x0() / os, aq.y0() / os,
+						aq.x1() / os, aq.y1() / os,
+						bc.xadvance() / os
 				);
 				
 			}

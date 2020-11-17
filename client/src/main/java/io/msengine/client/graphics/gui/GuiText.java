@@ -83,7 +83,7 @@ public class GuiText extends GuiObject {
 			
 			GuiProgramText program = this.useProgram(GuiProgramText.TYPE);
 			
-			this.model.push().translate(this.xOffset, this.yOffset).apply();
+			this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
 			
 			program.setTextureUnit(0);
 			Texture.setTextureUnit(0);
@@ -292,7 +292,7 @@ public class GuiText extends GuiObject {
 				//System.out.print("Writing char '" + (char) codePoint + "': ");
 				FloatBuffer dataBuffer = bufferData.dataBuffer;
 				glyph.forEachCorner((gx, gy, tx, ty) -> {
-					dataBuffer.put(pos[0] + gx).put(pos[1] + gy).put(tx).put(ty);
+					dataBuffer.put((int) (pos[0] + gx)).put((int) (pos[1] + gy)).put(tx).put(ty);
 					//System.out.print((pos[0] + gx) + "/" + (pos[1] + gy) + "/" + tx + "/" + ty + "   ");
 					color[0].putToBuffer(dataBuffer, true);
 				});

@@ -12,14 +12,21 @@ public class GuiDebugInput extends GuiTextInput {
 	private final GuiColorSolid txt = new GuiColorSolid(Color.BLUE);
 	
 	public GuiDebugInput() {
+		
 		super();
+		
 		this.addChild(this.bg, 0);
+		
 		this.txt.setAnchor(-1, 0);
 		this.addChild(this.txt, 1);
 		this.ref.setAnchor(-1, 0);
 		this.ref.setHeight(1);
 		this.ref.setXPos(0);
 		this.addChild(this.ref, 2);
+		
+		this.txt.setVisible(false);
+		this.ref.setVisible(false);
+		
 	}
 	
 	@Override
