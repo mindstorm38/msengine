@@ -18,9 +18,9 @@ public abstract class GuiObject {
 
 	public static final int SIZE_AUTO = -1;
 	
-	private static final int FLAG_READY      = 0x1;
-	private static final int FLAG_DISPLAYED  = 0x2;
-	private static final int FLAG_VISIBLE    = 0x4;
+	private static final int FLAG_READY       = 0x1;
+	private static final int FLAG_DISPLAYED   = 0x2;
+	private static final int FLAG_VISIBLE     = 0x4;
 	private static final int FLAG_CURSOR_OVER = 0x8;
 	
 	public static final float LEFT = -1f;

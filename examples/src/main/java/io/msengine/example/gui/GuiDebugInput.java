@@ -33,8 +33,10 @@ public class GuiDebugInput extends GuiTextInput {
 	protected void onTextSizeChanged() {
 		super.onTextSizeChanged();
 		GuiText text = this.getText();
-		this.txt.setPos(0, text.getYOffsetFromParent());
-		this.txt.setSize(this.realWidth, text.getRealHeight());
+		if (this.txt != null) {
+			this.txt.setPos(0, text.getYOffsetFromParent());
+			this.txt.setSize(this.realWidth, text.getRealHeight());
+		}
 	}
 	
 	@Override

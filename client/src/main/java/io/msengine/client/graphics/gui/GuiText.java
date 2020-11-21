@@ -19,13 +19,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GuiText extends GuiObject {
 	
 	protected final Map<Integer, GuiBufferArray> buffers = new HashMap<>();
 	protected boolean updateBuffers;
 	
+	protected Supplier<FontFamily> fontSupplier;
+	protected float fontSize = 10f;
 	protected Font font;
+	
 	protected String text;
 	protected int[] codePoints;
 	protected float[] codePointsOffsets;
@@ -33,20 +37,24 @@ public class GuiText extends GuiObject {
 	protected boolean ignoreDescent;
 	protected Map<Integer, Effect> effects;
 	
+	@Deprecated
 	public GuiText(FontFamily family, float size, String text) {
 		this.setFont(family, size);
 		this.setText(text);
 	}
 	
+	@Deprecated
 	public GuiText(Font font, String text) {
 		this.setFont(font);
 		this.setText(text);
 	}
 	
+	@Deprecated
 	public GuiText(FontFamily family, float size) {
 		this.setFont(family, size);
 	}
 	
+	@Deprecated
 	public GuiText(Font font) {
 		this.setFont(font);
 	}
@@ -60,44 +68,51 @@ public class GuiText extends GuiObject {
 	@Override
 	protected void init() {
 		this.acquireProgram(GuiProgramText.TYPE);
-		if (this.isTextReady()) {
-			this.updateTextBuffers();
-		}
+		this.updateFont();
 	}
 	
 	@Override
 	protected void stop() {
+		
 		this.releaseProgram(GuiProgramText.TYPE);
+		
+		this.font = null;
+		
 		this.buffers.values().forEach(GuiBufferArray::close);
 		this.buffers.clear();
+		
 	}
 	
 	@Override
 	protected void render(float alpha) {
 		
-		if (this.isTextReady()) {
-			
-			if (this.updateBuffers) {
-				this.updateTextBuffers();
-			}
-			
-			GuiProgramText program = this.useProgram(GuiProgramText.TYPE);
-			
-			this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
-			
-			program.setTextureUnit(0);
-			Texture.setTextureUnit(0);
-			
-			this.buffers.forEach((textureName, buf) -> {
-				Texture.bindTexture(GL11.GL_TEXTURE_2D, textureName);
-				buf.draw();
-			});
-			
-			Texture.unbindTexture(GL11.GL_TEXTURE_2D);
-			
-			this.model.pop();
-			
+		Font font = this.font;
+		
+		if (font == null || this.text == null)
+			return;
+		
+		if (!font.isValid()) {
+			this.font = null;
+			return;
+		} else if (this.updateBuffers) {
+			this.updateTextBuffers(font);
 		}
+		
+		GuiProgramText program = this.useProgram(GuiProgramText.TYPE);
+		
+		this.model.push().translate(this.xIntOffset, this.yIntOffset).apply();
+		
+		program.setTextureUnit(0);
+		Texture.setTextureUnit(0);
+		
+		this.buffers.forEach((textureName, buf) -> {
+			Texture.bindTexture(GL11.GL_TEXTURE_2D, textureName);
+			buf.draw();
+		});
+		
+		Texture.unbindTexture(GL11.GL_TEXTURE_2D);
+		
+		this.model.pop();
 		
 	}
 	
@@ -112,7 +127,7 @@ public class GuiText extends GuiObject {
 	@Override
 	public float getAutoHeight() {
 		if (this.font == null) {
-			return 0;
+			return this.fontSize;
 		} else {
 			float height = this.font.getSize();
 			if (this.ignoreDescent) {
@@ -124,21 +139,100 @@ public class GuiText extends GuiObject {
 	
 	// Text and font //
 	
-	public boolean isTextReady() {
-		return this.font != null && this.text != null && this.font.isValid();
-	}
-	
+	@Deprecated
 	protected void onFontChanged() { }
 	
-	public void removeFont() {
-		this.font = null;
-		this.updateBuffers = true;
-		this.updateYOffset();
-		this.onFontChanged();
+	/**
+	 * Set the lazy font family supplier used when initializing this object,
+	 * if this object is currently initialized ({@link #isReady()}), the
+	 * supplier is called in this method.
+	 * @param supplier The font family supplier, or null to remove this
+	 */
+	public void setFontFamily(Supplier<FontFamily> supplier) {
+		if (this.fontSupplier != supplier) {
+			this.fontSupplier = supplier;
+			if (this.isReady()) {
+				this.updateFont();
+			}
+		}
 	}
 	
+	/**
+	 * Set the font family for this text, this method just create a dummy
+	 * supplier given to {@link #setFont(Supplier, float)}.
+	 * @param family The font family.
+	 */
+	public void setFontFamily(FontFamily family) {
+		this.setFontFamily((family == null) ? null : (() -> family));
+	}
+	
+	public void setFontSize(float size) {
+		if (this.fontSize != size) {
+			this.fontSize = size;
+			this.updateFont();
+		}
+	}
+	
+	public void setFont(Supplier<FontFamily> supplier, float size) {
+		this.setFontFamily(supplier);
+		this.setFontSize(size);
+	}
+	
+	public void setFont(FontFamily family, float size) {
+		this.setFontFamily(family);
+		this.setFontSize(size);
+	}
+	
+	public float getFontSize() {
+		return this.fontSize;
+	}
+	
+	/**
+	 * @return The font family currently used, <b>this may return null if
+	 * this object is not initialized ({@link #isReady()})</b>.
+	 */
+	public FontFamily getFontFamily() {
+		return this.font == null ? null : this.font.getFamily();
+	}
+	
+	private void updateFont() {
+		
+		Font font = null;
+		if (this.fontSupplier != null) {
+			font = this.fontSupplier.get().getSize(this.fontSize);
+		}
+		
+		if (this.font != font) {
+			this.font = font;
+			this.updateBuffers = true;
+			this.updateYOffset();
+		}
+		
+	}
+	
+	@Deprecated
+	public boolean isTextReady() {
+		return this.text != null && this.font != null;
+	}
+	
+	@Deprecated
+	public void removeFont() {
+		/*this.font = null;
+		this.updateBuffers = true;
+		this.updateYOffset();
+		this.onFontChanged();*/
+		this.setFontFamily((Supplier<FontFamily>) null);
+	}
+	
+	@Deprecated
 	public void setFont(Font font) {
 		if (!font.isValid()) {
+			throw new IllegalArgumentException("The given font is no longer valid.");
+		} else {
+			this.setFontFamily(font::getFamily);
+			this.setFontSize(font.getSize());
+		}
+		/*if (!font.isValid()) {
 			throw new IllegalArgumentException("The given font is no longer valid.");
 		} else if (this.font != font) {
 			this.font = font;
@@ -147,11 +241,7 @@ public class GuiText extends GuiObject {
 			this.updateYOffset();
 			this.onFontChanged();
 			// System.out.println("setFont new offsets: " + this);
-		}
-	}
-	
-	public void setFont(FontFamily family, float size) {
-		this.setFont(family.getSize(size));
+		}*/
 	}
 	
 	public void setText(String text) {
@@ -226,7 +316,7 @@ public class GuiText extends GuiObject {
 		return this.getProgram(GuiProgramText.TYPE).createBuffer(true);
 	}
 	
-	private void updateTextBuffers() {
+	private void updateTextBuffers(Font font) {
 		
 		this.codePoints = this.text.codePoints().toArray();
 		int codePointsCount = this.codePoints.length;
@@ -239,7 +329,7 @@ public class GuiText extends GuiObject {
 		GlyphPage page;
 		for (int i = 0, codePoint; i < codePointsCount; ++i) {
 			codePoint = this.codePoints[i];
-			page = this.font.getGlyphPage(codePoint);
+			page = font.getGlyphPage(codePoint);
 			codePointsPages[i] = page;
 			buffersCodePoints.computeIfAbsent(page.getTextureName(), tex -> new TempBufferData()).codePointsCount++;
 		}
@@ -272,7 +362,7 @@ public class GuiText extends GuiObject {
 			TempBufferData bufferData;
 			Glyph glyph;
 			
-			float[] pos = {0, this.font.getAscent()};
+			float[] pos = {0, font.getAscent()};
 			Color[] color = {Color.WHITE};
 			
 			for (int i = 0, codePoint; i < codePointsCount; ++i) {

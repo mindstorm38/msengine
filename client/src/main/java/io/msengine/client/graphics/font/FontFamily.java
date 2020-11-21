@@ -29,7 +29,7 @@ public abstract class FontFamily implements AutoCloseable {
 		}
 		
 		Font cached = this.cachedSizes.get(size);
-		if (cached == null) {
+		if (cached == null || !cached.isValid()) {
 			cached = this.buildFontForSize(size);
 			this.cachedSizes.put(size, cached);
 		}

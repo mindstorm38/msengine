@@ -19,6 +19,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.function.Supplier;
 
 public class GuiTextInput extends GuiParent implements
 		WindowCharEventListener,
@@ -48,11 +49,6 @@ public class GuiTextInput extends GuiParent implements
 	
 	public GuiTextInput() {
 		
-		this.text = new InnerText();
-		this.text.setYAnchor(0);
-		this.text.setYSupAnchor(0);
-		this.addChild(this.text);
-		
 		this.cursor = new GuiColorSolid(DEFAULT_CURSOR_COLOR);
 		this.cursor.setVisible(false);
 		this.cursor.setAnchor(0, 0);
@@ -68,6 +64,14 @@ public class GuiTextInput extends GuiParent implements
 		
 		this.mask = new GuiMaskRect();
 		this.addChild(this.mask);
+		
+		// Adding text after all to avoid NPE
+		// if other children are null in real
+		// size callbacks.
+		this.text = new InnerText();
+		this.addChild(this.text);
+		this.text.setYAnchor(0);
+		this.text.setYSupAnchor(0);
 		
 		this.updateCursor();
 		
@@ -216,12 +220,37 @@ public class GuiTextInput extends GuiParent implements
 		return this.selection;
 	}
 	
-	public void setTextFont(Font font) {
-		this.text.setFont(font);
+	public void setTextFontFamily(Supplier<FontFamily> supplier) {
+		this.text.setFontFamily(supplier);
+	}
+	
+	public void setTextFontFamily(FontFamily family) {
+		this.text.setFontFamily(family);
+	}
+	
+	public void setTextFontSize(float size) {
+		this.text.setFontSize(size);
+	}
+	
+	public void setTextFont(Supplier<FontFamily> supplier, float size) {
+		this.text.setFont(supplier, size);
 	}
 	
 	public void setTextFont(FontFamily family, float size) {
 		this.text.setFont(family, size);
+	}
+	
+	public float getTextFontSize() {
+		return this.text.getFontSize();
+	}
+	
+	public FontFamily getTextFontFamily() {
+		return this.text.getFontFamily();
+	}
+	
+	@Deprecated
+	public void setTextFont(Font font) {
+		this.text.setFont(font);
 	}
 	
 	// Text //

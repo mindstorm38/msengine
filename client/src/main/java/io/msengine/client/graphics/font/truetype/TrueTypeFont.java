@@ -25,6 +25,8 @@ public class TrueTypeFont extends Font {
 	private final float oversampling = 1f;
 	private final List<GlyphPage> pages = new ArrayList<>();
 	
+	private boolean closed = false;
+	
 	TrueTypeFont(TrueTypeFontFamily family, float size, float scale, float ascent, float descent, float lineGap) {
 		super(family, size, ascent, descent);
 		this.scale = scale;
@@ -34,6 +36,11 @@ public class TrueTypeFont extends Font {
 	@Override
 	public TrueTypeFontFamily getFamily() {
 		return (TrueTypeFontFamily) super.getFamily();
+	}
+	
+	@Override
+	public boolean isValid() {
+		return super.isValid() && !this.closed;
 	}
 	
 	public float getScale() {
@@ -236,8 +243,12 @@ public class TrueTypeFont extends Font {
 	
 	@Override
 	public void close() {
-		this.pages.forEach(page -> page.getTexture().close());
-		this.pages.clear();
+		try {
+			this.pages.forEach(page -> page.getTexture().close());
+			this.pages.clear();
+		} finally {
+			this.closed = true;
+		}
 	}
 	
 }
