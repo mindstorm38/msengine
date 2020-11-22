@@ -169,7 +169,9 @@ public class GuiText extends GuiObject {
 	public void setFontSize(float size) {
 		if (this.fontSize != size) {
 			this.fontSize = size;
-			this.updateFont();
+			if (this.isReady()) {
+				this.updateFont();
+			}
 		}
 	}
 	
