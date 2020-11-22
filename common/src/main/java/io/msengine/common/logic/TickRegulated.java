@@ -36,6 +36,7 @@ public interface TickRegulated {
 		
 		do {
 			
+			// TODO: Use monotonic nanoTime
 			now = System.currentTimeMillis();
 			
 			if (ticked.shouldStop()) {

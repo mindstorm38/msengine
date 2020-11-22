@@ -41,6 +41,7 @@ public interface FrameRegulated extends TickRegulated {
 		
 		boolean running = true;
 		
+		// TODO: Use monotonic nanoTime
 		lastTime = System.currentTimeMillis();
 		
 		do {
