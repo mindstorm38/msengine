@@ -31,18 +31,23 @@ public interface FrameRegulated extends TickRegulated {
 	 * @param fps Number of frames per second.
 	 */
 	static void regulateFrames(FrameRegulated framed, int tps, int fps) {
-	
-		int tpsInterval = (int) (1 / (float) tps * 1000);
-		int fpsInterval = (int) (1 / (float) fps * 1000);
+		
+		if (tps < 1) {
+			throw new IllegalArgumentException("Illegal TPS: " + tps + " < 1");
+		} else if (fps < 1) {
+			throw new IllegalArgumentException("Illegal FPS: " + fps + " < 1");
+		}
+		
+		long tpsInterval = (long) (10e9 / (double) tps);
+		long fpsInterval = (long) (10e9 / (double) fps);
 		
 		long now, lastTime;
 		long delta;
-		int accumulator = 0;
+		long accumulator = 0;
 		
 		boolean running = true;
 		
-		// TODO: Use monotonic nanoTime
-		lastTime = System.currentTimeMillis();
+		lastTime = System.nanoTime();
 		
 		do {
 			
@@ -50,7 +55,7 @@ public interface FrameRegulated extends TickRegulated {
 				running = false;
 			}
 			
-			now = System.currentTimeMillis();
+			now = System.nanoTime();
 			delta = now - lastTime;
 			accumulator += delta;
 			

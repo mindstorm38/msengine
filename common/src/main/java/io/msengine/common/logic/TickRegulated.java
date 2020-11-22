@@ -29,15 +29,18 @@ public interface TickRegulated {
 	 */
 	static void regulateTick(TickRegulated ticked, int tps) {
 		
-		int tpsInterval = (int) (1 / (float) tps * 1000);
+		if (tps < 1) {
+			throw new IllegalArgumentException("Illegal TPS: " + tps + " < 1");
+		}
+		
+		long tpsInterval = (long) (10e9 / (double) tps);
 		
 		long now;
 		boolean running = true;
 		
 		do {
 			
-			// TODO: Use monotonic nanoTime
-			now = System.currentTimeMillis();
+			now = System.nanoTime();
 			
 			if (ticked.shouldStop()) {
 				running = false;
@@ -53,11 +56,11 @@ public interface TickRegulated {
 	
 	/**
 	 * Accurate sleeping, used in {@link TickRegulated#regulateTick(TickRegulated, int)} and
-	 * @param start Start time for sleeping.
+	 * @param start Start time for sleeping (ns).
 	 * @param time Time to sleep.
 	 */
-	static void sleepAccurate(long start, int time) {
-		while (System.currentTimeMillis() - start < time) {
+	static void sleepAccurate(long start, long time) {
+		while (System.nanoTime() - start < time) {
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
