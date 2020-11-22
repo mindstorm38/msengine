@@ -38,8 +38,8 @@ public interface FrameRegulated extends TickRegulated {
 			throw new IllegalArgumentException("Illegal FPS: " + fps + " < 1");
 		}
 		
-		long tpsInterval = (long) (10e9 / (double) tps);
-		long fpsInterval = (long) (10e9 / (double) fps);
+		long tpsInterval = (long) (1e9 / (double) tps);
+		long fpsInterval = (long) (1e9 / (double) fps);
 		
 		long now, lastTime;
 		long delta;

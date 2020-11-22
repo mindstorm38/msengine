@@ -33,7 +33,7 @@ public interface TickRegulated {
 			throw new IllegalArgumentException("Illegal TPS: " + tps + " < 1");
 		}
 		
-		long tpsInterval = (long) (10e9 / (double) tps);
+		long tpsInterval = (long) (1e9 / (double) tps);
 		
 		long now;
 		boolean running = true;
@@ -57,7 +57,7 @@ public interface TickRegulated {
 	/**
 	 * Accurate sleeping, used in {@link TickRegulated#regulateTick(TickRegulated, int)} and
 	 * @param start Start time for sleeping (ns).
-	 * @param time Time to sleep.
+	 * @param time Time to sleep (ns).
 	 */
 	static void sleepAccurate(long start, long time) {
 		while (System.nanoTime() - start < time) {
