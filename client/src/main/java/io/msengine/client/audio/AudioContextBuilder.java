@@ -56,7 +56,7 @@ public class AudioContextBuilder {
 		
 		long device = alcOpenDevice(this.device == null ? null : this.device.getName());
 		if (device == 0L) {
-			throw new IllegalStateException("Failed to open the OpenAL device '" + device + "'.");
+			throw new IllegalStateException("Failed to open the OpenAL device '" + this.device + "'.");
 		}
 		
 		ALCCapabilities alcCapabilities = ALC.createCapabilities(device);
