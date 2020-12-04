@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL11.*;
 public abstract class GuiMask extends GuiObject {
 	
 	private MaskTracker maskTracker;
+	private boolean maskCursor = true;
 	
 	@Override
 	protected void init() {
@@ -40,8 +41,20 @@ public abstract class GuiMask extends GuiObject {
 	@Override
 	protected boolean updateCursorOver(float x, float y) {
 		super.updateCursorOver(x, y);
-		// Do not block the mouse for neighbors behind the mask.
-		return false;
+		if (this.maskCursor) {
+			return !this.isCursorOver();
+		} else {
+			// Do not block the mouse for neighbors behind the mask.
+			return false;
+		}
+	}
+	
+	public boolean doMaskCursor() {
+		return this.maskCursor;
+	}
+	
+	public void setMaskCursor(boolean maskCursor) {
+		this.maskCursor = maskCursor;
 	}
 	
 	/**

@@ -78,15 +78,20 @@ public class GuiParent extends GuiObject {
 	@Override
 	protected boolean updateCursorOver(float x, float y) {
 		
+		boolean blocked = false;
 		boolean over = false;
 		GuiObject child;
 		
 		for (int i = this.children.size() - 1; i >= 0; --i) {
 			child = this.children.get(i);
-			if (over) {
-				child.setCursorOver(false);
+			if (blocked) {
+				// child.setCursorOver(false);
+				child.updateCursorNotOver();
 			} else {
-				over = child.updateCursorOver(x, y);
+				blocked = child.updateCursorOver(x, y);
+				if (!over && child.isCursorOver()) {
+					over = true;
+				}
 			}
 		}
 		

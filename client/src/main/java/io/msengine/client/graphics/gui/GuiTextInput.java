@@ -69,7 +69,7 @@ public class GuiTextInput extends GuiParent implements
 		// if other children are null in real
 		// size callbacks.
 		this.text = new InnerText();
-		this.addChild(this.text);
+		this.addChild(this.text, this.mask);
 		this.text.setYAnchor(0);
 		this.text.setYSupAnchor(0);
 		

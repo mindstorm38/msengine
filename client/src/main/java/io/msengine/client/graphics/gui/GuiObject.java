@@ -493,6 +493,8 @@ public abstract class GuiObject {
 	 * @param x The mouse x pos.
 	 * @param y The mouse y pos.
 	 * @return True if this object is blocking the mouse for neighbors children behind it.
+	 *  The return value of this function may be overridden, by default the method return
+	 *  true (blocking) if the mouse is over.
 	 */
 	protected boolean updateCursorOver(float x, float y) {
 		boolean over = this.isPointOver(x, y);
