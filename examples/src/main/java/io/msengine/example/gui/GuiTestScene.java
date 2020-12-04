@@ -3,6 +3,7 @@ package io.msengine.example.gui;
 import io.msengine.client.graphics.font.FontFamily;
 import io.msengine.client.graphics.font.truetype.TrueTypeFontFamily;
 import io.msengine.client.graphics.gui.GuiScene;
+import io.msengine.client.graphics.gui.GuiScroll;
 import io.msengine.client.graphics.gui.GuiText;
 import io.msengine.client.graphics.gui.GuiTexture;
 import io.msengine.client.graphics.gui.wrapper.GuiWrapperCentered;
@@ -26,8 +27,10 @@ public class GuiTestScene extends GuiScene {
 	private final GuiWrapperCentered exampleTexBgCentered;
 	private ResTexture2D exampleTexBgObj;
 	
+	private final GuiScroll exampleScroll;
 	private final GuiTexture exampleTex;
 	private ResTexture2D exampleTexObj;
+	
 	
 	private FontFamily jetbrainsFont;
 	private FontFamily ubuntuFont;
@@ -43,10 +46,15 @@ public class GuiTestScene extends GuiScene {
 		
 		this.exampleTexBgCentered = new GuiWrapperCentered(this.exampleTexBg);
 		
+		this.exampleScroll = new GuiScroll();
+		this.exampleScroll.setPos(30, 30);
+		this.exampleScroll.setSize(150, 150);
+		this.addChild(this.exampleScroll);
+		
 		this.exampleTex = new GuiTexture();
-		this.exampleTex.setPos(30, 30);
 		this.exampleTex.setSize(200, 200);
-		this.addChild(this.exampleTex);
+		this.exampleScroll.getInternal().addChild(this.exampleTex);
+		this.exampleScroll.resizeAutoInternal();
 		
 		this.jetbrainsText = new GuiText("while ((read = stream.read(buf)) != -1) {}");
 		this.jetbrainsText.setPos(-20, -20);

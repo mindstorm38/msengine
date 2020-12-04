@@ -4,6 +4,7 @@ import io.msengine.client.graphics.gui.mask.GuiMask;
 import io.msengine.client.graphics.gui.mask.GuiMaskRect;
 import io.msengine.client.window.Window;
 import io.msengine.client.window.listener.WindowScrollEventListener;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiScroll extends GuiParent implements WindowScrollEventListener {
 
@@ -16,7 +17,7 @@ public class GuiScroll extends GuiParent implements WindowScrollEventListener {
 	private float xRatio, yRatio;
 	private float xMaxScroll, yMaxScroll;
 	private boolean mouseScrollEnabled = true;
-	private float mouseScrollFactor = 10;
+	private float mouseScrollFactor = -10f;
 	
 	public GuiScroll() {
 		
@@ -49,20 +50,32 @@ public class GuiScroll extends GuiParent implements WindowScrollEventListener {
 	@Override
 	public void onWindowScrollEvent(Window origin, double xOffset, double yOffset) {
 		if (this.mouseScrollEnabled && this.isCursorOver()) {
+			if (this.doSwapScrollOffsets()) {
+				double tmp = yOffset;
+				yOffset = xOffset;
+				xOffset = tmp;
+			}
 			if (xOffset != 0) this.addXScroll((float) xOffset * this.mouseScrollFactor);
 			if (yOffset != 0) this.addYScroll((float) yOffset * this.mouseScrollFactor);
 		}
 	}
 	
+	protected boolean doSwapScrollOffsets() {
+		return this.getWindow().getKey(GLFW.GLFW_KEY_LEFT_SHIFT) == Window.ACTION_PRESS ||
+				this.getWindow().getKey(GLFW.GLFW_KEY_RIGHT_SHIFT) == Window.ACTION_PRESS;
+	}
+	
 	@Override
 	protected void onRealWidthChanged() {
 		super.onRealWidthChanged();
+		this.updateXInfo();
 		this.updateXOverflow();
 	}
 	
 	@Override
 	protected void onRealHeightChanged() {
 		super.onRealHeightChanged();
+		this.updateYInfo();
 		this.updateYOverflow();
 	}
 	
@@ -120,7 +133,7 @@ public class GuiScroll extends GuiParent implements WindowScrollEventListener {
 			xScroll = this.xMaxScroll;
 		}
 		
-		this.internal.setXPos(-xScroll);
+		this.internal.internalSetXPos(-xScroll);
 		
 	}
 	
@@ -132,7 +145,7 @@ public class GuiScroll extends GuiParent implements WindowScrollEventListener {
 			yScroll = this.yMaxScroll;
 		}
 		
-		this.internal.setYPos(-yScroll);
+		this.internal.internalSetYPos(-yScroll);
 		
 	}
 	
@@ -228,11 +241,23 @@ public class GuiScroll extends GuiParent implements WindowScrollEventListener {
 		return this.internal;
 	}
 	
+	public void resizeAutoInternal() {
+		this.internal.resizeAuto();
+	}
+	
 	private static void throwInternalUnsupported() {
 		throw new UnsupportedOperationException("Not supported for scroll internal container.");
 	}
 	
 	private class Internal extends GuiParent {
+		
+		private void internalSetXPos(float xPos) {
+			super.setXPos(xPos);
+		}
+		
+		private void internalSetYPos(float yPos) {
+			super.setYPos(yPos);
+		}
 		
 		@Override
 		public void setXPos(float xPos) {
@@ -282,6 +307,22 @@ public class GuiScroll extends GuiParent implements WindowScrollEventListener {
 		@Override
 		protected void onRealHeightChanged() {
 			GuiScroll.this.updateYInfo();
+		}
+		
+		public void resizeAuto() {
+			
+			float width = 0, height = 0;
+			float currentWidth, currentHeight;
+			
+			for (GuiObject child : this.children) {
+				currentWidth = child.getXOffsetFromParent() + child.getRealWidth();
+				currentHeight = child.getYOffsetFromParent() + child.getRealHeight();
+				if (currentWidth > width) width = currentWidth;
+				if (currentHeight > height) height = currentHeight;
+			}
+			
+			this.setSize(width, height);
+			
 		}
 		
 	}
