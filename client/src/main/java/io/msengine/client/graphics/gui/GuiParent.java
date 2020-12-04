@@ -47,27 +47,23 @@ public class GuiParent extends GuiObject {
 		}
 	}
 	
-	/*@Override
-	public void updateXOffset() {
-		super.updateXOffset();
-		this.children.forEach(GuiObject::updateXOffset);
-	}
-	
-	@Override
-	public void updateYOffset() {
-		super.updateYOffset();
-		this.children.forEach(GuiObject::updateYOffset);
-	}*/
-	
 	@Override
 	public void onXShapeChanged() {
 		super.onXShapeChanged();
-		this.children.forEach(GuiObject::updateXOffset);
+		this.updateChildrenXOffset();
 	}
 	
 	@Override
 	protected void onYShapeChanged() {
 		super.onYShapeChanged();
+		this.updateChildrenYOffset();
+	}
+	
+	protected void updateChildrenXOffset() {
+		this.children.forEach(GuiObject::updateXOffset);
+	}
+	
+	protected void updateChildrenYOffset() {
 		this.children.forEach(GuiObject::updateYOffset);
 	}
 	
@@ -181,8 +177,8 @@ public class GuiParent extends GuiObject {
 	
 	/**
 	 * Remove a child {@link GuiObject} from this parent.
-	 * @param child The child object to remove
-	 * @return <code>true</code> if the child was removed
+	 * @param child The child object to remove.
+	 * @return <code>true</code> if the child was removed.
 	 */
 	public boolean removeChild(GuiObject child) {
 		if (this.children.remove(child)) {
@@ -195,6 +191,25 @@ public class GuiParent extends GuiObject {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Remove a child {@link GuiObject} at a specific index.
+	 * @param index The index of the child object to remove.
+	 * @return The child that was removed.
+	 * @throws IndexOutOfBoundsException From underlying
+	 *  {@link List#remove(int)} if index is out of bounds.
+	 */
+	public GuiObject removeChild(int index) {
+		GuiObject child = this.children.remove(index);
+		if (child != null) {
+			try {
+				child.setParent(null);
+			} finally {
+				this.stopChild(child);
+			}
+		}
+		return child;
 	}
 	
 	@Override
