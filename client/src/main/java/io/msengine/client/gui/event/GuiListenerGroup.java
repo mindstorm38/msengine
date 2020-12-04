@@ -3,6 +3,7 @@ package io.msengine.client.gui.event;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class GuiListenerGroup<E extends GuiEvent> {
 
 	private final Class<E> eventClass;

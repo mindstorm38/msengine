@@ -1,5 +1,6 @@
 package io.msengine.client.gui.event;
 
+@Deprecated
 public class GuiTextInputChangedEvent extends GuiEvent {
 	
 	private final String value;

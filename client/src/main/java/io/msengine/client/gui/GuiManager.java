@@ -22,6 +22,7 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * TODO Add automatic scene uncaching after a while.
  *
  */
+@Deprecated
 public class GuiManager implements WindowFramebufferSizeEventListener {
 	
 	// Singleton \\

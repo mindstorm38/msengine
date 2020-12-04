@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
 
+@Deprecated
 public abstract class GuiComponentTexture extends GuiObject {
 	
 	protected IndicesDrawBuffer buffer;

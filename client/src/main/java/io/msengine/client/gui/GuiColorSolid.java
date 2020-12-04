@@ -2,6 +2,7 @@ package io.msengine.client.gui;
 
 import io.msengine.common.util.Color;
 
+@Deprecated
 public class GuiColorSolid extends GuiColorBase {
 	
 	private final Color color = Color.WHITE.copy();

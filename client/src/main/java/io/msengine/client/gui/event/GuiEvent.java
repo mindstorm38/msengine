@@ -2,6 +2,7 @@ package io.msengine.client.gui.event;
 
 import io.msengine.client.gui.GuiObject;
 
+@Deprecated
 public class GuiEvent {
 	
 	private GuiObject origin;

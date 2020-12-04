@@ -9,6 +9,7 @@ import io.msengine.client.renderer.texture.TextureMapTile;
  * @author Theo Rozier
  *
  */
+@Deprecated
 public class GuiTextureMosaic extends GuiTexture {
 
 	protected float tileWidth = 1f;

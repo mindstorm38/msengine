@@ -2,6 +2,7 @@ package io.msengine.client.gui.event;
 
 import io.msengine.client.renderer.window.Window;
 
+@Deprecated
 public class GuiSceneResizedEvent extends GuiEvent {
 
 	private final int width;

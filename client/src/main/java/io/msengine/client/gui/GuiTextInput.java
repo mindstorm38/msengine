@@ -11,6 +11,7 @@ import io.msengine.common.util.Color;
 import io.sutil.ClipboardUtils;
 import org.lwjgl.glfw.GLFW;
 
+@Deprecated
 public class GuiTextInput extends GuiParent implements
 		WindowCharEventListener,
 		WindowKeyEventListener,

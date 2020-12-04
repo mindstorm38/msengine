@@ -5,6 +5,7 @@ import io.msengine.common.util.Color;
 import java.util.Objects;
 import java.util.function.Function;
 
+@Deprecated
 public class GuiColorCustom extends GuiColorBase {
 	
 	private final Function<Integer, Color> cornerColorSupplier;
