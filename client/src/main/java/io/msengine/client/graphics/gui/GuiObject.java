@@ -18,10 +18,11 @@ public abstract class GuiObject {
 
 	public static final int SIZE_AUTO = -1;
 	
-	private static final int FLAG_READY       = 0x1;
-	private static final int FLAG_DISPLAYED   = 0x2;
-	private static final int FLAG_VISIBLE     = 0x4;
-	private static final int FLAG_CURSOR_OVER = 0x8;
+	private static final int FLAG_READY                 = 0x1;
+	private static final int FLAG_DISPLAYED             = 0x2;
+	private static final int FLAG_VISIBLE               = 0x4;
+	private static final int FLAG_CURSOR_OVER           = 0x8;
+	private static final int FLAG_CURSOR_DIRECT_OVER    = 0x10;
 	
 	public static final float LEFT = -1f;
 	public static final float UP = -1f;
@@ -116,6 +117,10 @@ public abstract class GuiObject {
 	
 	public boolean isCursorOver() {
 		return this.hasFlag(FLAG_CURSOR_OVER);
+	}
+	
+	public boolean isCursorDirectOver() {
+		return this.hasFlag(FLAG_CURSOR_DIRECT_OVER);
 	}
 	
 	private void setFlag(int mask, boolean enabled) {
@@ -475,6 +480,7 @@ public abstract class GuiObject {
 	// [ Cursor over ] //
 	
 	protected void onCursorOverChanged(boolean over) { }
+	protected void onCursorDirectOverChanged(boolean over) { }
 	
 	/**
 	 * Set internal "cursor over" flag and fire callbacks and event if values has changed.
@@ -488,6 +494,14 @@ public abstract class GuiObject {
 		}
 	}
 	
+	protected void setCursorDirectOver(boolean over) {
+		if (this.hasFlag(FLAG_CURSOR_DIRECT_OVER) != over) {
+			this.setFlag(FLAG_CURSOR_DIRECT_OVER, over);
+			this.onCursorDirectOverChanged(over);
+			this.fireEvent(new MouseDirectOverEvent(over));
+		}
+	}
+	
 	/**
 	 * Update the internal "cursor over" flag according to {@link #isPointOver(float, float)}.
 	 * @param x The mouse x pos.
@@ -498,6 +512,7 @@ public abstract class GuiObject {
 	 */
 	protected boolean updateCursorOver(float x, float y) {
 		boolean over = this.isPointOver(x, y);
+		this.setCursorDirectOver(over);
 		this.setCursorOver(over);
 		return over;
 	}
@@ -507,6 +522,7 @@ public abstract class GuiObject {
 	 * <p>This method is called by the manager when the cursor leaves the window boundaries or when the scene is unloaded.</p>
 	 */
 	protected void updateCursorNotOver() {
+		this.setCursorDirectOver(false);
 		this.setCursorOver(false);
 	}
 	
@@ -569,12 +585,26 @@ public abstract class GuiObject {
 		this.addEventListener(MouseOverEvent.class, listener);
 	}
 	
+	public void addMouseDirectOverEventListener(GuiEventListener<? super MouseDirectOverEvent> listener) {
+		this.addEventListener(MouseDirectOverEvent.class, listener);
+	}
+	
 	public static class MouseOverEvent extends GuiEvent {
 		private final boolean over;
 		public MouseOverEvent(boolean over) {
 			this.over = over;
 		}
 		public boolean isMouseOver() {
+			return this.over;
+		}
+	}
+	
+	public static class MouseDirectOverEvent extends GuiEvent {
+		private final boolean over;
+		public MouseDirectOverEvent(boolean over) {
+			this.over = over;
+		}
+		public boolean isMouseDirectOver() {
 			return this.over;
 		}
 	}

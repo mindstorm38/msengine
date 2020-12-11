@@ -96,6 +96,7 @@ public class GuiParent extends GuiObject {
 		}
 		
 		if (over) {
+			this.setCursorDirectOver(this.isPointOver(x, y));
 			this.setCursorOver(true);
 			return true;
 		} else {
