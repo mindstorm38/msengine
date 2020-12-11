@@ -282,6 +282,10 @@ public class GuiManager implements
 		}
 	}
 	
+	public GuiScene getCurrentScene() {
+		return this.currentScene;
+	}
+	
 	// Dynamic shader program usage //
 	
 	/**
@@ -464,7 +468,7 @@ public class GuiManager implements
 	
 	// Scene Cursor //
 	
-	private void updateSceneCursorFromWindow() {
+	public void updateSceneCursorFromWindow() {
 		this.window.getCursorPos((x, y) -> this.currentScene.updateCursorOver((float) x, (float) y));
 	}
 	

@@ -511,7 +511,7 @@ public abstract class GuiObject {
 	 *  true (blocking) if the mouse is over.
 	 */
 	protected boolean updateCursorOver(float x, float y) {
-		boolean over = this.isPointOver(x, y);
+		boolean over = this.mustRender() && this.isPointOver(x, y);
 		this.setCursorDirectOver(over);
 		this.setCursorOver(over);
 		return over;

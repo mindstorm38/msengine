@@ -253,10 +253,12 @@ public class GuiScroll extends GuiParent implements WindowScrollEventListener {
 		
 		private void internalSetXPos(float xPos) {
 			super.setXPos(xPos);
+			this.getManager().updateSceneCursorFromWindow();
 		}
 		
 		private void internalSetYPos(float yPos) {
 			super.setYPos(yPos);
+			this.getManager().updateSceneCursorFromWindow();
 		}
 		
 		@Override

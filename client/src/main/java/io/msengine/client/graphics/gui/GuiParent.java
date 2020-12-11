@@ -78,7 +78,7 @@ public class GuiParent extends GuiObject {
 	@Override
 	protected boolean updateCursorOver(float x, float y) {
 		
-		boolean blocked = false;
+		boolean blocked = !this.mustRender();
 		boolean over = false;
 		GuiObject child;
 		
