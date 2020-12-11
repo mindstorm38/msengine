@@ -253,6 +253,10 @@ public class GuiText extends GuiObject {
 		}
 	}
 	
+	public String getText() {
+		return this.text;
+	}
+	
 	public float getCodePointOffset(int index) {
 		if (this.codePointsOffsets == null || this.codePointsOffsets.length == 0 || index < 0) {
 			return 0;
