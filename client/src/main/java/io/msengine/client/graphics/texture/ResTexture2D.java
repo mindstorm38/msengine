@@ -37,11 +37,11 @@ public class ResTexture2D extends Texture2D {
 	}
 	
 	public ResTexture2D(InputStream stream) throws IOException {
-		this(SETUP_LINEAR_KEEP, stream);
+		this(SETUP_LINEAR, stream);
 	}
 	
 	public ResTexture2D(Asset asset) throws IOException {
-		this(SETUP_LINEAR_KEEP, asset);
+		this(SETUP_LINEAR, asset);
 	}
 	
 	// Last size //
