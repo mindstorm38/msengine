@@ -286,6 +286,7 @@ public class GuiTextInput extends GuiParent implements
 			this.placeholder.addColorEffect(0, DEFAULT_PLACEHOLDER_COLOR);
 			this.placeholder.setYAnchor(0);
 			this.placeholder.setYSupAnchor(0);
+			this.placeholder.setFont(this.text.fontSupplier, this.text.fontSize);
 			this.updatePlaceholderVisible();
 			this.addChild(this.placeholder, this.text);
 		}
