@@ -76,6 +76,7 @@ public class GuiTestScene extends GuiScene {
 		this.testInput.setPos(30, 400);
 		this.testInput.setSize(300, 30);
 		this.testInput.setInputText("party");
+		this.testInput.setPlaceholderText("placeholder");
 		this.addChild(this.testInput);
 		
 	}

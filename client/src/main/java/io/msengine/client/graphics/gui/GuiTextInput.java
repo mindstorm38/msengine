@@ -28,8 +28,10 @@ public class GuiTextInput extends GuiParent implements
 	
 	public static final Color DEFAULT_CURSOR_COLOR = new Color(230, 230, 230, 0.8f);
 	public static final Color DEFAULT_SELECTION_COLOR = new Color(105, 162, 255, 0.4f);
+	public static final Color DEFAULT_PLACEHOLDER_COLOR = new Color(105, 105, 105, 0.8f);
 	
 	private final InnerText text;
+	private GuiText placeholder;
 	private final GuiColorSolid cursor;
 	private final GuiColorSolid selection;
 	private final GuiMaskRect mask;
@@ -212,6 +214,10 @@ public class GuiTextInput extends GuiParent implements
 		return this.text;
 	}
 	
+	public GuiText getPlaceholder() {
+		return this.placeholder;
+	}
+	
 	public GuiColorSolid getCursor() {
 		return this.cursor;
 	}
@@ -222,22 +228,37 @@ public class GuiTextInput extends GuiParent implements
 	
 	public void setTextFontFamily(Supplier<FontFamily> supplier) {
 		this.text.setFontFamily(supplier);
+		if (this.placeholder != null) {
+			this.placeholder.setFontFamily(supplier);
+		}
 	}
 	
 	public void setTextFontFamily(FontFamily family) {
 		this.text.setFontFamily(family);
+		if (this.placeholder != null) {
+			this.placeholder.setFontFamily(family);
+		}
 	}
 	
 	public void setTextFontSize(float size) {
 		this.text.setFontSize(size);
+		if (this.placeholder != null) {
+			this.placeholder.setFontSize(size);
+		}
 	}
 	
 	public void setTextFont(Supplier<FontFamily> supplier, float size) {
 		this.text.setFont(supplier, size);
+		if (this.placeholder != null) {
+			this.placeholder.setFont(supplier, size);
+		}
 	}
 	
 	public void setTextFont(FontFamily family, float size) {
 		this.text.setFont(family, size);
+		if (this.placeholder != null) {
+			this.placeholder.setFont(family, size);
+		}
 	}
 	
 	public float getTextFontSize() {
@@ -253,6 +274,30 @@ public class GuiTextInput extends GuiParent implements
 		this.text.setFont(font);
 	}
 	
+	// Placeholder //
+	
+	public String getPlaceholderText() {
+		return this.placeholder == null ? "" : this.placeholder.getText();
+	}
+	
+	public void setPlaceholderText(String placeholderText) {
+		if (this.placeholder == null) {
+			this.placeholder = new GuiText();
+			this.placeholder.addColorEffect(0, DEFAULT_PLACEHOLDER_COLOR);
+			this.placeholder.setYAnchor(0);
+			this.placeholder.setYSupAnchor(0);
+			this.updatePlaceholderVisible();
+			this.addChild(this.placeholder, this.text);
+		}
+		this.placeholder.setText(placeholderText);
+	}
+	
+	private void updatePlaceholderVisible() {
+		if (this.placeholder != null) {
+			this.placeholder.setVisible(this.getInputText().isEmpty());
+		}
+	}
+	
 	// Text //
 	
 	public String getInputText() {
@@ -263,12 +308,14 @@ public class GuiTextInput extends GuiParent implements
 		this.builder.delete(0, this.builder.length());
 		this.builder.append(text);
 		this.text.setText(text);
+		this.updatePlaceholderVisible();
 		this.fireEvent(new ChangedEvent(text));
 	}
 	
 	public void updateText() {
 		String text = this.getInputText();
 		this.text.setText(text);
+		this.updatePlaceholderVisible();
 		this.fireEvent(new ChangedEvent(text));
 	}
 	
