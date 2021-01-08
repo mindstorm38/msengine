@@ -286,6 +286,7 @@ public class GuiTextInput extends GuiParent implements
 			this.placeholder.addColorEffect(0, DEFAULT_PLACEHOLDER_COLOR);
 			this.placeholder.setYAnchor(0);
 			this.placeholder.setYSupAnchor(0);
+			this.placeholder.setYPos(this.text.getYPos());
 			this.placeholder.setFont(this.text.fontSupplier, this.text.fontSize);
 			this.updatePlaceholderVisible();
 			this.addChild(this.placeholder, this.text);
@@ -531,6 +532,14 @@ public class GuiTextInput extends GuiParent implements
 	// Internal classes //
 	
 	private class InnerText extends GuiText {
+		
+		@Override
+		protected void onYPosChanged() {
+			super.onYPosChanged();
+			if (GuiTextInput.this.placeholder != null) {
+				GuiTextInput.this.placeholder.setYPos(this.yPos);
+			}
+		}
 		
 		@Override
 		protected void onTextBuffersRecomputed() {
