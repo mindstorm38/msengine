@@ -6,6 +6,7 @@ import io.msengine.client.graphics.gui.GuiScene;
 import io.msengine.client.graphics.gui.GuiScroll;
 import io.msengine.client.graphics.gui.GuiText;
 import io.msengine.client.graphics.gui.GuiTexture;
+import io.msengine.client.graphics.gui.GuiTextureMosaic;
 import io.msengine.client.graphics.gui.wrapper.GuiWrapperCentered;
 import io.msengine.client.graphics.texture.ResTexture2D;
 import io.msengine.client.graphics.texture.base.Texture2D;

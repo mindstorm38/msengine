@@ -7,17 +7,22 @@ import io.msengine.client.graphics.texture.DynTexture2D;
 import io.msengine.client.graphics.texture.MapTexture2D;
 import io.msengine.client.graphics.texture.ResTexture2D;
 import io.msengine.client.graphics.texture.base.Texture;
+import io.msengine.client.graphics.texture.base.TextureSetup;
 import io.msengine.client.util.BufferAlloc;
+import io.msengine.common.asset.Asset;
+
+import java.io.IOException;
+import java.util.Objects;
+import java.util.logging.Level;
 
 public class GuiTexture extends GuiObject {
 	
 	protected GuiBufferArray buf;
-	// protected boolean updateVertices;
 	protected boolean updateTexCoord;
 	
 	protected int textureName;
 	protected float texCoordX, texCoordY;
-	protected float texCoordW, texCoordH;
+	protected float texCoordW = 1f, texCoordH = 1f;
 	protected float autoWidth, autoHeight;
 	
 	@Override
@@ -39,10 +44,6 @@ public class GuiTexture extends GuiObject {
 		if (this.textureName <= 0)
 			return;
 		
-		/*if (this.updateVertices) {
-			this.updateVerticesBuffer();
-		}*/
-		
 		if (this.updateTexCoord) {
 			this.updateTexCoordsBuffer();
 		}
@@ -62,30 +63,35 @@ public class GuiTexture extends GuiObject {
 	
 	@Override
 	public float getAutoWidth() {
-		return this.autoWidth;
+		if (this.isAutoHeight()) {
+			return this.autoWidth;
+		} else {
+			return this.autoWidth * (this.realHeight / this.autoHeight);
+		}
 	}
 	
 	@Override
 	public float getAutoHeight() {
-		return this.autoHeight;
+		if (this.isAutoWidth()) {
+			return this.autoHeight;
+		} else {
+			return this.autoHeight * (this.realWidth / this.autoWidth);
+		}
 	}
 	
 	@Override
 	public void onRealWidthChanged() {
 		super.onRealWidthChanged();
-		//this.updateVertices = true;
 	}
 	
 	@Override
 	public void onRealHeightChanged() {
 		super.onRealHeightChanged();
-		//this.updateVertices = true;
 	}
 	
 	private void initBuffers() {
 		
 		this.buf.bindVao();
-		// this.buf.allocateVboData(this.buf.getPositionIndex(), 8 << 2, BufferUsage.DYNAMIC_DRAW);
 		this.buf.allocateVboData(this.buf.getTexCoordBufIdx(), 8 << 2, BufferUsage.DYNAMIC_DRAW);
 		
 		BufferAlloc.allocStackInt(this.buf.setIndicesCount(6), buf -> {
@@ -101,23 +107,9 @@ public class GuiTexture extends GuiObject {
 			this.buf.uploadVboData(this.buf.getPositionIndex(), buf, BufferUsage.STATIC_DRAW);
 		});
 		
-		//this.updateVerticesBuffer();
 		this.updateTexCoordsBuffer();
 		
 	}
-	
-	/*private void updateVerticesBuffer() {
-		
-		BufferAlloc.allocStackFloat(8, buf -> {
-			GuiCommon.putSquareVertices(buf, 1, 1);
-			buf.flip();
-			this.buf.bindVao();
-			this.buf.uploadVboSubData(this.buf.getPositionIndex(), 0, buf);
-		});
-		
-		this.updateVertices = false;
-		
-	}*/
 	
 	private void updateTexCoordsBuffer() {
 		
@@ -217,6 +209,44 @@ public class GuiTexture extends GuiObject {
 		builder.append(", tex=").append(this.textureName);
 		builder.append(", texCoord=").append(this.texCoordX).append('/').append(this.texCoordY);
 		builder.append(", texSize=").append(this.texCoordW).append('/').append(this.texCoordH);
+	}
+	
+	public static class Simple extends GuiTexture {
+		
+		private final TextureSetup textureSetup;
+		private final Asset asset;
+		private ResTexture2D tex;
+		
+		public Simple(TextureSetup textureSetup, Asset asset) {
+			this.textureSetup = Objects.requireNonNull(textureSetup);
+			this.asset = Objects.requireNonNull(asset);
+		}
+		
+		public Simple(Asset asset) {
+			this(Texture.SETUP_LINEAR, asset);
+		}
+		
+		@Override
+		protected void init() {
+			super.init();
+			try {
+				this.tex = new ResTexture2D(this.textureSetup, this.asset);
+				this.setTexture(this.tex);
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "Failed to load texture.", e);
+			}
+		}
+		
+		@Override
+		protected void stop() {
+			super.stop();
+			this.removeTexture();
+			if (this.tex != null) {
+				this.tex.close();
+				this.tex = null;
+			}
+		}
+		
 	}
 	
 }

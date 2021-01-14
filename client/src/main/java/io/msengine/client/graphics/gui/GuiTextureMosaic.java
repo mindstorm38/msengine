@@ -1,5 +1,14 @@
 package io.msengine.client.graphics.gui;
 
+import io.msengine.client.graphics.texture.ResTexture2D;
+import io.msengine.client.graphics.texture.base.Texture;
+import io.msengine.client.graphics.texture.base.TextureSetup;
+import io.msengine.common.asset.Asset;
+
+import java.io.IOException;
+import java.util.Objects;
+import java.util.logging.Level;
+
 public class GuiTextureMosaic extends GuiTexture {
 	
 	protected float tileWidth = 1f;
@@ -98,6 +107,45 @@ public class GuiTextureMosaic extends GuiTexture {
 		super.buildToString(builder);
 		builder.append(", tileSize=").append(this.tileWidth).append('/').append(this.tileHeight);
 		builder.append(", mosaicOffset=").append(this.mosaicOffsetX).append('/').append(this.mosaicOffsetY);
+	}
+	
+	public static class Simple extends GuiTextureMosaic {
+		
+		private final TextureSetup textureSetup;
+		private final Asset asset;
+		private ResTexture2D tex;
+		
+		public Simple(TextureSetup textureSetup, Asset asset) {
+			this.asset = Objects.requireNonNull(asset);
+			this.textureSetup = Objects.requireNonNull(textureSetup);
+		}
+		
+		public Simple(Asset asset) {
+			this(Texture.SETUP_LINEAR, asset);
+		}
+		
+		@Override
+		protected void init() {
+			super.init();
+			try {
+				this.tex = new ResTexture2D(this.textureSetup, this.asset);
+				this.setTexture(this.tex);
+				this.setTileSize(this.tex.getWidth(), this.tex.getHeight());
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "Failed to load texture.", e);
+			}
+		}
+		
+		@Override
+		protected void stop() {
+			super.stop();
+			this.removeTexture();
+			if (this.tex != null) {
+				this.tex.close();
+				this.tex = null;
+			}
+		}
+		
 	}
 	
 }
