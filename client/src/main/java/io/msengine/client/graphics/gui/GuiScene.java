@@ -54,7 +54,7 @@ public class GuiScene extends GuiParent {
 	 * <p>Use this method insteadof adding a listener for {@link GuiSceneResizedEvent} event when listening in the scene itself.</p>
 	 * <p><i>This method is called before firing {@link GuiSceneResizedEvent}.</i></p>
 	 * <p>This method is still compatible with {@link #onRealWidthChanged()} (equals to {@link #onWidthChanged()}) and
-	 * {@link #onRealHeightChanged()} (equals to {@link #onHeightChanged()}), <b>prefer these method because this method
+	 * {@link #onRealHeightChanged()} (equals to {@link #onHeightChanged()}), <b>prefer these methods because this method
 	 * can be deprecated in future versions</b>.</p>
 	 * @param width The new scene width.
 	 * @param height The new scene height.

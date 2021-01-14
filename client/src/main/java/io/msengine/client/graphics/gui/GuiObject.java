@@ -378,6 +378,9 @@ public abstract class GuiObject {
 	 */
 	public void updateXOffset() {
 		
+		// TODO: Return here if the parent is null in order to avoid recomputing
+		//  the offset multiple times before adding it to its parent.
+		
 		boolean changed = false;
 		
 		float width = this.isAutoWidth() ? this.getAutoWidth() : this.width;
@@ -409,6 +412,9 @@ public abstract class GuiObject {
 	 * Update the {@link #yOffset} and {@link #realHeight} used to compute the top position of the component.
 	 */
 	public void updateYOffset() {
+		
+		// TODO: Return here if the parent is null in order to avoid recomputing
+		//  the offset multiple times before adding it to its parent.
 		
 		boolean changed = false;
 		
