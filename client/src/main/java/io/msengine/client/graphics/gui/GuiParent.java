@@ -109,8 +109,8 @@ public class GuiParent extends GuiObject {
 	protected void updateCursorNotOver() {
 		if (this.isCursorOver()) {
 			this.children.forEach(GuiObject::updateCursorNotOver);
-			this.setCursorOver(false);
 			this.setCursorDirectOver(false);
+			this.setCursorOver(false);
 		}
 	}
 	
