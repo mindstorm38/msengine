@@ -219,7 +219,7 @@ public class GuiTexture extends GuiObject {
 		
 		public Simple(TextureSetup textureSetup, Asset asset) {
 			this.textureSetup = Objects.requireNonNull(textureSetup);
-			this.asset = Objects.requireNonNull(asset);
+			this.asset = asset;
 		}
 		
 		public Simple(Asset asset) {
@@ -229,11 +229,15 @@ public class GuiTexture extends GuiObject {
 		@Override
 		protected void init() {
 			super.init();
-			try {
-				this.tex = new ResTexture2D(this.textureSetup, this.asset);
-				this.setTexture(this.tex);
-			} catch (IOException e) {
-				LOGGER.log(Level.SEVERE, "Failed to load texture.", e);
+			if (this.asset != null) {
+				try {
+					this.tex = new ResTexture2D(this.textureSetup, this.asset);
+					this.setTexture(this.tex);
+				} catch (IOException e) {
+					LOGGER.log(Level.SEVERE, "Failed to load texture.", e);
+				}
+			} else {
+				LOGGER.warning("No asset for this texture.");
 			}
 		}
 		

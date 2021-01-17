@@ -113,26 +113,34 @@ public class GuiTextureMosaic extends GuiTexture {
 		
 		private final TextureSetup textureSetup;
 		private final Asset asset;
+		private final boolean autoTileSize;
 		private ResTexture2D tex;
 		
-		public Simple(TextureSetup textureSetup, Asset asset) {
-			this.asset = Objects.requireNonNull(asset);
+		public Simple(TextureSetup textureSetup, Asset asset, boolean autoTileSize) {
 			this.textureSetup = Objects.requireNonNull(textureSetup);
+			this.asset = asset;
+			this.autoTileSize = autoTileSize;
 		}
 		
-		public Simple(Asset asset) {
-			this(Texture.SETUP_LINEAR, asset);
+		public Simple(Asset asset, boolean autoTileSize) {
+			this(Texture.SETUP_LINEAR, asset, autoTileSize);
 		}
 		
 		@Override
 		protected void init() {
 			super.init();
-			try {
-				this.tex = new ResTexture2D(this.textureSetup, this.asset);
-				this.setTexture(this.tex);
-				this.setTileSize(this.tex.getWidth(), this.tex.getHeight());
-			} catch (IOException e) {
-				LOGGER.log(Level.SEVERE, "Failed to load texture.", e);
+			if (this.asset != null) {
+				try {
+					this.tex = new ResTexture2D(this.textureSetup, this.asset);
+					this.setTexture(this.tex);
+					if (this.autoTileSize) {
+						this.setTileSize(this.tex.getWidth(), this.tex.getHeight());
+					}
+				} catch (IOException e) {
+					LOGGER.log(Level.SEVERE, "Failed to load texture.", e);
+				}
+			} else {
+				LOGGER.warning("No asset for this mosaic texture.");
 			}
 		}
 		
