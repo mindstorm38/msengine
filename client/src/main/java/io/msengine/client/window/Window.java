@@ -1,5 +1,6 @@
 package io.msengine.client.window;
 
+import io.msengine.client.graphics.util.ImageUtils;
 import io.msengine.client.window.listener.WindowCharEventListener;
 import io.msengine.client.window.listener.WindowCursorEnterEventListener;
 import io.msengine.client.window.listener.WindowCursorPositionEventListener;
@@ -8,12 +9,19 @@ import io.msengine.client.window.listener.WindowKeyEventListener;
 import io.msengine.client.window.listener.WindowMouseButtonEventListener;
 import io.msengine.client.window.listener.WindowMousePositionEventListener;
 import io.msengine.client.window.listener.WindowScrollEventListener;
+import io.msengine.common.asset.Asset;
 import io.msengine.common.util.event.MethodEventManager;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -194,6 +202,46 @@ public abstract class Window implements AutoCloseable {
     public int getMouseButton(int button) {
         // Id is not checked to minimize overhead
         return glfwGetMouseButton(this.id, button);
+    }
+    
+    public void setIconsFromAssets(Asset...assets) {
+        
+        class TempIcon {
+            final ByteBuffer buf;
+            final int w, h;
+            TempIcon(ByteBuffer buf, int w, int h) {
+                this.buf = buf;
+                this.w = w;
+                this.h = h;
+            }
+        }
+    
+        this.checkId();
+        
+        List<TempIcon> images = new ArrayList<>();
+    
+        for (Asset asset : assets) {
+            try {
+                ImageUtils.loadImageFromStream(asset.openStreamExcept(), 4096, false, (buf, w, h) -> {
+                    images.add(new TempIcon(buf, w, h));
+                });
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Failed to load icon image.", e);
+            }
+        }
+        
+        if (!images.isEmpty()) {
+            try (GLFWImage.Buffer icons = GLFWImage.malloc(images.size())) {
+                for (int i = 0; i < images.size(); ++i) {
+                    TempIcon icon = images.get(i);
+                    icons.position(i).width(icon.w).height(icon.h).pixels(icon.buf);
+                }
+                icons.position(0);
+                glfwSetWindowIcon(this.id, icons);
+                images.forEach(icon -> ImageUtils.freeImage(icon.buf));
+            }
+        }
+        
     }
     
     public void setFullscreen(Monitor monitor) {
