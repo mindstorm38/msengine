@@ -26,7 +26,7 @@ Each version released on GitLab will be soon available on Maven Central.
     - `common.logic.FrameRegulated`
 - [x] Deprecate OSF package `common.osf`
 - [x] TrueType fonts support
-- [ ] Rework GUI (`client.graphics.gui`)
+- [x] Rework GUI (`client.graphics.gui`)
     - [x] Rework base GUI framework classes
     - [x] Rework shaders, buffers and masking
     - [x] GUI text box (including TrueType font)
@@ -42,11 +42,12 @@ Each version released on GitLab will be soon available on Maven Central.
 - [x] Rework resources (~~using java FileSystems~~)
     - `common.asset.*`
 - [x] Rework textures (for 1D, 2D, 3D)
-- [ ] Rework options
 - [x] Work on audio package which was never finished
-- [ ] Deprecate uses of `GameLogger` *(use individual named loggers instead)*
+- [x] Deprecate uses of `GameLogger` *(use individual named loggers instead)*
     - [x] Create a logger formatter to apply to global loger
-- [ ] Update `AxisAlignedBB`
+- [x] Update `AxisAlignedBB`
+    - `common.util.phys.AABB2d`
+    - `common.util.phys.AABB3d`
 - [x] Remove or adapt `client.renderer.texture.TextureObject`
 - [x] Promote raw uses of GL functions and make simple wrappers for complicated GL objects *(shader, programs, framebuffers, etc.)*
 
