@@ -29,7 +29,7 @@ public class ImageUtils {
 	 * <p><b>If <code>free == false</code>, then you have to free the returned buffer by calling {@link #freeImage(ByteBuffer)}.</b></p>
 	 * @param stream The stream to read from.
 	 * @param initialSize The initial buffer capacity used to read the stream.
-	 * @param free Whether or not to free the image buffer after called the consumer.
+	 * @param free Whether to free the image buffer after called the consumer.
 	 * @param consumer The consumer called with image buffer, width and height.
 	 * @throws IOException If the method fails to read the input stream, or if the image failed to read.
 	 */

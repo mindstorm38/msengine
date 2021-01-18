@@ -3,6 +3,10 @@ package io.msengine.client.renderer.gui;
 import io.msengine.client.renderer.model.ModelHandler;
 import io.msengine.client.renderer.vertex.IndicesDrawBuffer;
 
+/**
+ * @deprecated Consider using the new package {@link io.msengine.client.graphics}.
+ */
+@Deprecated
 public abstract class GuiMask {
 
 	protected final GuiRenderer renderer;

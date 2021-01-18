@@ -7,8 +7,10 @@ import static org.lwjgl.opengl.GL11.*;
  * Enumeration of OpenGL data types
  * 
  * @author Théo Rozier (Mindstorm38)
+ * @deprecated Consider using {@link io.msengine.client.graphics.util.DataType}
  *
  */
+@Deprecated
 public enum DataType {
 	
 	UBYTE ( GL_UNSIGNED_BYTE, 1, "UB" ),

@@ -22,8 +22,10 @@ import io.sutil.SingletonAlreadyInstantiatedException;
  * User to store constants OpenGL object or informations about the current context
  * 
  * @author Théo Rozier (Mindstorm38)
+ * @deprecated No longer useful, consider using proper calls directly to OpenGL.
  *
  */
+@Deprecated
 public class RenderConstantFields {
 	
 	// Singleton \\

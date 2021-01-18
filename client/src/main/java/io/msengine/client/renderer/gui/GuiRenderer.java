@@ -13,6 +13,10 @@ import io.sutil.SingletonAlreadyInstantiatedException;
 
 import static org.lwjgl.opengl.GL11.*;
 
+/**
+ * @deprecated Consider using the new package {@link io.msengine.client.graphics}.
+ */
+@Deprecated
 public class GuiRenderer implements ModelApplyListener {
 	
 	// Singleton \\

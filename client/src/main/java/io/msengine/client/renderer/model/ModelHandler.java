@@ -5,12 +5,14 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * 
- * Used to replace deprecated {@link GL11#glPushMatrix()} and {@link GL11#glPopMatrix()}
+ * <p>Used to replace deprecated {@link GL11#glPushMatrix()} and {@link GL11#glPopMatrix()}
  * and the old render pipeline. You can now use this to update shader's model matrices.<br>
- * <b>Not Thread-Safe</b>
+ * <b>Not Thread-Safe</b></p>
+ *
+ * <p><b>This class might be moved in {@link io.msengine.client.graphics} in the future.</b></p>
  * 
  * @author Théo Rozier (Mindstorm38)
- * 
+ *
  */
 public class ModelHandler {
 	

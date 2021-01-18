@@ -2,6 +2,10 @@ package io.msengine.client.util.camera;
 
 import org.joml.Matrix4f;
 
+/**
+ * @deprecated Because it was too specific, consider creating your own camera in your app.
+ */
+@Deprecated
 public class Camera3D {
 	
 	protected float x, y, z;

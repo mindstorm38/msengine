@@ -5,6 +5,7 @@ import io.msengine.common.game.ServerGameOptions;
 import java.io.File;
 import java.util.Objects;
 
+@Deprecated
 public class RenderGameOptions extends ServerGameOptions {
 
 	private String baseLangsFolderPath;

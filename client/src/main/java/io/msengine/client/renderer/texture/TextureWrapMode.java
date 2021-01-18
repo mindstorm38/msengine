@@ -6,6 +6,10 @@ import static org.lwjgl.opengl.GL11.GL_CLAMP;
 import static org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 
+/**
+ * @deprecated Consider using newer texture API at {@link io.msengine.client.graphics.texture.base.SamplerParamWrap}
+ */
+@Deprecated
 public enum TextureWrapMode {
 	
 	REPEAT ( GL_REPEAT ),

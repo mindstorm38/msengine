@@ -8,6 +8,9 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.BufferUtils;
 
+/**
+ * @deprecated See {@link io.msengine.client.graphics.util.ImageUtils ImageUtils} and {@link BufferAlloc}.
+ */
 @Deprecated
 public class Utils {
 	
