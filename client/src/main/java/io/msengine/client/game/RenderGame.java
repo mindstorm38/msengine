@@ -30,6 +30,7 @@ import static org.lwjgl.opengl.GL11.glGetString;
 import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 import static io.msengine.common.util.GameLogger.LOGGER;
 
+@Deprecated
 public abstract class RenderGame<SELF extends RenderGame<SELF, E>, E extends RenderGameOptions> extends ServerGame<SELF, E> {
 
 	// Constants \\

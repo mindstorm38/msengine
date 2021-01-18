@@ -13,8 +13,10 @@ import io.msengine.common.osf.serializer.OSFTypeAdapter;
  * Axis Aligned Bounding Box, used to test collisions
  * 
  * @author Mindstorm38
+ * @deprecated See {@link io.msengine.common.util.phys.AABB2d} and {@link io.msengine.common.util.phys.AABB3d}.
  *
  */
+@Deprecated
 public class AxisAlignedBB implements RectBoundingBox {
 	
 	// Constants \\

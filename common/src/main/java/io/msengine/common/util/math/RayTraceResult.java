@@ -1,5 +1,6 @@
 package io.msengine.common.util.math;
 
+@Deprecated
 public class RayTraceResult {
 	
 	private final float newToX, newToY;

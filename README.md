@@ -30,7 +30,7 @@ Each version released on GitLab will be soon available on Maven Central.
     - [x] Rework base GUI framework classes
     - [x] Rework shaders, buffers and masking
     - [x] GUI text box (including TrueType font)
-    - [ ] Re-implement all useful classes from old GUI framework ***(99%, missing "Scrollable container")***
+    - [x] Re-implement all useful classes from old GUI framework
 - [x] Rework event managers :
     - Object event manager `common.util.event.ObjectEventManager`
     - Method event manager `common.util.event.MethodEventManager`

@@ -8,6 +8,7 @@ import io.sutil.SingletonAlreadyInstantiatedException;
 import io.sutil.resource.Resource;
 import io.sutil.resource.ResourceAccessor;
 
+@Deprecated
 public class ResourceManager extends io.sutil.resource.ResourceManager {
 	
 	// Singleton \\

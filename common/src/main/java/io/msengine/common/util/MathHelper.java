@@ -1,5 +1,8 @@
 package io.msengine.common.util;
 
+/**
+ * Static helpers class for faster maths and more graphics-related functions.
+ */
 public final class MathHelper {
 	
 	private MathHelper() { }

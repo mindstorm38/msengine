@@ -15,6 +15,7 @@ import io.sutil.resource.Resource;
 
 import javax.imageio.ImageIO;
 
+@Deprecated
 public class DetailledResource extends Resource {
 	
 	private final LazyLoadValue<InputStream> resourceMetaInputStream;

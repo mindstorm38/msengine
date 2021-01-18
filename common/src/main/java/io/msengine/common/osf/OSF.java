@@ -26,6 +26,7 @@ import io.sutil.StringUtils;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public class OSF implements OSFSerializationContext, OSFDeserializationContext {
 	
 	// Constants \\

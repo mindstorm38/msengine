@@ -11,6 +11,7 @@ public class GameLogger {
 	
 	public static Logger LOGGER = null;
 	
+	@Deprecated
 	public static Logger create(String name) {
 		
 		if ( LOGGER != null )

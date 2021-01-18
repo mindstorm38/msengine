@@ -1,5 +1,6 @@
 package io.msengine.common.osf;
 
+@Deprecated
 public class OSFText extends OSFNode {
 	
 	private String text;

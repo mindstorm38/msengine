@@ -19,6 +19,7 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * @param <SELF>You must set this to the extended class.
  * @param <O> The class used for game options.
  */
+@Deprecated
 public abstract class BaseGame<SELF extends BaseGame<SELF, O>, O extends BaseGameOptions> {
 
 	// Static \\

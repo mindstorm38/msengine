@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * An application profiler, used to measure average times of specific sections of a program.
+ *
+ * <b>The class replace the legacy Profiler class from SUtil.</b>
+ */
 public class Profiler {
 	
 	private final List<Section> sections = new ArrayList<>();
