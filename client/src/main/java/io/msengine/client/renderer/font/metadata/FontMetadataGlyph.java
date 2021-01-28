@@ -1,5 +1,6 @@
 package io.msengine.client.renderer.font.metadata;
 
+@Deprecated
 public class FontMetadataGlyph {
 	
 	public final int x;

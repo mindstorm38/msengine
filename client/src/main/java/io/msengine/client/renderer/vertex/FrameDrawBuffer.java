@@ -11,6 +11,7 @@ import io.msengine.client.renderer.util.BufferUsage;
 /**
  * Extension of {@link IndicesDrawBuffer} but upload at instantiation specific Vertices and Indices Buffer Objects to draw
  */
+@Deprecated
 public class FrameDrawBuffer extends IndicesDrawBuffer {
 
 	public FrameDrawBuffer(ShaderManager shaderManager, VertexArrayFormat format, String positionVbo, String...enabledVertexAttribsIdentifiers) {

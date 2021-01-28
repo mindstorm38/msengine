@@ -19,6 +19,7 @@ import io.sutil.SingletonAlreadyInstantiatedException;
  * @author Theo Rozier
  *
  */
+@Deprecated
 public class TextureManager {
 	
 	// Constants \\

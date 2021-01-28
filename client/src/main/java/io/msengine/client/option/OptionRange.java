@@ -3,6 +3,7 @@ package io.msengine.client.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
+@Deprecated
 public class OptionRange extends Option {
 	
 	private final int min;

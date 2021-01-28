@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 
 import io.msengine.common.util.JsonUtils;
 
+@Deprecated
 public class OptionKey extends Option {
 	
 	private final int defaultKeyCode;

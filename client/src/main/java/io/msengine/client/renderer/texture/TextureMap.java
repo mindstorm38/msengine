@@ -22,6 +22,7 @@ import io.sutil.StreamUtils;
 
 import static io.msengine.common.util.GameLogger.LOGGER;
 
+@Deprecated
 public class TextureMap extends TextureMapBase<TextureMapTile> {
 	
 	// Constants \\

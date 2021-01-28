@@ -11,6 +11,7 @@ import java.util.Objects;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public class VertexElement {
 	
 	// Constants \\

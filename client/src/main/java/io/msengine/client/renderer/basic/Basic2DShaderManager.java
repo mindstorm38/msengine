@@ -6,6 +6,7 @@ import io.sutil.CollectionUtils;
 
 import static io.msengine.client.renderer.vertex.type.BasicFormat.*;
 
+@Deprecated
 public class Basic2DShaderManager extends BasicShaderManager {
 	
 	private static final String[] VERTEX_ATTRIBS = {BASIC2D_POSITION, BASIC_COLOR, BASIC_TEX_COORD};

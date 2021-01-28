@@ -41,6 +41,7 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * @author Mindstorm
  *
  */
+@Deprecated
 public class Window {
 	
 	// Constants \\

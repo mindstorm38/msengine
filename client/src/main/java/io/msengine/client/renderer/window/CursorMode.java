@@ -2,6 +2,7 @@ package io.msengine.client.renderer.window;
 
 import org.lwjgl.glfw.GLFW;
 
+@Deprecated
 public enum CursorMode {
 	
 	NORMAL (GLFW.GLFW_CURSOR_NORMAL),

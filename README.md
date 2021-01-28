@@ -19,7 +19,7 @@ This engine is available on Maven Central since version `1.0.5` in two versions 
 Each version released on GitLab will be soon available on Maven Central.
 
 ## Goals for MSEngine 1.1
-- [ ] Deprecate all uses of SUtil
+- [x] Deprecate all uses of SUtil
 - [x] Deprecate `{client,common}.game` packages
 - [x] Create tick/frame regulated interfaces
     - `common.logic.TickRegulated`

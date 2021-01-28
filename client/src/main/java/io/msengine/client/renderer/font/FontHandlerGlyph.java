@@ -1,5 +1,6 @@
 package io.msengine.client.renderer.font;
 
+@Deprecated
 public class FontHandlerGlyph {
 	
 	public final FontHandler handler;

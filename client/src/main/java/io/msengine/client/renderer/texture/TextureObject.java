@@ -17,6 +17,7 @@ import io.msengine.client.util.Utils;
  * @author Theo Rozier
  *
  */
+@Deprecated
 public class TextureObject implements ShaderSamplerObject {
 	
 	// Static \\

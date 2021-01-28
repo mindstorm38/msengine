@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public enum ShaderType {
 
 	VERTEX   ("vertex",  ".vsh", GL_VERTEX_SHADER),

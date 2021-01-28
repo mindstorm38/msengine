@@ -5,6 +5,7 @@ import io.msengine.client.renderer.vertex.VertexElement;
 
 import static io.msengine.client.renderer.vertex.VertexElement.*;
 
+@Deprecated
 public class BasicFormat extends VertexArrayFormat {
 	
 	public static final BasicFormat BASIC2D = new BasicFormat(POSITION_2F);

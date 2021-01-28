@@ -7,6 +7,7 @@ import io.msengine.common.util.JsonUtils;
 
 import java.lang.reflect.Type;
 
+@Deprecated
 public class AnimationMetadataSection implements MetadataSection {
 
 	private final int framesCount;

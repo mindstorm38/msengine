@@ -2,6 +2,7 @@ package io.msengine.client.renderer.shader;
 
 import io.msengine.client.renderer.vertex.VertexElement;
 
+@Deprecated
 public class ShaderAttribute {
 	
 	private final String identifier;

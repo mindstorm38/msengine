@@ -15,6 +15,7 @@ import io.sutil.StreamUtils;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public class TexturePredefinedMap extends TextureMapBase<TextureMapTile> {
 	
 	public static final Function<Integer, String> DEFAULT_FRAME_PATH_BUILDER = ( i ) -> "frame_" + i;

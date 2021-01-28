@@ -10,6 +10,7 @@ import org.lwjgl.system.MemoryUtil;
 /**
  * All value type accepted as uniforms.
  */
+@Deprecated
 public enum ShaderValueType {
 	
 	INT   (MemoryUtil::memAllocInt, GL20::glUniform1iv, DataType.INT, 1),
