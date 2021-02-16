@@ -26,6 +26,9 @@ subprojects {
     }
 }
 
+project("common").description = "MSEngine - Common library, containing math utils and resources handling."
+project("client").description = "MSEngine - Client side library, containing OpenGL natives."
+
 project("common").mseLibrary()
 project("client").mseLibrary()
 

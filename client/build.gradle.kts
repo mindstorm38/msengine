@@ -2,8 +2,6 @@
 //  [MSEngine] Client side module
 //
 
-description = "MSEngine - Client side library, containing OpenGL natives."
-
 dependencies {
 
     val lwjglVersion = "3.2.3"

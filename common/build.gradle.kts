@@ -2,8 +2,6 @@
 //  [MSEngine] Common module
 //
 
-description = "MSEngine - Common library, containing math utils and resources handling."
-
 dependencies {
 
     "api"("com.google.guava", "guava", "23.2-jre")
