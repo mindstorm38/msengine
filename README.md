@@ -12,11 +12,11 @@ This library is a game engine helper for LWJGL 3 adding support for :
 - Vertex buffer or Indices vertex buffer to use with shaders to easily upload VAO and VBOs data
 - OpenGL 4.0 minimum is required and will be configurable in the future
 
-This engine is available on Maven Central since version `1.0.5` in two versions :
-- `fr.theorozier:msengine-client:1.0.7`
-- `fr.theorozier:msengine-common:1.0.7`
+The current version of the library is "1.1.0" :
+- `fr.theorozier:msengine-client:1.1.0`
+- `fr.theorozier:msengine-common:1.1.0`
 
-Each version released on GitLab will be soon available on Maven Central.
+Each version released on Github will be soon available on Maven Central.
 
 ## Goals for MSEngine 1.1
 - [x] Deprecate all uses of SUtil

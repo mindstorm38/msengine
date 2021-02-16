@@ -13,7 +13,7 @@ val ossrhPassword: String? by project
 description = "A Java 3D engine on top of LWJGL 3, using OpenGL, GLFW and JOML"
 
 allprojects {
-    version = "1.1.0-SNAPSHOT"
+    version = "1.1.0"
     group = "fr.theorozier"
 }
 
