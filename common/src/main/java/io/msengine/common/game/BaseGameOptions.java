@@ -16,6 +16,7 @@ import java.util.Objects;
  *     <li>Resource namespace for the game (default to 'root')</li>
  * </ul>
  */
+@Deprecated
 public abstract class BaseGameOptions {
 	
 	private final Class<?> runningClass;

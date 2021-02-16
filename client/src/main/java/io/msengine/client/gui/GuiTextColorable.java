@@ -10,6 +10,7 @@ import io.msengine.common.util.Color;
  * @author Theo Rozier
  *
  */
+@Deprecated
 public class GuiTextColorable extends GuiTextBase {
 	
 	protected final Color textColor = Color.WHITE.copy();

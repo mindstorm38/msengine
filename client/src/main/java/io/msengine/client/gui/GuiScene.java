@@ -2,6 +2,7 @@ package io.msengine.client.gui;
 
 import io.msengine.client.gui.event.GuiSceneResizedEvent;
 
+@Deprecated
 public abstract class GuiScene extends GuiParent {
 
 	protected Class<? extends GuiScene> previousScene;

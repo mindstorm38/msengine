@@ -16,6 +16,7 @@ import io.msengine.common.resource.metadata.MetadataSection;
 import io.msengine.common.resource.metadata.MetadataSectionSerializer;
 import io.msengine.common.util.JsonUtils;
 
+@Deprecated
 public class FontMetadataSection implements MetadataSection {
 	
 	private final int height;

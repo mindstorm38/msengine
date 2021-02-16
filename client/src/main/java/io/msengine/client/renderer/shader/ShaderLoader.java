@@ -7,6 +7,7 @@ import io.msengine.common.resource.ResourceManager;
 
 import static org.lwjgl.opengl.GL20.*;
 
+@Deprecated
 public class ShaderLoader {
 	
 	// Class \\

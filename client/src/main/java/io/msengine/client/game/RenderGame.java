@@ -30,6 +30,7 @@ import static org.lwjgl.opengl.GL11.glGetString;
 import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 import static io.msengine.common.util.GameLogger.LOGGER;
 
+@Deprecated
 public abstract class RenderGame<SELF extends RenderGame<SELF, E>, E extends RenderGameOptions> extends ServerGame<SELF, E> {
 
 	// Constants \\
@@ -56,6 +57,7 @@ public abstract class RenderGame<SELF extends RenderGame<SELF, E>, E extends Ren
 	protected final Options options;
 	protected final LanguageManager languageManager;
 	
+	@Deprecated
 	protected final AudioContext audioContext;
 	
 	protected final Window window;
@@ -76,7 +78,7 @@ public abstract class RenderGame<SELF extends RenderGame<SELF, E>, E extends Ren
 		this.options = new Options( options.getOptionsFile() );
 		this.languageManager = new I18n( options.getBaseLangsFolderPath() );
 		
-		this.audioContext = new AudioContext();
+		this.audioContext = null;
 		
 		this.window = new Window();
 		this.textureManager = new TextureManager();
@@ -140,7 +142,7 @@ public abstract class RenderGame<SELF extends RenderGame<SELF, E>, E extends Ren
 			LOGGER.log( Level.WARNING, "Unable to load default font at '" + this.defaultFont.getPath() + "'", e );
 		}
 		
-		this.audioContext.start();
+		// this.audioContext.start();
 		
 		this.renderConstantFields.init();
 		
@@ -219,7 +221,7 @@ public abstract class RenderGame<SELF extends RenderGame<SELF, E>, E extends Ren
 		
 		this.renderConstantFields.stop();
 		
-		this.audioContext.stop();
+		// this.audioContext.stop();
 		
 		this.window.stop();
 		

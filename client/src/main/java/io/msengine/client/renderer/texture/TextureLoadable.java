@@ -1,5 +1,6 @@
 package io.msengine.client.renderer.texture;
 
+@Deprecated
 public abstract class TextureLoadable extends Texture {
 
 	protected final String path;

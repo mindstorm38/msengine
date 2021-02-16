@@ -4,6 +4,7 @@ import io.msengine.common.util.GameTypeRequired;
 import io.sutil.CommonUtils;
 import io.sutil.ThreadUtils;
 
+@Deprecated
 public abstract class ServerGame<SELF extends ServerGame<SELF, E>, E extends ServerGameOptions> extends BaseGame<SELF, E> {
 
 	// Constants \\

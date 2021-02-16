@@ -3,6 +3,10 @@ package io.msengine.client.util.camera;
 import io.sutil.math.MathHelper;
 import org.joml.Matrix4f;
 
+/**
+ * @deprecated Because it was too specific, consider creating your own camera in your app.
+ */
+@Deprecated
 public class SmoothCamera3D extends Camera3D {
 
 	private float lastX, lastY, lastZ, lastYaw, lastPitch;

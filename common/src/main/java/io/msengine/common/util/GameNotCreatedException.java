@@ -1,5 +1,6 @@
 package io.msengine.common.util;
 
+@Deprecated
 public class GameNotCreatedException extends RuntimeException {
 
 	private static final long serialVersionUID = -3933714369521600755L;

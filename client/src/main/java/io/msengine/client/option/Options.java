@@ -22,6 +22,7 @@ import io.sutil.registry.Registry;
 
 import static io.msengine.common.util.GameLogger.LOGGER;
 
+@Deprecated
 public class Options {
 	
 	// Singleton \\

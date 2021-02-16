@@ -4,6 +4,7 @@ import io.msengine.common.util.GameNotCreatedException;
 import io.sutil.SingletonAlreadyInstantiatedException;
 import io.sutil.lang.LanguageManager;
 
+@Deprecated
 public class I18n extends LanguageManager {
 	
 	// Singleton \\

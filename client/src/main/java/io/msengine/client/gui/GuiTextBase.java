@@ -15,6 +15,7 @@ import io.msengine.client.renderer.vertex.IndicesDrawBuffer;
 
 import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
 
+@Deprecated
 public class GuiTextBase extends GuiObject {
 	
 	protected IndicesDrawBuffer buffer;

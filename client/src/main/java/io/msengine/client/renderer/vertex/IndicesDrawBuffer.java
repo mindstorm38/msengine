@@ -17,6 +17,7 @@ import io.msengine.client.renderer.util.BufferUsage;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public class IndicesDrawBuffer extends DrawBuffer {
 
 	// Class \\

@@ -4,6 +4,7 @@ import io.msengine.client.renderer.vertex.VertexArrayFormat;
 
 import static io.msengine.client.renderer.vertex.VertexElement.*;
 
+@Deprecated
 public class GuiFormat extends VertexArrayFormat {
 
 	public static final GuiFormat GUI = new GuiFormat();

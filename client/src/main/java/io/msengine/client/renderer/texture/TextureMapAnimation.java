@@ -4,6 +4,7 @@ import io.msengine.client.renderer.texture.metadata.AnimationMetadataSection;
 
 import java.nio.ByteBuffer;
 
+@Deprecated
 public class TextureMapAnimation {
 	
 	private final TextureMap map;

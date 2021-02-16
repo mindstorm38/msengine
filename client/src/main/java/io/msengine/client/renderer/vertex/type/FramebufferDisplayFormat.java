@@ -4,6 +4,7 @@ import static io.msengine.client.renderer.vertex.VertexElement.*;
 
 import io.msengine.client.renderer.vertex.VertexArrayFormat;
 
+@Deprecated
 public class FramebufferDisplayFormat extends VertexArrayFormat {
 	
 	public static final FramebufferDisplayFormat FRAMEBUFFER_DISPLAY = new FramebufferDisplayFormat();

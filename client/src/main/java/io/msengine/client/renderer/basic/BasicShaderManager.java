@@ -10,6 +10,7 @@ import org.joml.Matrix4f;
 
 import static org.lwjgl.opengl.GL20.*;
 
+@Deprecated
 public abstract class BasicShaderManager extends ShaderManager {
 	
 	public static final String BASIC_GLOBAL_MATRIX   = "global_matrix";

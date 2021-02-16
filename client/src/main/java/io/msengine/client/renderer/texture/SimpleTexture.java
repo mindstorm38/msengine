@@ -7,6 +7,7 @@ import io.msengine.common.resource.DetailledResource;
 import io.msengine.common.resource.ResourceManager;
 import io.sutil.StreamUtils;
 
+@Deprecated
 public class SimpleTexture extends TextureLoadable {
 
 	public SimpleTexture(String path) {

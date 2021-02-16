@@ -7,8 +7,10 @@ import static org.lwjgl.opengl.GL15.*;
  * Enumeration of defaults OpenGL buffer usage
  * 
  * @author Théo Rozier (Mindstorm38)
+ * @deprecated Consider using {@link io.msengine.client.graphics.buffer.BufferUsage}
  *
  */
+@Deprecated
 public enum BufferUsage {
 		
 	STATIC_DRAW ( GL_STATIC_DRAW ),

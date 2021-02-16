@@ -9,6 +9,7 @@ import io.msengine.client.gui.event.GuiListenerGroup;
 import io.msengine.client.renderer.gui.GuiRenderer;
 import io.msengine.client.renderer.model.ModelHandler;
 
+@Deprecated
 public abstract class GuiObject {
 	
 	public static final int SIZE_AUTO = -1;

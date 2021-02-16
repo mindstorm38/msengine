@@ -2,6 +2,7 @@ package io.msengine.client.renderer.shader;
 
 import io.msengine.client.renderer.texture.TextureObject;
 
+@Deprecated
 public class ShaderSampler {
 
 	// Class \\

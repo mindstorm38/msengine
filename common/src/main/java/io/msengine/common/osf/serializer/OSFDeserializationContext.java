@@ -9,6 +9,7 @@ import io.msengine.common.osf.OSFNode;
  * @author Mindstorm38
  *
  */
+@Deprecated
 public interface OSFDeserializationContext {
 
 	/**

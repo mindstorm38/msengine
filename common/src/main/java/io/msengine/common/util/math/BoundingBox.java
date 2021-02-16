@@ -2,6 +2,7 @@ package io.msengine.common.util.math;
 
 import io.sutil.math.MathHelper;
 
+@Deprecated
 public class BoundingBox implements RectBoundingBox {
 
 	public static final float PI = (float) Math.PI;

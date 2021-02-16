@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public abstract class TextureMapBase<T extends TextureMapTile> extends TextureLoadable {
 	
 	protected final Map<String, T> atlasTiles;

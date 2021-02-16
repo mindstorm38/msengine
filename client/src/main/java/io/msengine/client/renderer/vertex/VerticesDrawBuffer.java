@@ -12,6 +12,7 @@ import io.msengine.client.renderer.shader.ShaderManager;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public class VerticesDrawBuffer extends DrawBuffer {
 
 	protected int verticesCount;

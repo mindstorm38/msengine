@@ -3,6 +3,10 @@ package io.msengine.client.renderer.util;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.*;
 
+/**
+ * @deprecated Consider using {@link io.msengine.client.graphics.util.Blending}
+ */
+@Deprecated
 public abstract class BlendMode {
 	
 	public static final BlendMode TRANSPARENCY = new BlendMode() {

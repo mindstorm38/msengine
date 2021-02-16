@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Deprecated
 public class GuiGrowingLineTexture extends GuiComponentTexture {
 	
 	private final Map<String, TextureMapTile> statesTiles;

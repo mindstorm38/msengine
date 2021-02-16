@@ -9,6 +9,7 @@ import org.joml.Vector3i;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
+@Deprecated
 public class ShaderDefaultUniform extends ShaderUniformBase {
 
 	protected ShaderDefaultUniform() {

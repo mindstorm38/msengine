@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
+@Deprecated
 public class OSFObject extends OSFNode {
 	
 	private final Map<String, OSFNode> children = new HashMap<>();

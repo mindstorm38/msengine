@@ -7,7 +7,9 @@ import static io.msengine.common.util.GameLogger.LOGGER;
 
 /**
  * 
- * Used to extends defaults OpenGL functions
+ * <p>Used to extends defaults OpenGL functions</p>
+ *
+ * <p><b>This class might be partially moved in {@link io.msengine.client.graphics} in the future, or simply deprecated.</b></p>
  * 
  * @author Théo Rozier (Mindstorm38)
  *

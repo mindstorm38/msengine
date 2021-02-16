@@ -1,5 +1,6 @@
 package io.msengine.client.renderer.texture;
 
+@Deprecated
 public class TextureMapTile {
 	
 	public final TextureMapBase<?> map;

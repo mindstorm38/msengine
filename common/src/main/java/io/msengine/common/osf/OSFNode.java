@@ -3,6 +3,7 @@ package io.msengine.common.osf;
 /**
  * OSF (Object Serialization Format) is a save format for many use. Look like JSON structure
  */
+@Deprecated
 public abstract class OSFNode {
 	
 	protected OSFNode parent = null;

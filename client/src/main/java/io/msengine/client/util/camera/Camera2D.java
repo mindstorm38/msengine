@@ -7,8 +7,10 @@ import org.joml.Matrix4f;
  * A 2D camera used to store camera position, rotation and scale.
  * 
  * @author Théo Rozier (Mindstorm38)
+ * @deprecated Because it was too specific, consider creating your own camera in your app.
  *
  */
+@Deprecated
 public class Camera2D {
 	
 	public static final Camera2D DEFAULT = new Camera2D();

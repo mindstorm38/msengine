@@ -17,6 +17,7 @@ import org.lwjgl.system.MemoryUtil;
 import io.msengine.common.util.Color;
 import io.sutil.ReflectUtils;
 
+@Deprecated
 public abstract class ShaderUniformBase {
 
 	private final String identifier;

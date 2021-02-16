@@ -14,7 +14,9 @@ import io.msengine.client.util.Utils;
 
 /**
  * Helper to take screenshots from a {@link Framebuffer}.
+ * @deprecated Outdated, do not use, might be reworked in the future in {@link io.msengine.client.graphics.util}.
  */
+@Deprecated
 public class ScreenshotHelper {
 	
 	/**

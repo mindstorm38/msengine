@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({"unchecked"})
-public class EventManager<E extends BaseEvent> {
+public class EventManager<E extends ObjectEvent> {
 
 	private final Class<E> baseEventClass;
 	private final Map<Class<E>, List<EventListener<E>>> groups = new HashMap<>();
@@ -39,7 +39,7 @@ public class EventManager<E extends BaseEvent> {
 	
 	public <C extends E> void fireEvent(C event) {
 	
-		event.setManager(this);
+		// event.setManager(this);
 		
 		Class<?> clazz = event.getClass();
 		

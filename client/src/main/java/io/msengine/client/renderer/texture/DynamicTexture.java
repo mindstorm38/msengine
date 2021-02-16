@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import io.msengine.common.resource.ResourceManager;
 
+@Deprecated
 public class DynamicTexture extends Texture {
 	
 	private final BufferedImage image;

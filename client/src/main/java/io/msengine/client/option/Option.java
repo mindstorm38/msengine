@@ -8,6 +8,7 @@ package io.msengine.client.option;
  * @author Mindstorm38
  *
  */
+@Deprecated
 public abstract class Option {
 	
 	protected final String identifier;

@@ -3,6 +3,7 @@ package io.msengine.client.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
+@Deprecated
 public class OptionBoolean extends Option {
 	
 	private final boolean defautValue;

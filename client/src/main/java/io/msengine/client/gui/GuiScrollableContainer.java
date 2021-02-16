@@ -6,6 +6,7 @@ import io.msengine.client.renderer.window.Window;
 import io.msengine.client.renderer.window.listener.WindowMousePositionEventListener;
 import io.msengine.client.renderer.window.listener.WindowScrollEventListener;
 
+@Deprecated
 public class GuiScrollableContainer extends GuiParent implements
 		WindowMousePositionEventListener,
 		WindowScrollEventListener  {

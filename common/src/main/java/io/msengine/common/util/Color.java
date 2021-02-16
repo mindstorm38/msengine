@@ -5,8 +5,6 @@ import java.nio.FloatBuffer;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import io.sutil.LazyLoadValue;
-
 /**
  *
  * Represent a RGBA color.
@@ -31,8 +29,8 @@ public class Color {
 	private float b;
 	private float a;
 	
-	private final LazyLoadValue<Vector3f> vector3;
-	private final LazyLoadValue<Vector4f> vector4;
+	private Vector3f vector3;
+	private Vector4f vector4;
 	
 	public Color(float r, float g, float b, float a) {
 		
@@ -41,7 +39,7 @@ public class Color {
 		this.b = b;
 		this.a = a;
 		
-		this.vector3 = new LazyLoadValue<Vector3f>() {
+		/*this.vector3 = new LazyLoadValue<Vector3f>() {
 			public Vector3f create() {
 				return new Vector3f();
 			}
@@ -51,7 +49,7 @@ public class Color {
 			public Vector4f create() {
 				return new Vector4f();
 			}
-		};
+		};*/
 		
 	}
 	
@@ -121,15 +119,17 @@ public class Color {
 	}
 	
 	public Vector4f toVector4f() {
-		Vector4f v = this.vector4.get();
-		v.set( this.r, this.g, this.b, this.a );
-		return v;
+		if (this.vector4 == null) {
+			this.vector4 = new Vector4f();
+		}
+		return this.vector4.set(this.r, this.g, this.b, this.a);
 	}
 	
 	public Vector3f toVector3f() {
-		Vector3f v = this.vector3.get();
-		v.set( this.r, this.g, this.b );
-		return v;
+		if (this.vector3 == null) {
+			this.vector3 = new Vector3f();
+		}
+		return this.vector3.set(this.r, this.g, this.b);
 	}
 	
 	public Color copy() {
@@ -142,6 +142,11 @@ public class Color {
 		if ( !( obj instanceof Color ) ) return false;
 		Color c = (Color) obj;
 		return this.r == c.r && this.g == c.g && this.b == c.b && this.a == c.a;
+	}
+	
+	@Override
+	public String toString() {
+		return "Color<" + this.r + "/" + this.g + "/" + this.b + "/" + this.a + ">";
 	}
 	
 }

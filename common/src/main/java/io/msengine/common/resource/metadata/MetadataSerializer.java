@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import io.sutil.registry.NamespaceRegistry;
 
+@Deprecated
 public class MetadataSerializer {
 	
 	// Singleton \\

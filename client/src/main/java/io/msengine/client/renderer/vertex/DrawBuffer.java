@@ -36,6 +36,7 @@ import io.sutil.CollectionUtils;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public class DrawBuffer {
 	
 	// Constants \\

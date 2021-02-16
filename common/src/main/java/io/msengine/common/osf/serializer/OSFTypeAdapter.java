@@ -3,6 +3,7 @@ package io.msengine.common.osf.serializer;
 import io.msengine.common.osf.OSF;
 import io.msengine.common.osf.OSFNode;
 
+@Deprecated
 public interface OSFTypeAdapter<T> {
 	
 	Class<T> initOSF(OSF osf);

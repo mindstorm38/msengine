@@ -17,8 +17,10 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * Used to debug OpenGL error
  * 
  * @author Mindstorm38
+ * @deprecated Consider using {@link io.msengine.client.graphics.util.DebugOutput}
  *
  */
+@Deprecated
 public class GLDebugMessageCallback implements GLDebugMessageCallbackI {
 
 	private static final Map<Integer, Level> LEVEL_ASSOC = CollectionUtils.createMapInline(

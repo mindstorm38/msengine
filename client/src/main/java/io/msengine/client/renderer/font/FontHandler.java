@@ -20,6 +20,7 @@ import io.msengine.client.renderer.font.metadata.FontMetadataSection;
 import io.msengine.common.resource.metadata.Metadata;
 import io.msengine.common.resource.metadata.MetadataSerializer;
 
+@Deprecated
 public class FontHandler implements ShaderSamplerObject {
 	
 	static {

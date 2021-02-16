@@ -8,6 +8,7 @@ import java.util.List;
 
 import io.sutil.LazyLoadValue;
 
+@Deprecated
 public class OSFArray extends OSFNode implements Iterable<OSFNode> {
 	
 	private final List<OSFNode> children = new ArrayList<>();

@@ -1,5 +1,6 @@
 package io.msengine.client.renderer.shader;
 
+@Deprecated
 public class ShaderBuildException extends RuntimeException {
 
 	private static final long serialVersionUID = -1255384970660732014L;

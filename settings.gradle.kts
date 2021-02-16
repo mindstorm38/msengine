@@ -1,3 +1,5 @@
 rootProject.name = "msengine"
 
-include("common", "client")
+include("common")
+include("client")
+include("examples")

@@ -9,6 +9,10 @@ import io.msengine.client.renderer.vertex.FrameDrawBuffer;
 
 import static io.msengine.client.renderer.vertex.type.FramebufferDisplayFormat.*;
 
+/**
+ * @deprecated Not yet re-implemented in {@link io.msengine.client.graphics} packages.
+ */
+@Deprecated
 public class FramebufferDisplayDrawBuffer extends FrameDrawBuffer {
 
 	public FramebufferDisplayDrawBuffer(FramebufferDisplayShaderManager shaderManager) {

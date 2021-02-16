@@ -14,6 +14,7 @@ import io.sutil.StreamUtils;
 import io.msengine.common.resource.DetailledResource;
 import static io.msengine.common.util.GameLogger.LOGGER;
 
+@Deprecated
 public class Metadata {
 	
 	private final MetadataSerializer serializer;

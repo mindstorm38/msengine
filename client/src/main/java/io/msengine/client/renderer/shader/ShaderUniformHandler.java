@@ -7,6 +7,7 @@ package io.msengine.client.renderer.shader;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public interface ShaderUniformHandler {
 
 	ShaderDefaultUniform DEFAULT_UNIFORM = new ShaderDefaultUniform();

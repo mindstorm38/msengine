@@ -1,5 +1,6 @@
 package io.msengine.common.util.math;
 
+@Deprecated
 public class Ray {
 
 	private float fromX, fromY;

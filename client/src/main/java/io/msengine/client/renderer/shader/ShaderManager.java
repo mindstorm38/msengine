@@ -23,6 +23,7 @@ import static io.msengine.common.util.GameLogger.LOGGER;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public class ShaderManager implements ShaderUniformHandler {
 	
 	// Static \\
@@ -465,6 +466,7 @@ public class ShaderManager implements ShaderUniformHandler {
 		this.checkNotBuilt();
 		
 		glUseProgram( 0 );
+		
 		currentProgram = -1;
 		currentShaderManager = null;
 		

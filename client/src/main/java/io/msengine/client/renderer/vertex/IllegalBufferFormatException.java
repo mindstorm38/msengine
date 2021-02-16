@@ -7,6 +7,7 @@ package io.msengine.client.renderer.vertex;
  * @author Théo Rozier (Mindstorm38)
  *
  */
+@Deprecated
 public class IllegalBufferFormatException extends RuntimeException {
 
 	private static final long serialVersionUID = 5496760765895377452L;

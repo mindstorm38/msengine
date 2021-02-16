@@ -9,8 +9,10 @@ import io.sutil.math.MathHelper;
  * A {@link Camera2D} with smooth effect using {@link #setSpeed(float)}, {@link #update()} and {@link #updateViewMatrix(float)}.
  * 
  * @author Mindstorm38
+ * @deprecated Because it was too specific, consider creating your own camera in your app.
  *
  */
+@Deprecated
 public class SmoothCamera2D extends Camera2D {
 
 	private float lastX, lastY;

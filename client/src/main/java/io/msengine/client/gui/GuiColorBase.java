@@ -18,6 +18,7 @@ import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
  * @author Theo Rozier
  *
  */
+@Deprecated
 public abstract class GuiColorBase extends GuiObject {
 	
 	protected IndicesDrawBuffer buffer;

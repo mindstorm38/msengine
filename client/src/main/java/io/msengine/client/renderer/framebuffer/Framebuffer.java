@@ -12,6 +12,10 @@ import io.msengine.client.renderer.shader.ShaderSamplerObject;
 import io.msengine.client.renderer.texture.TextureObject;
 import io.msengine.client.renderer.window.Window;
 
+/**
+ * @deprecated Not yet re-implemented in {@link io.msengine.client.graphics} packages.
+ */
+@Deprecated
 public class Framebuffer implements	ShaderSamplerObject {
 	
 	// Constants \\

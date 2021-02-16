@@ -14,6 +14,10 @@ import static io.msengine.client.renderer.vertex.VertexElement.*;
 import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
 import static org.lwjgl.opengl.GL20.*;
 
+/**
+ * @deprecated Consider using the new package {@link io.msengine.client.graphics}.
+ */
+@Deprecated
 public class GuiShaderManager extends ShaderManager {
 
 	public static final String GUI_TEXTURE_SAMPLER	= "texture_sampler";

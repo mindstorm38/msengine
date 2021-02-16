@@ -12,6 +12,7 @@ import io.msengine.common.resource.ResourceManager;
  * @author Theo Rozier
  *
  */
+@Deprecated
 public abstract class Texture implements ShaderSamplerObject {
 	
 	// Class \\

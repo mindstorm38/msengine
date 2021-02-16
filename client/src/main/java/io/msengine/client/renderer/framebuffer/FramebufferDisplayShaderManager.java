@@ -9,6 +9,10 @@ import io.msengine.client.renderer.util.BlendMode;
 import io.msengine.client.renderer.window.Window;
 import io.msengine.common.game.GameTimed;
 
+/**
+ * @deprecated Not yet re-implemented in {@link io.msengine.client.graphics} packages.
+ */
+@Deprecated
 public class FramebufferDisplayShaderManager extends ShaderManager implements GameTimed {
 
 	public static final String FRAMEBUFFER_DISPLAY_RESOLUTION		= "resolution";

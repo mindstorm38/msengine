@@ -10,6 +10,10 @@ import io.msengine.client.renderer.util.BufferUsage;
 
 import static io.msengine.client.renderer.vertex.type.GuiFormat.*;
 
+/**
+ * @deprecated Consider using the new package {@link io.msengine.client.graphics}.
+ */
+@Deprecated
 public class GUIMaskRectangle extends GuiMask {
 	
 	private boolean updateVerticesBuffer;

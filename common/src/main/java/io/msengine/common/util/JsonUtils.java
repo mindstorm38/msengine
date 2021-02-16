@@ -4,6 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 
+/**
+ * <b>Might be deprecated in the future.</b>
+ */
 public class JsonUtils {
 	
 	// Integer

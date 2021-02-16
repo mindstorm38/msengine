@@ -12,14 +12,45 @@ This library is a game engine helper for LWJGL 3 adding support for :
 - Vertex buffer or Indices vertex buffer to use with shaders to easily upload VAO and VBOs data
 - OpenGL 4.0 minimum is required and will be configurable in the future
 
-This engine is available on Maven Central since version `1.0.5` in two versions :
-- `fr.theorozier:msengine-client:1.0.7`
-- `fr.theorozier:msengine-common:1.0.7`
+The current version of the library is "1.1.0" :
+- `fr.theorozier:msengine-client:1.1.0`
+- `fr.theorozier:msengine-common:1.1.0`
 
-Each version released on GitLab will be soon available on Maven Central.
+Each version released on Github will be soon available on Maven Central.
+
+## Goals for MSEngine 1.1
+- [x] Deprecate all uses of SUtil
+- [x] Deprecate `{client,common}.game` packages
+- [x] Create tick/frame regulated interfaces
+    - `common.logic.TickRegulated`
+    - `common.logic.FrameRegulated`
+- [x] Deprecate OSF package `common.osf`
+- [x] TrueType fonts support
+- [x] Rework GUI (`client.graphics.gui`)
+    - [x] Rework base GUI framework classes
+    - [x] Rework shaders, buffers and masking
+    - [x] GUI text box (including TrueType font)
+    - [x] Re-implement all useful classes from old GUI framework
+- [x] Rework event managers :
+    - Object event manager `common.util.event.ObjectEventManager`
+    - Method event manager `common.util.event.MethodEventManager`
+- [x] Rework `Window` class (no longer a singleton, but an object oriented wrapper for GLFW)
+    - `client.window.Monitor`
+    - `client.window.Window`
+    - `client.window.WindowBuilder`
+    - `client.window.*`
+- [x] Rework resources (~~using java FileSystems~~)
+    - `common.asset.*`
+- [x] Rework textures (for 1D, 2D, 3D)
+- [x] Work on audio package which was never finished
+- [x] Deprecate uses of `GameLogger` *(use individual named loggers instead)*
+    - [x] Create a logger formatter to apply to global loger
+- [x] Update `AxisAlignedBB`
+    - `common.util.phys.AABB2d`
+    - `common.util.phys.AABB3d`
+- [x] Remove or adapt `client.renderer.texture.TextureObject`
+- [x] Promote raw uses of GL functions and make simple wrappers for complicated GL objects *(shader, programs, framebuffers, etc.)*
 
 ## Contribute
-
-Section TODO.
 
 Remember to use `./gradlew` or `./gradlew.bat` to use gradle.
