@@ -60,7 +60,7 @@ public abstract class GuiMask extends GuiObject {
 	/**
 	 * Use this mask, the returned tracker is a manager singleton and implement {@link AutoCloseable},
 	 * so this method can be used with <code>try-with-resource</code> block like :
-	 * <code><pre>try (GuiMask.MaskTracker ignored = maskObj.mask()) { ... }</pre></code>
+	 * <pre><code>try (GuiMask.MaskTracker ignored = maskObj.mask()) { ... }</code></pre>
 	 * @return The mask tracker.
 	 */
 	public MaskTracker mask() {

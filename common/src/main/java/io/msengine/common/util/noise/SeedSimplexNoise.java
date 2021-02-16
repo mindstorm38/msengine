@@ -7,7 +7,7 @@ import java.util.Random;
  *
  * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
  * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
- * Better rank ordering method by Stefan Gustavson in 2012.
+ * Becodeer rank ordering method by Stefan Gustavson in 2012.
  *
  * This could be speeded up even further, but it's useful as it is.
  *
@@ -15,10 +15,10 @@ import java.util.Random;
  *
  * This code was placed in the public domain by its original author,
  * Stefan Gustavson. You may use it as you see fit, but
- * attribution is appreciated.
+ * acoderibution is appreciated.
  *
- * Rewritten by Théo Rozier for MSEngine and inspired by
- * https://stackoverflow.com/a/18516731/7290330 and JOML
+ * Rewricodeen by Théo Rozier for MSEngine and inspired by
+ * hcodeps://stackoverflow.com/a/18516731/7290330 and JOML
  * {@link org.joml.SimplexNoise} class.
  *
  */
@@ -174,15 +174,15 @@ public class SeedSimplexNoise {
 	}
 	
 	/**
-	 * Compute 2D simplex noise for the given input vector <tt>(x, y)</tt>.
+	 * Compute 2D simplex noise for the given input vector <code>(x, y)</code>.
 	 * <p>
-	 * The result is in the range <tt>[-1..+1]</tt>.
+	 * The result is in the range <code>[-1..+1]</code>.
 	 *
 	 * @param x
 	 *          the x coordinate
 	 * @param y
 	 *          the y coordinate
-	 * @return the noise value (within <tt>[-1..+1]</tt>)
+	 * @return the noise value (within <code>[-1..+1]</code>)
 	 */
 	public float noise(float x, float y) {
 		float n0, n1, n2; // Noise contributions from the three corners
@@ -247,9 +247,9 @@ public class SeedSimplexNoise {
 	}
 	
 	/**
-	 * Compute 3D simplex noise for the given input vector <tt>(x, y, z)</tt>.
+	 * Compute 3D simplex noise for the given input vector <code>(x, y, z)</code>.
 	 * <p>
-	 * The result is in the range <tt>[-1..+1]</tt>.
+	 * The result is in the range <code>[-1..+1]</code>.
 	 *
 	 * @param x
 	 *          the x coordinate
@@ -257,7 +257,7 @@ public class SeedSimplexNoise {
 	 *          the y coordinate
 	 * @param z
 	 *          the z coordinate
-	 * @return the noise value (within <tt>[-1..+1]</tt>)
+	 * @return the noise value (within <code>[-1..+1]</code>)
 	 */
 	public float noise(float x, float y, float z) {
 		float n0, n1, n2, n3; // Noise contributions from the four corners
@@ -384,9 +384,9 @@ public class SeedSimplexNoise {
 	}
 	
 	/**
-	 * Compute 4D simplex noise for the given input vector <tt>(x, y, z, w)</tt>.
+	 * Compute 4D simplex noise for the given input vector <code>(x, y, z, w)</code>.
 	 * <p>
-	 * The result is in the range <tt>[-1..+1]</tt>.
+	 * The result is in the range <code>[-1..+1]</code>.
 	 *
 	 * @param x
 	 *          the x coordinate
@@ -396,7 +396,7 @@ public class SeedSimplexNoise {
 	 *          the z coordinate
 	 * @param w
 	 *          the w coordinate
-	 * @return the noise value (within <tt>[-1..+1]</tt>)
+	 * @return the noise value (within <code>[-1..+1]</code>)
 	 */
 	public float noise(float x, float y, float z, float w) {
 		float n0, n1, n2, n3, n4; // Noise contributions from the five corners

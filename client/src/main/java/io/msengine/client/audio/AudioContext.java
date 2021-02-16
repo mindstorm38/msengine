@@ -98,19 +98,19 @@ public class AudioContext implements AutoCloseable {
 	}
 	
 	/**
-	 * Set the distance model used to attenuate the sound.
+	 * <p>Set the distance model used to attenuate the sound.</p>
+	 * <p><a>https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf [p.87]</a></p>
 	 * @param model Distance model (non null).
-	 * @apiNote https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf [p.87]
 	 */
 	public static void setDistanceModel(AudioDistanceModel model) {
 		alDistanceModel(model.value);
 	}
 	
 	/**
-	 * Scaling of source and listener velocities to exaggerateor deemphasize
-	 * the Doppler (pitch) shift resulting from the calculation.
+	 * <p>Scaling of source and listener velocities to exaggerateor deemphasize
+	 * the Doppler (pitch) shift resulting from the calculation.</p>
+	 * <p><a>https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf [p.14-15]</a></p>
 	 * @param factor Doppler factor (> 0).
-	 * @apiNote https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf [p.14-15]
 	 */
 	public static void setDopplerFactor(float factor) {
 		alDopplerFactor(factor);
@@ -123,8 +123,8 @@ public class AudioContext implements AutoCloseable {
 	 * (so you could use different units for each if desired). If an OpenAL
 	 * application doesn't want to use Doppler effects, then leaving all velocities
 	 * at zero will achieve that result.</p>
+	 * <p><a>https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf [p.15]</a></p>
 	 * @param speed Speed of sound (> 0).
-	 * @apiNote https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf [p.15]
 	 */
 	public static void setSpeedOfSound(float speed) {
 		alSpeedOfSound(speed);

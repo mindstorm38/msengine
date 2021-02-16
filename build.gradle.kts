@@ -1,9 +1,9 @@
 //
 //  [MSEngine]
 //
-//	- Java   : 1.8
-//	- Gradle : 6.1.1
-//  - Version : 1.1.0 (snapshot)
+//	- Java    : 11
+//	- Gradle  : 6.7
+//  - Version : 1.1.0
 //
 
 // Import from your gradle.properties
