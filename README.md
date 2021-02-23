@@ -1,4 +1,112 @@
-# MSEngine Java engine over LWJGL 3
+# MSEngine - Java Library over LWJGL 3
+
+This library is built over LWJGL 3 that provide a lot of useful wrapper
+classes over OpenGL, OpenAL or GLFW "C objects".
+
+The library is split between two modules `common` and `client`, the
+client one depends on the common.
+
+# Table of contents
+
+- [Common](#common-module)
+    - [Logic](#logic)
+    - [Assets](#assets)
+- [Client module](#client-module)
+
+# Common module
+
+The common module provides common methods and classes for both your client
+and server side. This module provides logic, assets management or common
+utilities.
+
+## Logic
+
+This module provides two interfaces `TickRegulated`, `FrameRegulated`
+useful for TPS and/or FPS regulation, *theses two regulations use only
+the calling thread*.
+
+The `TickRegulated` interface can be implemented on your class and provide
+a **default** method `regulateTick(tps)` to call with the number of ticks
+per seconds to regulate. This method will call the `tick()` method every
+`1/tps` second unless the implemented method `shouldStop()` return true.
+
+The `FrameRegulated` interfaces extends the tick one, but instead of the
+method `regulateTick(tps)`, you must use `regulateFrames(tps, fps)` to
+start the regulation. In addition to calls to `tick()` done by ticks
+regulation, the `render(alpha)` method is called every `1/fps` second
+with the interpolation factor. This factor is useful when FPS are
+greater than TPS, because in this case the rendering happens multiple
+times between ticks. You must also implement a method `mustSync()`, you
+must return false if the rendering is vertically-synchronized.
+
+```java
+class FooApp implements FrameRegulated {
+    private static final int TPS = 20;
+    private static final int FPS = 60;
+    public void tick() {
+        System.out.println("I tick every 1/" + TPS + " second");
+    }
+    public void render(float alpha) {
+        System.out.println("I render every 1/" + FPS + " second");
+    }
+    public boolean shouldStop() {
+        return false;
+    }
+    public boolean mustSync() {
+        return true;
+    }
+    public void start() {
+        this.regulateFrames(TPS, FPS);
+    }
+}
+```
+
+> Package: `io.msengine.common.logic`
+
+## Assets
+
+The abstract class `Assets` is designed to be as generic as possible to fit
+most of the file systems that can be useful for assets resolution.
+
+For now  the only implementation is `ClassLoaderAssets`, it's useful if you
+store your assets in the JAR *(it also works with IDEs)*. You can construct
+a `ClassLoaderAssets` by using its constructor, but you can use the more
+practical methods `Assets.forClassLoader(loader, root)` or
+`Assets.forClass(class, root)` by providing either the desired `ClassLoader`
+or the `Class` loaded by the desired loader, you must also give the `root`
+directory containing the assets, it will be appended to all the given
+path before resolving the resource.
+
+Every `Assets` object provides multiple methods to get or list the resources.
+
+```java
+class BarApp {
+    public static final Assets ASSETS = Assets.forClass(FooApp.class, "assets");
+	public static InputStream getIconStream() {
+        // Internally this calls: FooApp.class.getClassLoader().getResourceAsStream("assets/icons/window_icon.png")
+        return ASSETS.openAssetStream("icons/window_icon.png");
+    }
+}
+```
+
+> Package: `io.msengine.common.asset`
+
+# Client module
+
+The client module provides client-side methods and classes, mainly oriented
+around OpenGL for the rendering, OpenAL for the audio or GLFW for the
+windowing.
+
+
+
+
+
+
+
+
+----------------
+
+# Deprecated doc
 
 This library is a game engine helper for LWJGL 3 adding support for :
 - Basic mono-thread game logic loops for either server (ticks per second regulation, default to 20 TPS) and client (in addition to TPS regulation, FPS regulation)
