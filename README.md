@@ -9,15 +9,19 @@ client one depends on the common.
 # Table of contents
 
 - [Common](#common-module)
-    - [Logic](#logic)
-    - [Assets](#assets)
+  - [Logic](#logic)
+  - [Assets](#assets)
 - [Client module](#client-module)
+  - [Windowing](#windowing)
+  - []()
 
 # Common module
 
 The common module provides common methods and classes for both your client
 and server side. This module provides logic, assets management or common
 utilities.
+
+> Package: `io.msengine.common`
 
 ## Logic
 
@@ -97,12 +101,29 @@ The client module provides client-side methods and classes, mainly oriented
 around OpenGL for the rendering, OpenAL for the audio or GLFW for the
 windowing.
 
+> Package: `io.msengine.client`<br>
+> Maven: `fr.theorozier:msengine-client:1.1.0`
 
+## Windowing
 
+The windowing module of this library is an 
 
+> Package: `io.msengine.common.asset`
 
+## Graphics
+TODO
 
+### GUI
+TODO
 
+### Object-Oriented OpenGL
+TODO
+
+## Audio
+TODO
+
+## Miscellaneous Utilities
+TODO
 
 ----------------
 
